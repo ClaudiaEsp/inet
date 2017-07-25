@@ -54,8 +54,19 @@ def binomial_CI(trials, p_success, confident=0.975):
 
     # test proportions between 0 and 1
     try:
-        if p < 0.0 or p > 1.0:
-            raise ValueError('Proportion must be between zero and one')
+        if p <= 0.0:
+            raise ValueError('Proportion must be higher than zero')
+        elif p > 1.0:
+            raise ValueError('Proportion must be maximally 1.0')
+    except ValueError:
+        raise
+
+    # test confident interval bounds and higher that 90%
+    try:
+        if confident <= 0.9:
+            raise ValueError('Confident interval must be > 0.9')
+        elif confident > 1.0:
+            raise ValueError('Confident interval must be < 1')
     except ValueError:
         raise
 
