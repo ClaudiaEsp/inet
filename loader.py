@@ -11,9 +11,12 @@ distances between neurons recorded in an simultaneous whole-cell
 patch clamp recording.
 
 Example:
+>>> from loader import DataLoader
 >>> mydataset = DataLoader("./data")
 >>> mydataset.stats # report basis connectivity statistics
 """
+
+from __future__ import division
 
 import glob, os
 import numpy as np
@@ -33,6 +36,46 @@ II_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV)]
 IE_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV, matrix.shape[0])]
 EI_slice = lambda matrix, nPV: matrix[nPV: ][ :,range(nPV)]
 
+def configuration():
+    """
+    Returns an dictionary whose keys are the values of
+    the enum dictionary:
+
+    enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
+        6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
+
+    It allows to call the dictionary like dict[enum(8)] in stead of 
+    having to write the whole string (e.g. dict['octuples'])
+    """
+
+    mydict = dict()
+    for label in enum.values():
+            mydict[label] = 0
+        
+    return( mydict )
+
+def connection():
+    """
+    Create a connections dictionary with the number of connections found
+    and the number of connections tested for every type of connection.
+    For example
+    >>> mydict = connections()
+    >>> mydict['II_chem']['found']
+    >>> # could return a list with the properties of the connections found
+
+    Returns a dictionary of possible connections
+    """
+
+    myconnection = dict()
+    myconnection['II_chem']=  {'found':0, 'tested':0}
+    myconnection['II_elec']=  {'found':0, 'tested':0}
+    myconnection['II_both']=  {'found':0, 'tested':0}
+
+    myconnection['EI'] =   {'found':0, 'tested':0}
+    myconnection['IE'] =   {'found':0, 'tested':0}
+
+    return( myconnection )
+
 class DataLoader(object):
     """
     A class to load synaptic type and distances from connectivity
@@ -43,32 +86,29 @@ class DataLoader(object):
         """
         Reads all *.syn files contained in path folder
 
-        Argument:
-        ---------
+        Argument
+        --------
         path : string 
             the path containing the folder to open .syn files. 
             If None (default), reads from current directory.
         """
 
-        # set recording configurations at zero
-        self.__myconfiguration = dict()
-        for label in enum.values():
-            self.__myconfiguration[label] = 0
+        # all configurations
+        self.__configuration = configuration()
+
+        # configurations of simulatenous PV cells
+        self.__PV = [configuration() for _ in range(9)] 
 
         # Total number of recorded cells
-        self.__nGC = 0 # number of granule cells
         self.__nPV = 0 # number of PV-positive cells
+        self.__nGC = 0 # number of granule cells
 
-        # conections found are zero at construction
-        self.__II, self.__IE, self.__EI = 0, 0, 0
-        self.__II_chem = 0
-        self.__II_elec = 0
-        self.__II_both = 0
+        # all conections are zero at construction
+        self.__connection = connection() 
 
-        # conections tested are zero at construction
-        self.__II_tested, self.__IE_tested, self.__EI_tested = 0, 0, 0
-        self.__II_chem_tested = 0
-        self.__II_elec_tested = 0
+        # a list with experiments (filename, matrix and connections)
+        self.__experiment = list()
+
 
         cwd = os.getcwd()
         if path is not None:
@@ -76,11 +116,14 @@ class DataLoader(object):
             
         PVsyn = glob.glob("*.syn")
 
-        self.__experiment = list()
+
         for fname in PVsyn:
             mydict = dict()
             mydict['fname'] = fname
-            mydict['matrix'] = self.__readsyn(fname, int(fname[0]))
+            matrix, connect = self.__loadsyn(fname, int(fname[0]))
+            mydict['matrix'] = matrix
+            mydict['connection'] = connect
+
             self.__experiment.append( mydict )
         
         os.chdir(cwd)
@@ -88,9 +131,10 @@ class DataLoader(object):
         # prompt number of files loaded
         print("%4d syn  files loaded" %len(PVsyn))
 
-    def __readsyn(self, filename, nPV):
+    def __loadsyn(self, filename, nPV):
         """
-        Reads the matrix of connectivities from a *syn file.
+        Reads the matrix of connectivities from a *syn file and 
+        extract basic information about connectivity and cell types.
 
         Arguments 
         ---------
@@ -103,8 +147,11 @@ class DataLoader(object):
         Returns
         -------
         matrix : 2D Numpy matrix
-            connectivity matrix containing 0 if no connection, 1 if
-            chemical synapse, 2 if electrical synapse and 3 if both
+            connectivity matrix containing <0> if no connection, <1> if
+            chemical synapse, <2> if electrical synapse and <3> if both
+        
+        connections : A connecion dictionary containing the number and
+            tested and found connections for every type.
         
         """
 
@@ -116,159 +163,217 @@ class DataLoader(object):
             raise
 
         matrix = np.loadtxt(filename, dtype=int)
-
         ncells = matrix.shape[0]
-        # update recording configuration
-        self.myconfiguration[ enum[ncells] ] +=1 
 
-        nGC = ncells - nPV # number of granule cels
+        # UPDATE recording configuration
+        configuration = enum[ncells]
+        self.configuration[ configuration ] +=1 
 
-        self.__nGC += nGC
+        # UPDATE configurations in number of simulatenously PV cells
+        self.PV[nPV][configuration ] +=1
+
+        # UPDATE number of PV cell
         self.__nPV += nPV
 
-        # tested connections
-        self.__II_tested += nPV * (nPV - 1)
-        self.__IE_tested += nPV * nGC
-        self.__EI_tested += nGC * nPV
+        # UPDATE number of granule cells
+        nGC = ncells - nPV
+        self.__nGC += nGC 
 
+        # UPDATE connections 
         # slice the matrix to get general connection types
-        II_matrix = II_slice(matrix, nPV)
-        IE_matrix = IE_slice(matrix, nPV)
         EI_matrix = EI_slice(matrix, nPV)
 
-        # found connections
-        II_found = np.count_nonzero( II_matrix )
-        IE_found = np.count_nonzero( IE_matrix )
-        EI_found = np.count_nonzero( EI_matrix )
-    
-        # test II chemical and electrical synapes
-        II_chem_tested = II_matrix.shape[0] * (II_matrix.shape[0] - 1) 
-        II_elec_tested = II_chem_tested/2
+        # load connections type
 
-        II_found_chem = II_matrix[ np.where(II_matrix==1) ].size
-        II_found_elec = II_matrix[ np.where(II_matrix==2) ].size
-        II_found_both = II_matrix[ np.where(II_matrix==3) ].size
+        II_matrix = II_slice(matrix, nPV)
+        II_chem_found  = II_matrix[ np.where(II_matrix==1) ].size
+        II_chem_found += II_matrix[ np.where(II_matrix==3) ].size
 
-        self.__II_chem_tested += II_chem_tested
-        self.__II_elec_tested += II_elec_tested
+        II_elec_found  = II_matrix[ np.where(II_matrix==2) ].size
+        II_elec_found += II_matrix[ np.where(II_matrix==3) ].size
 
-        self.__II += II_found
-        self.__IE += IE_found
-        self.__EI += EI_found
-        self.__II_chem += II_found_chem
-        self.__II_elec += II_found_elec
-        self.__II_both += II_found_both
+        II_both_found = II_matrix[ np.where(II_matrix==3) ].size
 
-        return( matrix )
+        II_chem_tested = nPV * (nPV - 1)
+        II_elec_tested = int(II_chem_tested/2)
+        II_both_tested = II_elec_tested 
 
-    def readmatrixdist(self, filelist):
+        EI_matrix = EI_slice(matrix, nPV)
+        EI_tested = nGC * nPV
+        EI_found = np.count_nonzero(EI_matrix)
+
+        IE_matrix = IE_slice(matrix, nPV)
+        IE_tested = nPV * nGC
+        IE_found = np.count_nonzero(IE_matrix)
+
+        mydict = connection()
+        mydict['II_chem']['found']  = II_chem_found
+        mydict['II_chem']['tested'] = II_chem_tested
+        mydict['II_elec']['found']  = II_elec_found
+        mydict['II_elec']['tested']= II_elec_tested
+        mydict['II_both']['found']  = II_both_found
+        mydict['II_both']['tested'] = II_both_tested
+
+        mydict['EI']['found'] = EI_found
+        mydict['EI']['tested'] = EI_tested
+
+        mydict['IE']['found'] = IE_found
+        mydict['IE']['tested'] = IE_tested
+
+        # UPDATE connection
+        self.add_connection(mydict)
+
+        return( matrix, mydict )
+
+    def add_connection(self, mydict):
+        """
+        Adds the value of a connection dictionary to the 
+        connection attribute of the object
+        """
+        for key in mydict:
+            self.connection[key]['found']  += mydict[key]['found']
+            self.connection[key]['tested'] += mydict[key]['tested']
+        
+
+    def readmatrix(self, filelist):
         """
         Read matrices from a list of files that correspond to the 
         experiments loaded in the dataset.
 
-        Arguments: 
+        Arguments 
+        ---------
         filelist    -- a list of filenames containing matrices to open
         """
         
         # load all matrices from filelist in data
-        data = list()
+        target = list()
         for filename in filelist:
-            data.append( np.loadtxt(filename, dtype = float) )
+            target.append( np.loadtxt(filename, dtype = float) )
 
         # remove extension and take the last 11 chars
         flist = [os.path.splitext(i)[0][-11:] for i in filelist]
 
         # look for index of an experiment containing that filename
-        id_files = list()
+        match = list()
         for i, fname in enumerate(flist):
             for o, experiment in enumerate(self.experiment): #
                 if fname in experiment['fname']:
                     
                     print(fname, i, o)
+                    match.append(o)
                     break # if found, 
+        
+        print("list of colected indices",match)
+                    
+        #target[0][np.where(matrix == 1)]
+        
+        mydict = dict()
+        mydict['II_chem'] = 0
+        mydict['II_elec'] = 0
+        mydict['IE'] = 0
+        mydict['EI'] = 0
+
+        for j, idx in enumerate(match):
+            destiny = target[j]
+            dataset = self.experiment[idx]['matrix']
+            data = destiny[ np.where(dataset==1) ].tolist()
+            print(data)
 
             
-                    
-                    #mymatrix = data[i]
-                    #II_syn(mymatrix)
-
-        mydict = dict()
-        mydict['II_tested'] = 0
-        mydict['IE_tested'] = 0
-        mydict['EI_tested'] = 0
-        mydict['II_found'] = 0
-        mydict['IE_found'] = 0
-        mydict['EI_found'] = 0
-
         return( mydict )
         
 
-    def __stats(self):
+    def stats(self, show):
         """
-        print basis statistics from the recorded dataset
+        Print basis statistics from the recorded dataset
+
+        Argument
+        --------
+
+        show : string 
+            A string with 'conf' to show the configurations or
+            'prob' to show the different probabilities.
+
+        Returns
+        -------
+            An ASCII table with basic statistics
         """
 
-        data = [
+        if show == 'conf':
+            info = [
                 ['Concept', 'Quantity'],
                 ['PV-positive cells', self.nPV],
                 ['Granule cells', self.nGC],
                 [' ',' '],
-                ['Pairs       ', self.myconfiguration[enum[2]]],
-                ['Triplets    ', self.myconfiguration[enum[3]]],
-                ['Quadruplets ', self.myconfiguration[enum[4]]],
-                ['Quintuplets ', self.myconfiguration[enum[5]]],
-                ['Sextuplets  ', self.myconfiguration[enum[6]]],
-                ['Septuplets  ', self.myconfiguration[enum[7]]],
-                ['Octuplets   ', self.myconfiguration[enum[8]]],
+                ['Pairs       ', self.configuration[enum[2]]],
+                ['Triplets    ', self.configuration[enum[3]]],
+                ['Quadruplets ', self.configuration[enum[4]]],
+                ['Quintuplets ', self.configuration[enum[5]]],
+                ['Sextuplets  ', self.configuration[enum[6]]],
+                ['Septuplets  ', self.configuration[enum[7]]],
+                ['Octuplets   ', self.configuration[enum[8]]],
+            ]
+            table = AsciiTable(info)
+            print (table.table)
+
+        if show == 'prob':
+
+            PInhibition = (self.II_chem_found + self.II_elec_found)/(self.II_chem_tested + self.II_elec_tested)
+            
+            info = [
+                ['Connection type', 'Value'],
+                ['PV-PV chemical synapses', self.II_chem_found],
+                ['PV-PV electrical synapses', self.II_elec_found],
+                ['PV-PV both synapses together', self.II_both_found],
+                ['PV-GC synapses', self.IE_found],
+                ['GC-PC synapses', self.EI_found],
                 [' ',' '],
-                ['PV-PV connections', self.II],
-                ['PV-GC connections', self.IE],
-                ['GC-PC connections', self.EI],
+                ['P(PV-PV) connection', PInhibition],
+                ['P(PV-GC) connection',self.IE_found/self.IE_tested],
+                ['P(GC-PC) connection', self.EI_found/self.EI_tested],
                 [' ',' '],
-                ['P(PV-PV) connection', float(self.II)/self.II_tested],
-                ['P(PV-GC) connection', float(self.IE)/self.IE_tested],
-                ['P(GC-PC) connection', float(self.EI)/self.EI_tested],
-                [' ',' '],
-                ['PV-PV chemical synapses only', self.II_chem],
-                ['PV-PV electrical synapses only', self.II_elec],
-                ['PV-PV both synapses together', self.II_both],
-                [' ',' '],
-                ['P(PV-PV) chemical only', float(self.II_chem)/self.II_chem_tested],
-                ['P(PV-PV) electrical only', float(self.II_elec)/self.II_elec_tested],
-        ]
-        table = AsciiTable(data)
-        print (table.table)
+                ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
+                ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
+                ['P(PV-PV) both synapse', self.II_both_found/self.II_both_tested],
+            ]
+            table = AsciiTable(info)
+            print (table.table)
 
 
-    # only getters for private attributes and methods 
-    experiment = property(lambda self: self.__experiment) 
-    
-    myconfiguration = property(lambda self: self.__myconfiguration)
+
+    # only getters for private attributes 
+    configuration = property(lambda self: self.__configuration)
+    PV = property(lambda self: self.__PV)
     nGC = property(lambda self: self.__nGC)
     nPV = property(lambda self: self.__nPV)
+    connection = property(lambda self: self.__connection)
+    experiment = property(lambda self: self.__experiment)
+
+
+    # usefull attributes
+    II_chem_found = property(lambda self: self.connection['II_chem']['found'])
+    II_chem_tested = property(lambda self: self.connection['II_chem']['tested'])
+
+    II_elec_found = property(lambda self: self.connection['II_elec']['found'])
+    II_elec_tested = property(lambda self: self.connection['II_elec']['tested'])
+
+    II_both_found = property(lambda self: self.connection['II_both']['found'])
+    II_both_tested = property(lambda self: self.connection['II_both']['tested'])
+
     
-    IE = property(lambda self: self.__IE)
-    EI = property(lambda self: self.__EI)
-    II = property(lambda self: self.__II)
-    II_chem = property(lambda self: self.__II_chem)
-    II_elec = property(lambda self: self.__II_elec)
-    II_both = property(lambda self: self.__II_both)
+    IE_found = property(lambda self: self.connection['IE']['found'])
+    EI_found = property(lambda self: self.connection['EI']['found'])
 
-    IE_tested = property(lambda self: self.__IE_tested)
-    EI_tested = property(lambda self: self.__EI_tested)
-    II_tested = property(lambda self: self.__II_tested)
-    II_chem_tested = property(lambda self: self.__II_chem_tested)
-    II_elec_tested = property(lambda self: self.__II_elec_tested)
-
-    # only getter for private methods
-    stats = property(lambda self: self.__stats())
+    EI_tested = property(lambda self: self.connection['EI']['tested'])
+    IE_tested = property(lambda self: self.connection['IE']['tested'])
 
 
 if __name__ == "__main__":
     # %run in IPython
     mydataset = DataLoader('./data')
-    mydataset.stats
+    mydataset.stats(show='conf')
+    mydataset.stats(show='prob')
     myfilelist = ['./data/1_170302_02.dist', 
         './data/1_170214_03.dist',
-        './data/1_170307_02.syn']
+        './data/1_170307_02.dist']
             
