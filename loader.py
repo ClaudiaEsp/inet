@@ -12,8 +12,8 @@ patch clamp recording.
 
 Example:
 >>> from loader import DataLoader
->>> mydataset = DataLoader("./data")
->>> mydataset.stats # report basis connectivity statistics
+>>> mydataset = DataLoader("./data") # load files with *sys extension
+>>> mydataset.stats('conf') # report basis configuration statistics
 """
 
 from __future__ import division
@@ -57,13 +57,20 @@ def configuration():
 def connection():
     """
     Create a connections dictionary with the number of connections found
-    and the number of connections tested for every type of connection.
+    and tested for every type of connection: 
+
+    II_chem : chemical synapse between inhibitory neurons
+    II_elec : electrical synapse between inhibitory neurons
+    II_both : connection containing both chemical and electrical synapse
+
+    EI : synapse between excitatory and inhibitory neuron
+    IE : synapse between inhibitory and excitatory neuron
+
     For example
     >>> mydict = connections()
     >>> mydict['II_chem']['found']
     >>> # could return a list with the properties of the connections found
 
-    Returns a dictionary of possible connections
     """
 
     myconnection = dict()
@@ -93,11 +100,10 @@ class DataLoader(object):
             If None (default), reads from current directory.
         """
 
+        # --- simple attributes -- #
+
         # all configurations
         self.__configuration = configuration()
-
-        # configurations of simulatenous PV cells
-        self.__PV = [configuration() for _ in range(9)] 
 
         # Total number of recorded cells
         self.__nPV = 0 # number of PV-positive cells
@@ -106,8 +112,22 @@ class DataLoader(object):
         # all conections are zero at construction
         self.__connection = connection() 
 
-        # a list with experiments (filename, matrix and connections)
+        # --- dict attributes -- #
+
+        # a list of dictionaries whose keys are:
+        # filename, matrix and connections
         self.__experiment = list()
+
+        # a list of dictionaries whose keys are:
+        # nith recorded simulatenous PV cells
+        self.__PV = (
+          {2: 0, 'configuration': configuration()},
+          {4: 0, 'configuration': configuration()},
+          {5: 0, 'configuration': configuration()},
+          {6: 0, 'configuration': configuration()},
+          {7: 0, 'configuration': configuration()},
+          {8: 0, 'configuration': configuration()}
+        )
 
 
         cwd = os.getcwd()
@@ -165,14 +185,18 @@ class DataLoader(object):
         matrix = np.loadtxt(filename, dtype=int)
         ncells = matrix.shape[0]
 
-        # UPDATE recording configuration
-        configuration = enum[ncells]
-        self.configuration[ configuration ] +=1 
+        # UPDATE recording configurationtype
+        configurationtype = enum[ncells]
+        self.configuration[ configurationtype ] +=1 
 
-        # UPDATE configurations in number of simulatenously PV cells
-        self.PV[nPV][configuration ] +=1
+        # UPDATE PV dictionary list 
+        for dic in self.PV:
+            if dic.has_key(nPV):
+                dic[nPV] +=1
+                dic['configuration'][configurationtype ] +=1
+            break    
 
-        # UPDATE number of PV cell
+        # UPDATE number of total PV cells
         self.__nPV += nPV
 
         # UPDATE number of granule cells
