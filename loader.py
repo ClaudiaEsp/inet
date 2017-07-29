@@ -121,6 +121,7 @@ class DataLoader(object):
         # a list of dictionaries whose keys are:
         # nith recorded simulatenous PV cells
         self.__PV = [
+          {1: 0, 'configuration': configuration()},
           {2: 0, 'configuration': configuration()},
           {3: 0, 'configuration': configuration()},
           {4: 0, 'configuration': configuration()},
@@ -195,7 +196,6 @@ class DataLoader(object):
             if dic.has_key(nPV):
                 dic[nPV] +=1
                 dic['configuration'][configurationtype ] +=1
-            break    
 
         # UPDATE number of total PV cells
         self.__nPV += nPV
