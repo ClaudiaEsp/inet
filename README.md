@@ -6,6 +6,14 @@ mice.
 
 It is for personal use only. 
 
+Requirements
+============
+
+* Python (tested 2.7 and 3.5)
+* NumPy (tested. 1.13)
+* Scipy (tested 0.19)
+* terminalTables (tested 3.1.0)
+
 Matrices of synaptic connections
 ================================
 
