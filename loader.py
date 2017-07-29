@@ -189,7 +189,7 @@ class DataLoader(object):
         configurationtype = enum[ncells]
         self.configuration[ configurationtype ] +=1 
 
-        # UPDATE PV dictionary list 
+        # UPDATE PV dictionary list :TODO check bug!!!
         for dic in self.PV:
             if dic.has_key(nPV):
                 dic[nPV] +=1
@@ -217,7 +217,6 @@ class DataLoader(object):
         II_elec_found += II_matrix[ np.where(II_matrix==3) ].size
 
         II_both_found = II_matrix[ np.where(II_matrix==3) ].size
-
         II_chem_tested = nPV * (nPV - 1)
         II_elec_tested = int(II_chem_tested/2)
         II_both_tested = II_elec_tested 
