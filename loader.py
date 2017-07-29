@@ -106,8 +106,8 @@ class DataLoader(object):
         self.__configuration = configuration()
 
         # Total number of recorded cells
-        self.__nPV = 0 # number of PV-positive cells
-        self.__nGC = 0 # number of granule cells
+        self.__nPV = 0 # total number of recorded PV-positive cells
+        self.__nGC = 0 # total number of recorded granule cells
 
         # all conections are zero at construction
         self.__connection = connection() 
@@ -120,14 +120,15 @@ class DataLoader(object):
 
         # a list of dictionaries whose keys are:
         # nith recorded simulatenous PV cells
-        self.__PV = (
+        self.__PV = [
           {2: 0, 'configuration': configuration()},
+          {3: 0, 'configuration': configuration()},
           {4: 0, 'configuration': configuration()},
           {5: 0, 'configuration': configuration()},
           {6: 0, 'configuration': configuration()},
           {7: 0, 'configuration': configuration()},
           {8: 0, 'configuration': configuration()}
-        )
+        ]
 
 
         cwd = os.getcwd()
@@ -189,7 +190,7 @@ class DataLoader(object):
         configurationtype = enum[ncells]
         self.configuration[ configurationtype ] +=1 
 
-        # UPDATE PV dictionary list :TODO check bug!!!
+        # UPDATE PV dictionary list :
         for dic in self.PV:
             if dic.has_key(nPV):
                 dic[nPV] +=1
