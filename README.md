@@ -1,11 +1,10 @@
 # Dentate Connectivity
 
 This is a repository to test connectivity models based on multiple
-patch-clamp recordings between PV+ interneurons and granule cells in 
+simulatenous patch-clamp recordings between PV+ interneurons and granule cells in 
 mice.
 
 It is for personal use only. 
-
 
 Matrices of synaptic connections
 ================================
