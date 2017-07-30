@@ -14,7 +14,7 @@ setup(
     version = '0.0.2',# application version
     author ='Jose Guzman and Claudia Espinoza',
     author_email = 'sjm.guzman@gmail.com',
-    packages = ['PVNet'],
+    packages = ['inet'],
     include_package_data = True,# include additional data
     package_data={
         # If any package contains *.txt files, include them:
