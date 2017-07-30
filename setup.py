@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'inet', # application name
-    version = '0.0.2',# application version
+    version = '0.0.3',# application version
     author ='Jose Guzman and Claudia Espinoza',
     author_email = 'sjm.guzman@gmail.com',
     packages = ['inet'],
