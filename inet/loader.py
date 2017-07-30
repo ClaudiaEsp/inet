@@ -16,6 +16,8 @@ Example:
 >>> mydataset.stats('conf') # report basis configuration statistics
 """
 
+from __future__ import division
+
 import glob, os
 import numpy as np
 
