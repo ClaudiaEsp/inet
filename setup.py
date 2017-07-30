@@ -19,6 +19,6 @@ setup(
     url = 'https://github.com/ClaudiaEsp/Dentate/',
     license = 'LICENSE',
     description = 'network simulations based on connections of PV neurons',
-    long_description = open('README').read(),
+    long_description = open('README.md').read(),
     install_requires=['numpy', 'scipy', 'teminaltables'],
 )

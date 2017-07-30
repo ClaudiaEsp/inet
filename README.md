@@ -1,6 +1,6 @@
-# Dentate Connectivity
+# PVNet 
 
-This is a repository to test connectivity models based on multiple
+This is a python module to test connectivity models based on multiple
 simulatenous patch-clamp recordings between PV+ interneurons and granule cells in 
 mice.
 
