@@ -2,10 +2,11 @@ Installation from the repository
 ================================
 
 You can simply download the lastest version from the repository:
+
 ``` git clone https://github.com/ClaudiaEsp/Dentate```
 
 then enter the directory /src and type:
->>> python setup.py install --prefix=~/.local/
+``` python setup.py install --prefix=~/.local/
 
 Installation from the tar.gz file 
 ================================
