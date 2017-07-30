@@ -2,7 +2,7 @@ Installation from the repository
 ================================
 
 You can simply download the lastest version from the repository:
->>> git clone https://github.com/ClaudiaEsp/Dentate
+``` git clone https://github.com/ClaudiaEsp/Dentate```
 
 then enter the directory /src and type:
 >>> python setup.py install --prefix=~/.local/
@@ -13,7 +13,7 @@ Download the PV.x.x.x.tar.gz file from http://github.com/ClaudiaEsp/Dentate/src/
 
 untar the file and find the directory where setup.py is located. Once there, simply type:
 
->>> python setup.py install --prefix=~/.local/
+```python setup.py install --prefix=~/.local/```
 
 Create a tar file from repository version
 =========================================
