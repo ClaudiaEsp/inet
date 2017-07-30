@@ -21,12 +21,16 @@ Create a tar file from repository version
 =========================================
 
 in /src type:
->>> python setup.py sdist
+``` python setup.py sdist ```
 
 This will create a tar file in the directory src/dist
 
 Installing with pip
 ===================
 
->>> pip install --user $USER PV.x.x.x.tar.gz
->>> pip install --user $USER https://github.com/ClaudiaEsp/Dentate.git
+If you downloaded the tar.gz file, use: 
+``` pip install --user $USER PV.x.x.x.tar.gz```
+
+Otherwise, you can simply use the latest version from the repository:
+
+``` pip install --user $USER https://github.com/ClaudiaEsp/Dentate.git```
