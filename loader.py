@@ -118,19 +118,11 @@ class DataLoader(object):
         # filename, matrix and connections
         self.__experiment = list()
 
-        # a list of dictionaries whose keys are:
-        # nith recorded simulatenous PV cells
-        self.__PV = [
-          {1: 0, 'configuration': configuration()},
-          {2: 0, 'configuration': configuration()},
-          {3: 0, 'configuration': configuration()},
-          {4: 0, 'configuration': configuration()},
-          {5: 0, 'configuration': configuration()},
-          {6: 0, 'configuration': configuration()},
-          {7: 0, 'configuration': configuration()},
-          {8: 0, 'configuration': configuration()}
-        ]
-
+        # a list of dictionaries whose indices are the
+        # number of PV cells recorded simulatenously
+        # (e.g. DataLoader.PV[2] returns a configuration dictionary
+        # with the recording configurations containing 2 PV cells
+        self.__PV = [configuration() for _ in range(9)]
 
         cwd = os.getcwd()
         if path is not None:
@@ -192,10 +184,8 @@ class DataLoader(object):
         self.configuration[ configurationtype ] +=1 
 
         # UPDATE PV dictionary list :
-        for dic in self.PV:
-            if dic.has_key(nPV):
-                dic[nPV] +=1
-                dic['configuration'][configurationtype ] +=1
+        PVdict = self.PV[nPV]
+        PVdict[configurationtype ] +=1
 
         # UPDATE number of total PV cells
         self.__nPV += nPV
