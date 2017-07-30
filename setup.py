@@ -10,8 +10,8 @@ Installation file required for the PVNet Python module
 from setuptools import setup, find_packages
 
 setup(
-    name = 'PVNet', # application number
-    version = '0.0.1',# application version
+    name = 'inet', # application name
+    version = '0.0.2',# application version
     author ='Jose Guzman and Claudia Espinoza',
     author_email = 'sjm.guzman@gmail.com',
     packages = ['PVNet'],

@@ -4,7 +4,7 @@ Installing with pip
 This is the default mode, and it is what we recommend. There are two ways
 to install the module. You can downloaded the tar.gz file for the directory /PVNet/dist and then use: 
 
-``` pip install --user $USER PV.x.x.x.tar.gz```
+``` pip install --user $USER inet.x.x.x.tar.gz```
 
 Otherwise, you can simply use the latest version from the repository:
 
