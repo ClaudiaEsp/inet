@@ -14,6 +14,11 @@ Requirements
 * Scipy (tested 0.19)
 * terminalTables (tested 3.1.0)
 
+How to install it
+=================
+
+``` pip install git+https://github.com/ClaudiaEsp/Dentate.git```
+
 Matrices of synaptic connections
 ================================
 

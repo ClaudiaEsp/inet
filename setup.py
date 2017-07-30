@@ -4,10 +4,10 @@ setup.py
 Jose Guzmand and Claudia Espinoza
 Created: Sun Jul 30 13:42:41 CEST 2017
 
-Installation file for the PVNet Python module
+Installation file required for the PVNet Python module
 
 """
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name = 'PVNet', # application number
@@ -16,9 +16,16 @@ setup(
     author_email = 'sjm.guzman@gmail.com',
     packages = ['PVNet'],
     include_package_data = True,# include additional data
+    package_data={
+        # If any package contains *.txt files, include them:
+        '': ['*.txt'],
+        # And include any *.syn files found in the 'data' subdirectory
+        # of the 'PVNet' package, also:
+        'PVNet': ['data/*.syn'],
+    },
     url = 'https://github.com/ClaudiaEsp/Dentate/',
     license = 'LICENSE',
     description = 'network simulations based on connections of PV neurons',
     long_description = open('README.md').read(),
-    install_requires=['numpy', 'scipy', 'teminaltables'],
+    install_requires = ['numpy', 'scipy' ],
 )
