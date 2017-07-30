@@ -23,65 +23,8 @@ import numpy as np
 
 from terminaltables import AsciiTable
 
-enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
-        6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
-
-#-------------------------------------------------------------------------
-# Auxiliary functions for slicing matrices according to number of PV cells
-# for example II_matrix(matrix=2DNumPy, nPV=nPV) will return a 2D NumPy 
-# array with inhibitory-to-inhibitory connections only
-#-------------------------------------------------------------------------
-
-II_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV)]
-IE_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV, matrix.shape[0])]
-EI_slice = lambda matrix, nPV: matrix[nPV: ][ :,range(nPV)]
-
-def configuration():
-    """
-    Returns an dictionary whose keys are the values of
-    the enum dictionary:
-
-    enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
-        6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
-
-    It allows to call the dictionary like dict[enum(8)] in stead of 
-    having to write the whole string (e.g. dict['octuples'])
-    """
-
-    mydict = dict()
-    for label in enum.values():
-            mydict[label] = 0
-        
-    return( mydict )
-
-def connection():
-    """
-    Create a connections dictionary with the number of connections found
-    and tested for every type of connection: 
-
-    II_chem : chemical synapse between inhibitory neurons
-    II_elec : electrical synapse between inhibitory neurons
-    II_both : connection containing both chemical and electrical synapse
-
-    EI : synapse between excitatory and inhibitory neuron
-    IE : synapse between inhibitory and excitatory neuron
-
-    For example
-    >>> mydict = connections()
-    >>> mydict['II_chem']['found']
-    >>> # could return a list with the properties of the connections found
-
-    """
-
-    myconnection = dict()
-    myconnection['II_chem']=  {'found':0, 'tested':0}
-    myconnection['II_elec']=  {'found':0, 'tested':0}
-    myconnection['II_both']=  {'found':0, 'tested':0}
-
-    myconnection['EI'] =   {'found':0, 'tested':0}
-    myconnection['IE'] =   {'found':0, 'tested':0}
-
-    return( myconnection )
+import utils
+from utils import enum
 
 class DataLoader(object):
     """
@@ -103,14 +46,14 @@ class DataLoader(object):
         # --- simple attributes -- #
 
         # all configurations
-        self.__configuration = configuration()
+        self.__configuration = utils.configuration()
 
         # Total number of recorded cells
         self.__nPV = 0 # total number of recorded PV-positive cells
         self.__nGC = 0 # total number of recorded granule cells
 
         # all conections are zero at construction
-        self.__connection = connection() 
+        self.__connection = utils.connection() 
 
         # --- dict attributes -- #
 
@@ -122,7 +65,7 @@ class DataLoader(object):
         # number of PV cells recorded simulatenously
         # (e.g. DataLoader.PV[2] returns a configuration dictionary
         # with the recording configurations containing 2 PV cells
-        self.__PV = [configuration() for _ in range(9)]
+        self.__PV = [utils.configuration() for _ in range(9)]
 
         cwd = os.getcwd()
         if path is not None:
@@ -196,11 +139,11 @@ class DataLoader(object):
 
         # UPDATE connections 
         # slice the matrix to get general connection types
-        EI_matrix = EI_slice(matrix, nPV)
+        EI_matrix = utils.EI_slice(matrix, nPV)
 
         # load connections type
 
-        II_matrix = II_slice(matrix, nPV)
+        II_matrix = utils.II_slice(matrix, nPV)
         II_chem_found  = II_matrix[ np.where(II_matrix==1) ].size
         II_chem_found += II_matrix[ np.where(II_matrix==3) ].size
 
@@ -212,15 +155,15 @@ class DataLoader(object):
         II_elec_tested = int(II_chem_tested/2)
         II_both_tested = II_elec_tested 
 
-        EI_matrix = EI_slice(matrix, nPV)
+        EI_matrix = utils.EI_slice(matrix, nPV)
         EI_tested = nGC * nPV
         EI_found = np.count_nonzero(EI_matrix)
 
-        IE_matrix = IE_slice(matrix, nPV)
+        IE_matrix = utils.IE_slice(matrix, nPV)
         IE_tested = nPV * nGC
         IE_found = np.count_nonzero(IE_matrix)
 
-        mydict = connection()
+        mydict = utils.connection()
         mydict['II_chem']['found']  = II_chem_found
         mydict['II_chem']['tested'] = II_chem_tested
         mydict['II_elec']['found']  = II_elec_found
@@ -384,7 +327,7 @@ class DataLoader(object):
 
 if __name__ == "__main__":
     # %run in IPython
-    mydataset = DataLoader('./data')
+    mydataset = DataLoader('../data')
     mydataset.stats(show='conf')
     mydataset.stats(show='prob')
     myfilelist = ['./data/1_170302_02.dist', 

@@ -1,5 +1,5 @@
 """
-mymath.py
+math.py
 
 Jose Guzman, sjm.guzman@gmail.com
 Claudia Espinoza, claudia.espinoza@ist.ac.at
