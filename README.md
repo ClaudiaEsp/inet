@@ -1,8 +1,7 @@
 # inet 
 
 A python module to test connectivity models based on multiple
-simulatenous patch-clamp recordings between PV+ interneurons and granule cells in 
-mice.
+simulatenous patch-clamp recordings between [Parvalbumin](https://en.wikipedia.org/wiki/Parvalbumin) (PV) positive [interneurons](https://en.wikipedia.org/wiki/Interneuron) and [granule cells](https://en.wikipedia.org/wiki/Granule_cell) in the [dentate gyrus](https://en.wikipedia.org/wiki/Dentate_gyrus) of mice.
 
 It is for personal use only. 
 
@@ -25,10 +24,8 @@ In python:
 
 ```python
 from inet import DataLoader
-mydataset = Dataloader('./data') # loads connectivity matrices
+mydataset = Dataloader('./data') # load connectivity matrices
 ```
-
-`pip install git+https://github.com/ClaudiaEsp/inet.git`
 
 Matrices of synaptic connections
 ================================
@@ -39,9 +36,9 @@ simulatenous patch-clamp recordings. Connections are represented as
 nxn size matrices of pre-post connections where every element is,
 
 * <0> if no connection, 
-* <1> if chemical synapse, 
-* <2> if electrical synapse and 
-* <3> if both (chemical and electrical). 
+* <1> if chemical synapse alone, 
+* <2> if electrical synapse alone and 
+* <3> if both synapses together (i.e. chemical and electrical). 
 
 A triple recording containing the connections:
 * <1> chemical synapses: 1->2, 1->3 and 2->1 
