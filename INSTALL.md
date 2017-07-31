@@ -8,14 +8,14 @@ to install the module. You can downloaded the tar.gz file for the directory /PVN
 
 Otherwise, you can simply use the latest version from the repository:
 
-``` pip install --user git+https://github.com/ClaudiaEsp/Dentate.git```
+``` pip install --user git+https://github.com/ClaudiaEsp/inet.git```
 
 Installing with setuptools
 ==========================
 
 You can simply download the lastest version from the repository:
 
-``` git clone https://github.com/ClaudiaEsp/Dentate.git```
+``` git clone https://github.com/ClaudiaEsp/inet.git```
 
 then enter the directory /PVNet and type:
 
@@ -24,7 +24,7 @@ then enter the directory /PVNet and type:
 Installation from the tar.gz file 
 =================================
 
-Download *.tar.gz file from http://github.com/ClaudiaEsp/Dentate/PVNet/dist/
+Download *.tar.gz file from http://github.com/ClaudiaEsp/inet/PVNet/dist/
 
 untar the file and find the directory where setup.py is located. Once there, simply type:
 
