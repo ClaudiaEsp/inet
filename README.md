@@ -29,6 +29,7 @@ mydataset = Dataloader('./data') # load connectivity matrices
 
 Matrices of synaptic connections
 ================================
+![alt text](https://github.com/ClaudiaEsp/images/Guzman_2016.png "Connectivity matrix")
 
 The folder *./data* contains the number and types of connections between
 PV-positive interneurons and granule cells recorded by up to eight 
@@ -50,8 +51,11 @@ would be represented as:
 ```
 [ 0, 1, 3 ]
 [ 1, 0, 2 ]
-[ 0, 0, 0 ]
+[ 0, 2, 0 ]
 ```
+
+Note that electrical synapse will be marked two times in the matrix. The 
+element (2,3) and (3,2), but it will be counted only as one synapse.
 
 Every matrix is stored in as ASCII of the form `<filename>.syn`, where
 filename is coded as `N_date_set.syn` being <N> is the number of PV-positive
