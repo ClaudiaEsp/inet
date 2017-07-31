@@ -41,16 +41,16 @@ nxn size matrices of pre-post connections where every element is,
 * <3> if both synapses together (i.e. chemical and electrical). 
 
 A triple recording containing the connections:
-* <1> chemical synapses: 1->2, 1->3 and 2->1 
-* <2> electrical synapses: 1->2, 2->3 and 3->1 
-* <3> both synapses: 1->2
+* <1> chemical synapses alone: 1->2 and 2->1 
+* <2> electrical synapses alone: 2->3 
+* <3> both synapses: 1->3
 
 would be represented as:
 
 ```
-[ 0, 3, 1 ]
+[ 0, 1, 3 ]
 [ 1, 0, 2 ]
-[ 2, 0, 0 ]
+[ 0, 0, 0 ]
 ```
 
 Every matrix is stored in as ASCII of the form `<filename>.syn`, where
