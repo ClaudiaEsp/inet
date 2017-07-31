@@ -29,7 +29,7 @@ mydataset = Dataloader('./data') # load connectivity matrices
 
 Matrices of synaptic connections
 ================================
-![Guzman et al., 2016](https://github.com/ClaudiaEsp/inet/blob/master/images/Guzman_2016.png "Connectivity matrix"){:height="50%" width="50%"}
+![Guzman et al., 2016](https://github.com/ClaudiaEsp/inet/blob/master/images/Guzman_2016.png =250x250 "Connectivity matrix")
 
 The folder *./data* contains the number and types of connections between
 PV-positive interneurons and granule cells recorded by up to eight 
