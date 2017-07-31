@@ -1,6 +1,6 @@
 # inet 
 
-This is a python module to test connectivity models based on multiple
+A python module to test connectivity models based on multiple
 simulatenous patch-clamp recordings between PV+ interneurons and granule cells in 
 mice.
 
@@ -9,13 +9,23 @@ It is for personal use only.
 Requirements
 ============
 
-* Python (tested 2.7 and 3.5)
-* NumPy (tested. 1.13)
-* Scipy (tested 0.19)
-* terminalTables (tested 3.1.0)
+* Python (tested in 2.7 and 3.5)
+* NumPy (tested in 1.13)
+* Scipy (tested in 0.19)
+* terminaltables (tested in 3.1.0)
 
 How to install it
 =================
+
+`pip install git+https://github.com/ClaudiaEsp/inet.git`
+
+Basic usage
+=================
+In python:
+
+``` from inet import DataLoader
+mydataset = Dataloader('./data') # loads connectivity matrices
+```
 
 `pip install git+https://github.com/ClaudiaEsp/inet.git`
 
