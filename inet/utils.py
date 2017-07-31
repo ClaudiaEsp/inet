@@ -6,10 +6,8 @@ Claudia Espinoza, claudia.espinoza@ist.ac.at
 
 Created:  Sun Jul 30 08:34:28 CEST 2017
 
-A collection of utilities to use with the PVnet module
+A collection of utilities to use with the inet module
 """
-
-from __future__ import division
 
 enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
         6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}

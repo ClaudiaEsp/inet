@@ -1,2 +1,3 @@
 include *.syn
+
 recursive-include data *.syn 
