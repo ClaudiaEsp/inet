@@ -23,7 +23,7 @@ Basic usage
 =================
 In python:
 
-``` 
+```python
 from inet import DataLoader
 mydataset = Dataloader('./data') # loads connectivity matrices
 ```
