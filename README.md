@@ -17,7 +17,7 @@ Requirements
 How to install it
 =================
 
-``` pip install git+https://github.com/ClaudiaEsp/inet.git```
+`pip install git+https://github.com/ClaudiaEsp/inet.git`
 
 Matrices of synaptic connections
 ================================
