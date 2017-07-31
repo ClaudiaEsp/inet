@@ -51,7 +51,7 @@ would be represented as:
 ```
 [ 0, 1, 3 ]
 [ 1, 0, 2 ]
-[ 0, 2, 0 ]
+[ 0, 0, 0 ]
 ```
 
 Note that electrical synapse will be marked two times in the matrix. The 
