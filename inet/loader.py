@@ -143,7 +143,11 @@ class DataLoader(object):
         II_matrix = utils.II_slice(matrix, nPV)
         II_chem_found  = II_matrix[ np.where(II_matrix==1) ].size
         II_elec_found  = II_matrix[ np.where(II_matrix==2) ].size
-        II_both_found = II_matrix[ np.where(II_matrix==3) ].size
+
+        pre,post = np.where(II_matrix==3)
+        II_both_found = II_matrix[ (pre,post) ].size
+        II_both_bid #TODO check number of bidirectional
+
         II_chem_found += II_both_found
         II_elec_found += II_both_found
 
@@ -290,6 +294,12 @@ class DataLoader(object):
             ]
             table = AsciiTable(info)
             print (table.table)
+
+    def __len__(self):
+        """
+        Returns the number of experiments in the data set
+        """
+        return len(self.experiment)
 
 
 
