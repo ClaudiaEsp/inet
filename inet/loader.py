@@ -270,24 +270,23 @@ class DataLoader(object):
             print (table.table)
 
         if show == 'prob':
-
-            PInhibition = (self.II_chem_found + self.II_elec_found)/(self.II_chem_tested + self.II_elec_tested)
             
             info = [
                 ['Connection type', 'Value'],
                 ['PV-PV chemical synapses', self.II_chem_found],
                 ['PV-PV electrical synapses', self.II_elec_found],
                 ['PV-PV both synapses together', self.II_both_found],
-                ['PV-GC synapses', self.IE_found],
-                ['GC-PC synapses', self.EI_found],
-                [' ',' '],
-                ['P(PV-PV) connection', PInhibition],
-                ['P(PV-GC) connection',self.IE_found/self.IE_tested],
-                ['P(GC-PC) connection', self.EI_found/self.EI_tested],
                 [' ',' '],
                 ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
                 ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
                 ['P(PV-PV) both synapses', self.II_both_found/self.II_both_tested],
+                [' ',' '],
+                ['PV-GC chemical synapses', self.IE_found],
+                ['GC-PC chemical synapses', self.EI_found],
+                [' ',' '],
+                ['P(PV-GC) chemical synapse',self.IE_found/self.IE_tested],
+                ['P(GC-PC) chemical synapse', self.EI_found/self.EI_tested],
+                [' ',' '],
             ]
             table = AsciiTable(info)
             print (table.table)
