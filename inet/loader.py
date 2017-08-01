@@ -138,30 +138,26 @@ class DataLoader(object):
         self.__nGC += nGC 
 
         # UPDATE connections 
-        # slice the matrix to get general connection types
-        EI_matrix = utils.EI_slice(matrix, nPV)
-
-        # load connections type
+        # count synapses:slice the matrix to get general connection types
 
         II_matrix = utils.II_slice(matrix, nPV)
         II_chem_found  = II_matrix[ np.where(II_matrix==1) ].size
-        II_chem_found += II_matrix[ np.where(II_matrix==3) ].size
-
         II_elec_found  = II_matrix[ np.where(II_matrix==2) ].size
-        II_elec_found += II_matrix[ np.where(II_matrix==3) ].size
-
         II_both_found = II_matrix[ np.where(II_matrix==3) ].size
+        II_chem_found += II_both_found
+        II_elec_found += II_both_found
+
         II_chem_tested = nPV * (nPV - 1)
         II_elec_tested = int(II_chem_tested/2)
         II_both_tested = II_elec_tested 
 
         EI_matrix = utils.EI_slice(matrix, nPV)
-        EI_tested = nGC * nPV
         EI_found = np.count_nonzero(EI_matrix)
+        EI_tested = nGC * nPV
 
         IE_matrix = utils.IE_slice(matrix, nPV)
-        IE_tested = nPV * nGC
         IE_found = np.count_nonzero(IE_matrix)
+        IE_tested = nPV * nGC
 
         mydict = utils.connection()
         mydict['II_chem']['found']  = II_chem_found
@@ -291,7 +287,7 @@ class DataLoader(object):
                 [' ',' '],
                 ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
                 ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
-                ['P(PV-PV) both synapse', self.II_both_found/self.II_both_tested],
+                ['P(PV-PV) both synapses', self.II_both_found/self.II_both_tested],
             ]
             table = AsciiTable(info)
             print (table.table)
