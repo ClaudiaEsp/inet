@@ -23,8 +23,8 @@ import numpy as np
 
 from terminaltables import AsciiTable
 
-import utils
-from utils import enum
+import inet.utils as utils
+from inet.utils import enum
 
 class DataLoader(object):
     """
