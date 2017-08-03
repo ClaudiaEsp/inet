@@ -68,3 +68,46 @@ def connection():
     myconnection['IE'] =   {'found':0, 'tested':0}
 
     return( myconnection )
+
+class MotifCounter(dict):
+    """
+    Create an extended dictionary with the number of 
+    connections found and tested for every the following types 
+    of connection: 
+
+    ii_chem : total chemical synapse between inhibitory neurons
+    ii_elec : total electrical synapses between inhibitory neurons
+    ii_both : connection containing both chemical and electrical synapse
+
+    ei : total chemical synapses between excitatory and inhibitory neuron
+    ie : total chemcial synapses between inhibitory and excitatory neuron
+
+    For example
+    >>> myconnections = connections()
+    >>> myconnections['ii_chem']
+    >>> {'found': 0, 'tested':0}
+    """
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs in the matrix given
+        """
+
+        super(MotifCounter, self).__init__() # subclass python dict
+        keylist = ['ei', 'ie', 'ii_chem', 'ii_elec', 'ii_both']
+
+        for key in keylist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+    def __call__(self, matrix = None):
+        """
+        """
+        return MotifCounter(matrix) # return a new Connection object
+
+    def __add__(self, MotifCounterObj):
+        """
+
+        """
+        
+
+connections = MotifCounter() # create an object ready to use

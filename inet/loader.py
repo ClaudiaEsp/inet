@@ -146,7 +146,7 @@ class DataLoader(object):
 
         pre,post = np.where(II_matrix==3)
         II_both_found = II_matrix[ (pre,post) ].size
-        II_both_bid #TODO check number of bidirectional
+        #II_both_bid #TODO check number of bidirectional
 
         II_chem_found += II_both_found
         II_elec_found += II_both_found
