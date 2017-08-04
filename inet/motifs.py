@@ -30,6 +30,7 @@ class MotifCounter(dict):
         """
         """
         # subclass python dictionary without any key
+        # key will be added in subclasses later 
         super(MotifCounter, self).__init__(*argv, **kargw)
 
     def __call__(self, matrix = None):
@@ -59,12 +60,14 @@ class IIMotifCounter(MotifCounter):
     
     """
     motiflist = ['ii_chem', 'ii_elec', 'ii_ce1', 'ii_ce2']
-    _MOTIF_TYPES = dict.fromkeys(motiflist, {'tested':0, 'found':0})
 
     def __init__(self, matrix = None):
         """
         """
-        super(IIMotifCounter, self).__init__(self._MOTIF_TYPES)
+        super(IIMotifCounter, self).__init__()
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
         if matrix is not None:
             self.read_matrix(matrix)
 
@@ -79,7 +82,6 @@ class IIMotifCounter(MotifCounter):
         II_chem_found  = matrix[ np.where(II_matrix==1) ].size
         II_elec_found  = matrix[ np.where(II_matrix==2) ].size
         
-
     
 class EIMotifCounter(MotifCounter):
     """
@@ -109,4 +111,4 @@ class EIMotifCounter(MotifCounter):
 
 # ready-to-use objects
 motifcounter = MotifCounter()
-iicounter = IIMotifCounter()
+iicounter    = IIMotifCounter()
