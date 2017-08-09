@@ -93,18 +93,17 @@ class IIMotifCounter(MotifCounter):
 
         II_chem = matrix[ np.where(matrix==1) ].size
         II_elec = matrix[ np.where(matrix==2) ].size
-        II_both = matrix [ np.where(matrix == 3)].size
-        II_chem += II_both
-        II_elec += II_both
+        II_ce1 = matrix [ np.where(matrix == 3)].size
+        II_chem += II_ce1
+        II_elec += II_ce1
         
         # count unidirectional chemical synapses with gap junctions (ce1)
         # or bidirectional chemical synapses with gap junctions (ce2)
-        II_ce1, II_ce2 = 0, 0
+        II_ce2 = 0
         pre,post = np.where(matrix==3)
-        if matrix[ (post,pre) ] == 0: # unidirectional chemical syn
-            II_ce1 +=1
-        elif matrix[ (post,pre)] ==1: # bidirectional chemical syn
-            II_ce2 +=1
+        if matrix[ (post,pre) ] == 1:
+            II_ce2 +=1 # add bidirectional chemical to electrical
+            II_ce1 +=1 # add another unidirectional to electrial
 
         # possible connections
         n_chem = n*(n-1)

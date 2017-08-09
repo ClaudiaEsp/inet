@@ -31,6 +31,14 @@ class TestMotifs(unittest.TestCase):
         self.assertEquals(1, self.a['ii_elec']['found'])
         self.assertEquals(1, self.b['ii_elec']['found'])
 
+    def test_count_electrical_and_one_chemical(self):
+        self.assertEquals(1, self.a['ii_ce1']['found'])
+        self.assertEquals(2, self.b['ii_ce1']['found'])
+
+    def test_count_electrical_and_two_chemical(self):
+        self.assertEquals(0, self.a['ii_ce2']['found'])
+        self.assertEquals(1, self.b['ii_ce2']['found'])
+
 
 
 if __name__ == '__main__':
