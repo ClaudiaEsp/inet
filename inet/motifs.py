@@ -40,11 +40,7 @@ class MotifCounter(dict):
         """
         return MotifCounter(matrix) # return a new Connection object
 
-    def __add__(self, MotifCounterObj):
-        """
-        addition between MotifCounter objects
-        """
-        pass
+            
 
     def __radd__(self, MotifCounterObj):
         pass
@@ -64,6 +60,14 @@ class IIMotifCounter(MotifCounter):
 
     def __init__(self, matrix = None):
         """
+        Counts connectivity motifs between inhibitory neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
         """
         super(IIMotifCounter, self).__init__()
 
@@ -79,6 +83,19 @@ class IIMotifCounter(MotifCounter):
         """
         return IIMotifCounter(matrix)
         
+    def __add__(self, MotifCounterObj):
+        """
+        addition between MotifCounter objects
+        """
+        mysum = IIMotifCounter()
+        for key in self.keys():
+            found = self[key]['found'] + MotifCounterObj[key]['found']
+            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+            mysum[key]['found'] = found 
+            mysum[key]['tested'] = tested 
+
+        return(mysum)
+
     def read_matrix(self, matrix):
         """
         Counts the motifs in the matrix
@@ -103,7 +120,7 @@ class IIMotifCounter(MotifCounter):
         pre,post = np.where(matrix==3)
         if matrix[ (post,pre) ] == 1:
             II_ce2 +=1 # add bidirectional chemical to electrical
-            II_ce1 +=1 # add another unidirectional to electrial
+            II_ce1 +=1 # add another unidirectional to electrical
 
         # possible connections
         n_chem = n*(n-1)
@@ -130,6 +147,67 @@ class EIMotifCounter(MotifCounter):
 
     def __init__(self, matrix = None):
         """
+        Counts connectivity motifs between inhibitory and excitatory
+        neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
+        """
+        super(EIMotifCounter, self).__init__()
+        
+        if matrix is not None:
+            self.read_matrix(matrix)
+        else:
+            for key in self.motiflist:
+                self.__setitem__(key, {'tested':0, 'found':0})
+
+    def __call__(self, matrix = None):
+        """
+        Returns a EIMotifCounter object with counts of motifs
+        """
+        return EIMotifCounter(matrix)
+
+    def __add__(self, MotifCounterObj):
+        """
+        addition between MotifCounter objects
+        """
+        mysum = EIMotifCounter()
+        for key in self.keys():
+            found = self[key]['found'] + MotifCounterObj[key]['found']
+            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+            mysum[key]['found'] = found 
+            mysum[key]['tested'] = tested 
+
+        return(mysum)
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        ecell, icell = matrix.shape
+
+        EI_found = np.count_nonzero(matrix)
+        EI_tested = ecell * icell # possible EI connections
+
+        self.__setitem__('ei', {'tested':EI_tested, 'found':EI_found})
+
+class IEMotifCounter(MotifCounter):
+    """
+    Create a MotifCounter object with the the number of 
+    connections found and tested between exfor the following connection 
+    types:
+
+    ie : a chemical synapse between excitatory and inhibitory neurons
+    """
+    motiflist = ['ie']
+    _MOTIF_TYPES = dict.fromkeys(motiflist, {'tested':0, 'found':0})
+
+    def __init__(self, matrix = None):
+        """
         Counts connectivity motifs between excitatory and inhibitory
         neurons 
         
@@ -140,9 +218,47 @@ class EIMotifCounter(MotifCounter):
             excitatory neurons (pre) and inhibitory neurons (post).
         
         """
-        # subclass MotifCounter 
-        super(EIMotifCounter, self).__init__(self._MOTIF_TYPES)
+        super(IEMotifCounter, self).__init__()
+        
+        if matrix is not None:
+            self.read_matrix(matrix)
+        else:
+            for key in self.motiflist:
+                self.__setitem__(key, {'tested':0, 'found':0})
+
+    def __call__(self, matrix = None):
+        """
+        Returns a EIMotifCounter object with counts of motifs
+        """
+        return IEMotifCounter(matrix)
+
+    def __add__(self, MotifCounterObj):
+        """
+        addition between MotifCounter objects
+        """
+        mysum = IEMotifCounter()
+        for key in self.keys():
+            found = self[key]['found'] + MotifCounterObj[key]['found']
+            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+            mysum[key]['found'] = found 
+            mysum[key]['tested'] = tested 
+
+        return(mysum)
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        ecell, icell = matrix.shape
+
+        IE_found = np.count_nonzero(matrix)
+        IE_tested = ecell * icell # possible EI connections
+
+        self.__setitem__('ie', {'tested':IE_tested, 'found':IE_found})
+
 
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
+eicounter    = EIMotifCounter()
+iecounter    = IEMotifCounter()

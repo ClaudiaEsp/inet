@@ -26,6 +26,7 @@ class TestMotifs(unittest.TestCase):
 
     def test_count_chemical_syn(self):
         self.assertEquals(1, self.a['ii_chem']['found'])
+        self.assertEquals(2, self.a['ii_chem']['found'])
 
     def test_count_electrical_syn(self):
         self.assertEquals(1, self.a['ii_elec']['found'])
