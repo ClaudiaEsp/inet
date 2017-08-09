@@ -40,6 +40,26 @@ class MotifCounter(dict):
         """
         return MotifCounter(matrix) # return a new Connection object
 
+    def __add__(self, MotifCounter):
+        """
+        addition between two MotifCounter objects creates a new object
+        with the intersection of the respective keys and the sum of
+        the two objects that have common keys
+        """
+        common = set(self.motiflist).intersection(MotifCounter.motiflist)
+        motiflist = list(common)
+        mysum = MotifCounter(motiflist) 
+
+        for key in self.keys():
+            found = self[key]['found'] + MotifCounterObj[key]['found']
+            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+            mysum[key]['found'] = found 
+            mysum[key]['tested'] = tested 
+
+        return(mysum)
+        
+        
+        
             
 
     def __radd__(self, MotifCounterObj):
@@ -143,7 +163,6 @@ class EIMotifCounter(MotifCounter):
     ei : a chemical synapse between excitatory and inhibitory neurons
     """
     motiflist = ['ei']
-    _MOTIF_TYPES = dict.fromkeys(motiflist, {'tested':0, 'found':0})
 
     def __init__(self, matrix = None):
         """
@@ -170,19 +189,6 @@ class EIMotifCounter(MotifCounter):
         Returns a EIMotifCounter object with counts of motifs
         """
         return EIMotifCounter(matrix)
-
-    def __add__(self, MotifCounterObj):
-        """
-        addition between MotifCounter objects
-        """
-        mysum = EIMotifCounter()
-        for key in self.keys():
-            found = self[key]['found'] + MotifCounterObj[key]['found']
-            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-            mysum[key]['found'] = found 
-            mysum[key]['tested'] = tested 
-
-        return(mysum)
 
     def read_matrix(self, matrix):
         """
@@ -231,19 +237,6 @@ class IEMotifCounter(MotifCounter):
         Returns a EIMotifCounter object with counts of motifs
         """
         return IEMotifCounter(matrix)
-
-    def __add__(self, MotifCounterObj):
-        """
-        addition between MotifCounter objects
-        """
-        mysum = IEMotifCounter()
-        for key in self.keys():
-            found = self[key]['found'] + MotifCounterObj[key]['found']
-            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-            mysum[key]['found'] = found 
-            mysum[key]['tested'] = tested 
-
-        return(mysum)
 
     def read_matrix(self, matrix):
         """

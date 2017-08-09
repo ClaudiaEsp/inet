@@ -25,6 +25,7 @@ from terminaltables import AsciiTable
 
 import inet.utils as utils
 from inet.utils import enum
+from motifs import iicounter, eicounter, iecounter
 
 class DataLoader(object):
     """
@@ -141,27 +142,8 @@ class DataLoader(object):
         # count synapses:slice the matrix to get general connection types
 
         II_matrix = utils.II_slice(matrix, nPV)
-        II_chem_found  = II_matrix[ np.where(II_matrix==1) ].size
-        II_elec_found  = II_matrix[ np.where(II_matrix==2) ].size
-
-        pre,post = np.where(II_matrix==3)
-        II_both_found = II_matrix[ (pre,post) ].size
-        #II_both_bid #TODO check number of bidirectional
-
-        II_chem_found += II_both_found
-        II_elec_found += II_both_found
-
-        II_chem_tested = nPV * (nPV - 1)
-        II_elec_tested = int(II_chem_tested/2)
-        II_both_tested = II_elec_tested 
-
         EI_matrix = utils.EI_slice(matrix, nPV)
-        EI_found = np.count_nonzero(EI_matrix)
-        EI_tested = nGC * nPV
-
         IE_matrix = utils.IE_slice(matrix, nPV)
-        IE_found = np.count_nonzero(IE_matrix)
-        IE_tested = nPV * nGC
 
         mydict = utils.connection()
         mydict['II_chem']['found']  = II_chem_found
