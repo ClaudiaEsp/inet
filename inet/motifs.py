@@ -10,6 +10,7 @@ Contains classes to quantifiy and generate connectivity models based
 on recording synapses between principal cells and interneurons recorded 
 with a simultaneous whole-cell patch clamp recording configuration
 """
+import numpy as np
 
 class MotifCounter(dict):
     """
@@ -65,22 +66,56 @@ class IIMotifCounter(MotifCounter):
         """
         """
         super(IIMotifCounter, self).__init__()
-        for key in self.motiflist:
-            self.__setitem__(key, {'tested':0, 'found':0})
 
         if matrix is not None:
             self.read_matrix(matrix)
+        else:
+            for key in self.motiflist:
+                self.__setitem__(key, {'tested':0, 'found':0})
 
     def __call__(self, matrix = None):
         """
+        Returns a IIMotifCounter object with counts of motifs
         """
         return IIMotifCounter(matrix)
         
     def read_matrix(self, matrix):
         """
+        Counts the motifs in the matrix
         """
-        II_chem_found  = matrix[ np.where(II_matrix==1) ].size
-        II_elec_found  = matrix[ np.where(II_matrix==2) ].size
+        try:
+            if matrix.shape[0] != matrix.shape[1]:
+                raise IOError("matrix must be a square matrix!")
+        except IOError:
+            raise
+
+        n = matrix.shape[0] # number of presynaptic neurons
+
+        II_chem = matrix[ np.where(matrix==1) ].size
+        II_elec = matrix[ np.where(matrix==2) ].size
+        II_both = matrix [ np.where(matrix == 3)].size
+        II_chem += II_both
+        II_elec += II_both
+        
+        # count unidirectional chemical synapses with gap junctions (ce1)
+        # or bidirectional chemical synapses with gap junctions (ce2)
+        II_ce1, II_ce2 = 0, 0
+        pre,post = np.where(matrix==3)
+        if matrix[ (post,pre) ] == 0: # unidirectional chemical syn
+            II_ce1 +=1
+        elif matrix[ (post,pre)] ==1: # bidirectional chemical syn
+            II_ce2 +=1
+
+        # possible connections
+        n_chem = n*(n-1)
+        n_elec = n*(n-1)/2
+        n_ce1 = n_elec*2
+        n_ce2 = n_elec
+        
+        self.__setitem__('ii_chem', {'tested':n_chem, 'found':II_chem})
+        self.__setitem__('ii_elec', {'tested':n_elec, 'found':II_elec})
+        self.__setitem__('ii_ce1' , {'tested':n_ce1 , 'found':II_ce1 })
+        self.__setitem__('ii_ce2' , {'tested':n_ce2 , 'found':II_ce2 })
         
     
 class EIMotifCounter(MotifCounter):
