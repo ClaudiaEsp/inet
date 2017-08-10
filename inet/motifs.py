@@ -20,48 +20,46 @@ class MotifCounter(dict):
     to perform basic arithmetic operations between objects (like adition
     or sum)
 
-    For example
-    >>> mymotifs = MotifCounter() #extended dictionary
-    >>> mymotifs['ii_chem']
-    >>> {'found': 0, 'tested':0}
-    >>> mymotifs['ii_chem']
+    Example
+    -------
+    >>> mymotifs = MotifCounter() #extended dictionary class
     """
-
     def __init__(self, *argv, **kargw):
         """
+        Create an extended dictionay with values and keys as arguments
+        this method will be overwritten in daugther motif classes
         """
         # subclass python dictionary without any key
         # key will be added in subclasses later 
         super(MotifCounter, self).__init__(*argv, **kargw)
 
-    def __call__(self, matrix = None):
+    def __call__(self):
         """
-        Returns a MotifCounter object
+        Returns a new instance of its own class 
         """
-        return MotifCounter(matrix) # return a new Connection object
+        return MotifCounter() 
 
-    def __add__(self, MotifCounter):
+    def __add__(self, MotifCounterObj):
         """
         addition between two MotifCounter objects creates a new object
         with the intersection of the respective keys and the sum of
-        the two objects that have common keys
+        the two objects that have common keys.
         """
-        common = set(self.motiflist).intersection(MotifCounter.motiflist)
-        motiflist = list(common)
-        mysum = MotifCounter(motiflist) 
+        common = set(self.motiflist).intersection(MotifCounterObj.motiflist)
+        commonkeys = list(common)
+        mysum = MotifCounter.fromkeys(commonkeys) 
 
-        for key in self.keys():
-            found = self[key]['found'] + MotifCounterObj[key]['found']
+        # first, add elements from common keys
+        for key in commonkeys:
+            found =  self[key]['found']  + MotifCounterObj[key]['found']
             tested = self[key]['tested'] + MotifCounterObj[key]['tested']
             mysum[key]['found'] = found 
             mysum[key]['tested'] = tested 
 
+        # second, add elements from different keys
+
         return(mysum)
         
-        
-        
-            
-
     def __radd__(self, MotifCounterObj):
         pass
 
@@ -91,28 +89,30 @@ class IIMotifCounter(MotifCounter):
         """
         super(IIMotifCounter, self).__init__()
 
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
         if matrix is not None:
-            self.read_matrix(matrix)
-        else:
-            for key in self.motiflist:
-                self.__setitem__(key, {'tested':0, 'found':0})
+            self.read_matrix(matrix) # requires previous creation of keys
 
     def __call__(self, matrix = None):
         """
         Returns a IIMotifCounter object with counts of motifs
         """
-        return IIMotifCounter(matrix)
+        return IIMotifCounter(matrix) # will count motifs
         
     def __add__(self, MotifCounterObj):
         """
         addition between MotifCounter objects
         """
-        mysum = IIMotifCounter()
-        for key in self.keys():
-            found = self[key]['found'] + MotifCounterObj[key]['found']
-            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-            mysum[key]['found'] = found 
-            mysum[key]['tested'] = tested 
+        if isinstance(MotifCounterObj, IIMotifCounter):
+            mysum = IIMotifCounter()
+            for key in self.keys():
+                found =  self[key]['found']  + MotifCounterObj[key]['found']
+                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+                mysum[key]['found'] = found 
+                mysum[key]['tested'] = tested 
 
         return(mysum)
 
@@ -130,7 +130,7 @@ class IIMotifCounter(MotifCounter):
 
         II_chem = matrix[ np.where(matrix==1) ].size
         II_elec = matrix[ np.where(matrix==2) ].size
-        II_ce1 = matrix [ np.where(matrix == 3)].size
+        II_ce1 = matrix [ np.where(matrix==3)].size
         II_chem += II_ce1
         II_elec += II_ce1
         
@@ -178,17 +178,32 @@ class EIMotifCounter(MotifCounter):
         """
         super(EIMotifCounter, self).__init__()
         
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
         if matrix is not None:
-            self.read_matrix(matrix)
-        else:
-            for key in self.motiflist:
-                self.__setitem__(key, {'tested':0, 'found':0})
+            self.read_matrix(matrix) # requires previous creation of keys
 
     def __call__(self, matrix = None):
         """
         Returns a EIMotifCounter object with counts of motifs
         """
-        return EIMotifCounter(matrix)
+        return EIMotifCounter(matrix) # will count motifs
+
+    def __add__(self, MotifCounterObj):
+        """
+        adition between MotifCounter objects
+        """
+        if isinstance(MotifCounterObj, EIMotifCounter):
+            mysum = EIMotifCounter()
+            for key in self.keys():
+                found =  self[key]['found']  + MotifCounterObj[key]['found']
+                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+                mysum[key]['found'] = found 
+                mysum[key]['tested'] = tested 
+
+        return(mysum)
 
     def read_matrix(self, matrix):
         """
@@ -210,7 +225,6 @@ class IEMotifCounter(MotifCounter):
     ie : a chemical synapse between excitatory and inhibitory neurons
     """
     motiflist = ['ie']
-    _MOTIF_TYPES = dict.fromkeys(motiflist, {'tested':0, 'found':0})
 
     def __init__(self, matrix = None):
         """
@@ -226,17 +240,33 @@ class IEMotifCounter(MotifCounter):
         """
         super(IEMotifCounter, self).__init__()
         
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
         if matrix is not None:
-            self.read_matrix(matrix)
-        else:
-            for key in self.motiflist:
-                self.__setitem__(key, {'tested':0, 'found':0})
+            self.read_matrix(matrix) # requires previous creation of keys
 
     def __call__(self, matrix = None):
         """
         Returns a EIMotifCounter object with counts of motifs
         """
-        return IEMotifCounter(matrix)
+
+        return IEMotifCounter(matrix) # will count motifs
+
+    def __add__(self, MotifCounterObj):
+        """
+        adition between MotifCounter objects
+        """
+        if isinstance(MotifCounterObj, IEMotifCounter):
+            mysum = IEMotifCounter()
+            for key in self.keys():
+                found =  self[key]['found']  + MotifCounterObj[key]['found']
+                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+                mysum[key]['found'] = found 
+                mysum[key]['tested'] = tested 
+
+        return(mysum)
 
     def read_matrix(self, matrix):
         """
