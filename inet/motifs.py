@@ -22,7 +22,8 @@ class MotifCounter(dict):
 
     Example
     -------
-    >>> mymotifs = MotifCounter() #extended dictionary class
+    >>> mymotifs = MotifCounter(data = 1) #extended dictionary class
+    >>> {data: 1}
     """
     def __init__(self, *argv, **kargw):
         """
@@ -30,14 +31,14 @@ class MotifCounter(dict):
         this method will be overwritten in daugther motif classes
         """
         # subclass python dictionary without any key
-        # key will be added in subclasses later 
+        # key with motifs will be added in subclasses construction later 
         super(MotifCounter, self).__init__(*argv, **kargw)
 
-    def __call__(self):
+    def __call__(self, *argv, **kargw):
         """
-        Returns a new instance of its own class 
+        Returns a new instance of the entended dictionary class 
         """
-        return MotifCounter() 
+        return MotifCounter(*argv, **kargw) 
 
     def __add__(self, MotifCounterObj):
         """
@@ -45,20 +46,38 @@ class MotifCounter(dict):
         with the intersection of the respective keys and the sum of
         the two objects that have common keys.
         """
-        common = set(self.motiflist).intersection(MotifCounterObj.motiflist)
-        commonkeys = list(common)
-        mysum = MotifCounter.fromkeys(commonkeys) 
-
-        # first, add elements from common keys
-        for key in commonkeys:
-            found =  self[key]['found']  + MotifCounterObj[key]['found']
-            tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-            mysum[key]['found'] = found 
-            mysum[key]['tested'] = tested 
-
-        # second, add elements from different keys
+        if isinstance(MotifCounterObj, self.__class__): # same type
+            mysum = MotifCounterObj() # return the daugther class
+            for key in self.keys():
+                found =  self[key]['found']  + MotifCounterObj[key]['found']
+                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+                mysum[key]['found'] = found 
+                mysum[key]['tested'] = tested 
+        
+        else: # different types
+            mysum = MotifCounter()
+            common = set(self.keys()).intersection(MotifCounterObj.keys())
+            commonkeys = list(common)
+            # return generic class
+            if commonkeys:
+                # first, add elements from common keys
+                for key in commonkeys:
+                    found =  self[key]['found']  + MotifCounterObj[key]['found']
+                    tested = self[key]['tested'] + MotifCounterObj[key]['tested']
+                    mysum[key]['found'] = found 
+                    mysum[key]['tested'] = tested 
+            # second, add elements from different keys
+            mysum.update(self)
+            mysum.update(MotifCounterObj)
 
         return(mysum)
+            
+        """
+        mysum = MotifCounter.fromkeys(commonkeys) 
+
+
+        return(mysum)
+        """
         
     def __radd__(self, MotifCounterObj):
         pass
@@ -191,20 +210,6 @@ class EIMotifCounter(MotifCounter):
         """
         return EIMotifCounter(matrix) # will count motifs
 
-    def __add__(self, MotifCounterObj):
-        """
-        adition between MotifCounter objects
-        """
-        if isinstance(MotifCounterObj, EIMotifCounter):
-            mysum = EIMotifCounter()
-            for key in self.keys():
-                found =  self[key]['found']  + MotifCounterObj[key]['found']
-                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                mysum[key]['found'] = found 
-                mysum[key]['tested'] = tested 
-
-        return(mysum)
-
     def read_matrix(self, matrix):
         """
         Counts the motifs in the matrix
@@ -253,20 +258,6 @@ class IEMotifCounter(MotifCounter):
         """
 
         return IEMotifCounter(matrix) # will count motifs
-
-    def __add__(self, MotifCounterObj):
-        """
-        adition between MotifCounter objects
-        """
-        if isinstance(MotifCounterObj, IEMotifCounter):
-            mysum = IEMotifCounter()
-            for key in self.keys():
-                found =  self[key]['found']  + MotifCounterObj[key]['found']
-                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                mysum[key]['found'] = found 
-                mysum[key]['tested'] = tested 
-
-        return(mysum)
 
     def read_matrix(self, matrix):
         """
