@@ -46,36 +46,34 @@ class MotifCounter(dict):
         with the intersection of the respective keys and the sum of
         the two objects that have common keys.
         """
-        # if same object type and not daughter
-        daughter1 =  issubclass(MotifCounterObj.__class__, self.__class__)
-        daughter2 =  issubclass(self.__class__, MotifCounterObj.__class__)
-        daughter = daughter1 and daughter2
 
-        if isinstance(MotifCounterObj, self.__class__):
+        mysum = MotifCounter() # casting the result to MotifCounter
 
-            mysum = MotifCounterObj() # return the daugther class
-            for key in self.keys():
+        # 1) add common keys
+        # the same MotifCounter object may have different keys!!!
+        common = set(self.keys()).intersection(MotifCounterObj.keys())
+        commonkeys = list(common)
+        if commonkeys: # if not empty
+
+            for key in commonkeys:
                 found =  self[key]['found']  + MotifCounterObj[key]['found']
                 tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                mysum[key]['found'] = found 
-                mysum[key]['tested'] = tested 
+                mysum.__setitem__(key , {'tested':tested, 'found':found})
+       
+        # 2) add different keys 
+        diff1 = set(self.keys()).difference(mysum.keys()) 
+        diff1keys = list(diff1)
 
+        if diff1keys: # if not empty
+            for key in diff1keys:
+                mysum.__setitem__(key, self[key])
 
-        else: # different types
-            mysum = MotifCounter()
-            common = set(self.keys()).intersection(MotifCounterObj.keys())
-            commonkeys = list(common)
-            # return generic class
-            if commonkeys:
-                # first, add elements from common keys
-                for key in commonkeys:
-                    found =  self[key]['found']  + MotifCounterObj[key]['found']
-                    tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                    mysum.__setitem__(key, {'tested':tested, 'found':found})
+        diff2 = set(MotifCounterObj.keys()).difference(mysum.keys()) 
+        diff2keys = list(diff2)
 
-            # second, add elements from different keys
-            mysum.update(self)
-            mysum.update(MotifCounterObj)
+        if diff2keys: # if not empty
+            for key in diff2keys:
+                mysum.__setitem__(key, MotifCounterObj[key])
 
         return(mysum)
         

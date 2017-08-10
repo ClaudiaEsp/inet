@@ -153,15 +153,74 @@ class TestIEMotifCounter(unittest.TestCase):
         self.assertEquals(8, mysum['ie']['tested'])
         
 class TestAddingObjects(unittest.TestCase):
+    """
+    Unittesting for adding two different MotifObject types
+    """
+     
+    def setUp(self):
+        ii = iicounter(np.array(([0,3],[1,0])))
+        ie = iecounter(np.ones((2,2)))
+        ei = eicounter(np.ones((2,2)))
+
+        self.ii_sum = ii + ii
+        self.ie_sum = ie + ie
+        self.ei_sum = ei + ei
+
+        self.ie_ii = ie + ii
+        self.ii_ie = ii + ei
+        self.ei_ie = ei + ie
+        self.ie_ei = ie + ei
+
+    def test_add_same_objects(self):
         """
-        Unittesting for adding two different MotifObject types
+        Test the result of summing same  MotifCounter inherited objects
         """
+        # test found
+        self.assertEquals(4, self.ii_sum['ii_chem']['found'])
+        self.assertEquals(2, self.ii_sum['ii_elec']['found'])
+        self.assertEquals(4, self.ii_sum['ii_ce1']['found'])
+        self.assertEquals(2, self.ii_sum['ii_ce2']['found'])
+
+        self.assertEquals(8, self.ei_sum['ei']['found'])
+        self.assertEquals(8, self.ie_sum['ie']['found'])
+
+        # test tested
+        self.assertEquals(4, self.ii_sum['ii_chem']['tested'])
+        self.assertEquals(2, self.ii_sum['ii_elec']['tested'])
+        self.assertEquals(4, self.ii_sum['ii_ce1']['tested'])
+        self.assertEquals(2, self.ii_sum['ii_ce2']['tested'])
+
+        self.assertEquals(8, self.ei_sum['ei']['tested'])
+        self.assertEquals(8, self.ie_sum['ie']['tested'])
+
+    def test_add_diff_objects(self):
+        """
+        Test the result of different  MotifCounter objects
+        will returna a MotifCounter object type
+        """
+        # test found
+        self.assertEquals(2, self.ie_ii['ii_chem']['found'])
+        self.assertEquals(1, self.ie_ii['ii_elec']['found'])
+        self.assertEquals(2, self.ie_ii['ii_ce1']['found'])
+        self.assertEquals(1, self.ie_ii['ii_ce2']['found'])
+
+        self.assertEquals(4, self.ei_ie['ei']['found'])
+        self.assertEquals(4, self.ei_ie['ie']['found'])
         
-        def setUp(self):
-            """
-            """
-            self.ii = iicounter(np.array(([0,3],[1,0])))
-            self.ie = iecounter(np.ones((2,2)))
-            self.ei = iecounter(np.ones((2,2)))
+        self.assertEquals(4, self.ie_ei['ei']['found'])
+        self.assertEquals(4, self.ie_ei['ie']['found'])
+
+        # test tested
+        self.assertEquals(2, self.ie_ii['ii_chem']['tested'])
+        self.assertEquals(1, self.ie_ii['ii_elec']['tested'])
+        self.assertEquals(2, self.ie_ii['ii_ce1']['tested'])
+        self.assertEquals(1, self.ie_ii['ii_ce2']['tested'])
+
+        self.assertEquals(4, self.ei_ie['ei']['tested'])
+        self.assertEquals(4, self.ei_ie['ie']['tested'])
+        
+        self.assertEquals(4, self.ie_ei['ei']['tested'])
+        self.assertEquals(4, self.ie_ei['ie']['tested'])
+
 if __name__ == '__main__':
     unittest.main()
