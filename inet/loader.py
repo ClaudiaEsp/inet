@@ -25,6 +25,8 @@ from terminaltables import AsciiTable
 
 import inet.utils as utils
 from inet.utils import enum
+
+from motifs import motifcounter
 from motifs import iicounter, eicounter, iecounter
 
 class DataLoader(object):
@@ -53,8 +55,8 @@ class DataLoader(object):
         self.__nPV = 0 # total number of recorded PV-positive cells
         self.__nGC = 0 # total number of recorded granule cells
 
-        # all conections are zero at construction
-        self.__connection = utils.connection() 
+        # all conection motifs are zero at construction
+        self.__motif = motifcounter() 
 
         # --- dict attributes -- #
 
@@ -77,9 +79,9 @@ class DataLoader(object):
         for fname in PVsyn:
             mydict = dict()
             mydict['fname'] = fname
-            matrix, connect = self.__loadsyn(fname, int(fname[0]))
+            matrix, motif = self.__loadsyn(fname, int(fname[0]))
             mydict['matrix'] = matrix
-            mydict['connection'] = connect
+            mydict['motif'] = motif 
 
             self.__experiment.append( mydict )
         
@@ -144,63 +146,12 @@ class DataLoader(object):
         EI_matrix = utils.EI_slice(matrix, nPV)
         IE_matrix = utils.IE_slice(matrix, nPV)
 
-        mydict = dict()
-        mydict['II'] = iicounter(II_matrix)
-        mydict['EI'] = eicounter(EI_matrix)
-        mydict['IE'] = iecounter(IE_matrix)
+        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + iecounter(IE_matrix)
 
-        # UPDATE connection
-        self.add_connection(mydict)
+        # UPDATE connection motif
+        self.__motif += mymotif
 
-        return( matrix, mydict )
-
-    def readmatrix(self, filelist):
-        """
-        Read matrices from a list of files that correspond to the 
-        experiments loaded in the dataset.
-
-        Arguments 
-        ---------
-        filelist    -- a list of filenames containing matrices to open
-        """
-        
-        # load all matrices from filelist in data
-        target = list()
-        for filename in filelist:
-            target.append( np.loadtxt(filename, dtype = float) )
-
-        # remove extension and take the last 11 chars
-        flist = [os.path.splitext(i)[0][-11:] for i in filelist]
-
-        # look for index of an experiment containing that filename
-        match = list()
-        for i, fname in enumerate(flist):
-            for o, experiment in enumerate(self.experiment): #
-                if fname in experiment['fname']:
-                    
-                    print(fname, i, o)
-                    match.append(o)
-                    break # if found, 
-        
-        print("list of colected indices",match)
-                    
-        #target[0][np.where(matrix == 1)]
-        
-        mydict = dict()
-        mydict['II_chem'] = 0
-        mydict['II_elec'] = 0
-        mydict['IE'] = 0
-        mydict['EI'] = 0
-
-        for j, idx in enumerate(match):
-            destiny = target[j]
-            dataset = self.experiment[idx]['matrix']
-            data = destiny[ np.where(dataset==1) ].tolist()
-            print(data)
-
-            
-        return( mydict )
-        
+        return( matrix, mymotif )
 
     def stats(self, show):
         """
@@ -241,11 +192,13 @@ class DataLoader(object):
                 ['Connection type', 'Value'],
                 ['PV-PV chemical synapses', self.II_chem_found],
                 ['PV-PV electrical synapses', self.II_elec_found],
-                ['PV-PV both synapses together', self.II_both_found],
+                ['PV-PV one chemical with electrical', self.II_ce1_found],
+                ['PV-PV bidirectional chemical with electrical', self.II_ce2_found],
                 [' ',' '],
                 ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
                 ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
-                ['P(PV-PV) both synapses', self.II_both_found/self.II_both_tested],
+                ['P(PV-PV) one chemical with electrical', self.II_ce1_found/self.II_ce1_tested],
+                ['P(PV-PV) bidirectional chemical with electrical', self.II_ce2_found/self.II_ce2_tested],
                 [' ',' '],
                 ['PV-GC chemical synapses', self.IE_found],
                 ['GC-PC chemical synapses', self.EI_found],
@@ -270,26 +223,29 @@ class DataLoader(object):
     PV = property(lambda self: self.__PV)
     nGC = property(lambda self: self.__nGC)
     nPV = property(lambda self: self.__nPV)
-    connection = property(lambda self: self.__connection)
+    motif = property(lambda self: self.__motif)
     experiment = property(lambda self: self.__experiment)
 
 
     # usefull attributes
-    II_chem_found = property(lambda self: self.connection['II_chem']['found'])
-    II_chem_tested = property(lambda self: self.connection['II_chem']['tested'])
+    II_chem_found = property(lambda self: self.motif['ii_chem']['found'])
+    II_chem_tested = property(lambda self: self.motif['ii_chem']['tested'])
 
-    II_elec_found = property(lambda self: self.connection['II_elec']['found'])
-    II_elec_tested = property(lambda self: self.connection['II_elec']['tested'])
+    II_elec_found = property(lambda self: self.motif['ii_elec']['found'])
+    II_elec_tested = property(lambda self: self.motif['ii_elec']['tested'])
 
-    II_both_found = property(lambda self: self.connection['II_both']['found'])
-    II_both_tested = property(lambda self: self.connection['II_both']['tested'])
+    II_ce1_found = property(lambda self: self.motif['ii_ce1']['found'])
+    II_ce1_tested = property(lambda self: self.motif['ii_ce1']['tested'])
+
+    II_ce2_found = property(lambda self: self.motif['ii_ce2']['found'])
+    II_ce2_tested = property(lambda self: self.motif['ii_ce2']['tested'])
 
     
-    IE_found = property(lambda self: self.connection['IE']['found'])
-    EI_found = property(lambda self: self.connection['EI']['found'])
+    IE_found = property(lambda self: self.motif['ie']['found'])
+    EI_found = property(lambda self: self.motif['ei']['found'])
 
-    EI_tested = property(lambda self: self.connection['EI']['tested'])
-    IE_tested = property(lambda self: self.connection['IE']['tested'])
+    EI_tested = property(lambda self: self.motif['ei']['tested'])
+    IE_tested = property(lambda self: self.motif['ei']['tested'])
 
 
 if __name__ == "__main__":
