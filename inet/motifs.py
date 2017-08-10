@@ -46,14 +46,21 @@ class MotifCounter(dict):
         with the intersection of the respective keys and the sum of
         the two objects that have common keys.
         """
-        if isinstance(MotifCounterObj, self.__class__): # same type
+        # if same object type and not daughter
+        daughter1 =  issubclass(MotifCounterObj.__class__, self.__class__)
+        daughter2 =  issubclass(self.__class__, MotifCounterObj.__class__)
+        daughter = daughter1 and daughter2
+
+        if isinstance(MotifCounterObj, self.__class__):
+
             mysum = MotifCounterObj() # return the daugther class
             for key in self.keys():
                 found =  self[key]['found']  + MotifCounterObj[key]['found']
                 tested = self[key]['tested'] + MotifCounterObj[key]['tested']
                 mysum[key]['found'] = found 
                 mysum[key]['tested'] = tested 
-        
+
+
         else: # different types
             mysum = MotifCounter()
             common = set(self.keys()).intersection(MotifCounterObj.keys())
@@ -64,23 +71,19 @@ class MotifCounter(dict):
                 for key in commonkeys:
                     found =  self[key]['found']  + MotifCounterObj[key]['found']
                     tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                    mysum[key]['found'] = found 
-                    mysum[key]['tested'] = tested 
+                    mysum.__setitem__(key, {'tested':tested, 'found':found})
+
             # second, add elements from different keys
             mysum.update(self)
             mysum.update(MotifCounterObj)
 
         return(mysum)
-            
-        """
-        mysum = MotifCounter.fromkeys(commonkeys) 
-
-
-        return(mysum)
-        """
         
     def __radd__(self, MotifCounterObj):
-        pass
+        """
+        Sum more than two instances of MotifCounterObj
+        """
+        return self.__add__(MotifCounterObj)
 
 class IIMotifCounter(MotifCounter):
     """
@@ -120,20 +123,6 @@ class IIMotifCounter(MotifCounter):
         Returns a IIMotifCounter object with counts of motifs
         """
         return IIMotifCounter(matrix) # will count motifs
-        
-    def __add__(self, MotifCounterObj):
-        """
-        addition between MotifCounter objects
-        """
-        if isinstance(MotifCounterObj, IIMotifCounter):
-            mysum = IIMotifCounter()
-            for key in self.keys():
-                found =  self[key]['found']  + MotifCounterObj[key]['found']
-                tested = self[key]['tested'] + MotifCounterObj[key]['tested']
-                mysum[key]['found'] = found 
-                mysum[key]['tested'] = tested 
-
-        return(mysum)
 
     def read_matrix(self, matrix):
         """

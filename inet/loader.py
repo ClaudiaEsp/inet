@@ -44,7 +44,7 @@ class DataLoader(object):
             If None (default), reads from current directory.
         """
 
-        # --- simple attributes -- #
+        # --- Global loader attributes (from the recording) -- #
 
         # all configurations
         self.__configuration = utils.configuration()
@@ -73,7 +73,6 @@ class DataLoader(object):
             os.chdir(path)
             
         PVsyn = glob.glob("*.syn")
-
 
         for fname in PVsyn:
             mydict = dict()
@@ -145,34 +144,15 @@ class DataLoader(object):
         EI_matrix = utils.EI_slice(matrix, nPV)
         IE_matrix = utils.IE_slice(matrix, nPV)
 
-        mydict = utils.connection()
-        mydict['II_chem']['found']  = II_chem_found
-        mydict['II_chem']['tested'] = II_chem_tested
-        mydict['II_elec']['found']  = II_elec_found
-        mydict['II_elec']['tested']= II_elec_tested
-        mydict['II_both']['found']  = II_both_found
-        mydict['II_both']['tested'] = II_both_tested
-
-        mydict['EI']['found'] = EI_found
-        mydict['EI']['tested'] = EI_tested
-
-        mydict['IE']['found'] = IE_found
-        mydict['IE']['tested'] = IE_tested
+        mydict = dict()
+        mydict['II'] = iicounter(II_matrix)
+        mydict['EI'] = eicounter(EI_matrix)
+        mydict['IE'] = iecounter(IE_matrix)
 
         # UPDATE connection
         self.add_connection(mydict)
 
         return( matrix, mydict )
-
-    def add_connection(self, mydict):
-        """
-        Adds the value of a connection dictionary to the 
-        connection attribute of the object
-        """
-        for key in mydict:
-            self.connection[key]['found']  += mydict[key]['found']
-            self.connection[key]['tested'] += mydict[key]['tested']
-        
 
     def readmatrix(self, filelist):
         """

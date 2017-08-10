@@ -151,6 +151,17 @@ class TestIEMotifCounter(unittest.TestCase):
 
         self.assertEquals(6, mysum['ie']['found'])
         self.assertEquals(8, mysum['ie']['tested'])
-
+        
+class TestAddingObjects(unittest.TestCase):
+        """
+        Unittesting for adding two different MotifObject types
+        """
+        
+        def setUp(self):
+            """
+            """
+            self.ii = iicounter(np.array(([0,3],[1,0])))
+            self.ie = iecounter(np.ones((2,2)))
+            self.ei = iecounter(np.ones((2,2)))
 if __name__ == '__main__':
     unittest.main()
