@@ -1,7 +1,11 @@
+:Authors:
+    Jose Guzman 
+    Claudia Espinoza
+
 Matrices of synaptic connections
 ================================
 
-.. image:: "../images/Guzman_2016.png" 
+.. image:: ../images/Guzman_2016.png
     :width: 40 pt
 
 The folder *./data* contains the number and types of connections between
@@ -9,10 +13,10 @@ PV-positive interneurons and granule cells recorded by up to eight
 simulatenous patch-clamp recordings. Connections are represented as
 nxn size matrices of pre-post connections where every element is,
 
-* <0> if no connection, 
-* <1> if chemical synapse alone, 
-* <2> if electrical synapse alone and 
-* <3> if both synapses together (i.e. chemical and electrical). 
+- <0> if no connection, 
+- <1> if chemical synapse alone, 
+- <2> if electrical synapse alone and 
+- <3> if both synapses together (i.e. chemical and electrical). 
 
 A triple recording containing the connections:
 * <1> chemical synapses alone: 1->2, 2->1 and 3->1
@@ -21,11 +25,11 @@ A triple recording containing the connections:
 
 would be represented as:
 
-```
-[ 0, 1, 3 ]
-[ 1, 0, 2 ]
-[ 1, 0, 0 ]
-```
+..
+
+    [ 0, 1, 3 ]
+    [ 1, 0, 2 ]
+    [ 1, 0, 0 ]
 
 Note that the electrical synapse is only marked once in the matrix (element (2,3) because electrical synapses lack directionality. Thus the matrix above could be also represented as:
 
