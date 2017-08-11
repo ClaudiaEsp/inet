@@ -34,21 +34,21 @@ would be represented as:
     [ 1, 0, 2 ]
     [ 1, 0, 0 ]
 
-Note that the electrical synapse is only marked once in the matrix (element (2,3) because electrical synapses lack directionality. Thus the matrix above could be also represented as:
+Note that the electrical synapse is only marked once in the matrix element (2,3) because electrical synapses lack directionality. Thus the matrix above could be also represented as:
 
 ::
 
     [ 0, 1, 3 ]
-    [ 1, 0, 1 ]
+    [ 1, 0, 0 ]
     [ 1, 2, 0 ]
 
 The element (1,3) is an electrical synapse and a chemical synapse from cell1
-to cell3. Due to the lack of directionality of the electrical synapse, the matrix could be also represented as:
+to cell3. Note that if the chemical synapse is from cell3 to cell1, the matrix will be writen as:
 
 ::
 
     [ 0, 1, 1 ]
-    [ 1, 0, 1 ]
+    [ 1, 0, 0 ]
     [ 3, 2, 0 ]
 
 Matrices are stored as ASCII files of the form ``<filename>.syn``. The 
