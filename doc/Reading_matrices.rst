@@ -26,6 +26,7 @@ A triple recording containing the connections:
 would be represented as:
 
 :: 
+
     [ 0, 1, 3 ]
     [ 1, 0, 2 ]
     [ 1, 0, 0 ]
@@ -33,6 +34,7 @@ would be represented as:
 Note that the electrical synapse is only marked once in the matrix (element (2,3) because electrical synapses lack directionality. Thus the matrix above could be also represented as:
 
 ::
+
     [ 0, 1, 3 ]
     [ 1, 0, 1 ]
     [ 1, 2, 0 ]
