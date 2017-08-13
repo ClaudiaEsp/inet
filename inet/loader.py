@@ -146,17 +146,13 @@ class DataLoader(object):
         EI_matrix = utils.EI_slice(matrix, nPV)
         IE_matrix = utils.IE_slice(matrix, nPV)
 
-<<<<<<< HEAD
         mydict = dict()
         mydict['II'] = iicounter(II_matrix)
         mydict['EI'] = eicounter(EI_matrix)
         mydict['IE'] = iecounter(IE_matrix)
 
         # UPDATE connection
-        #self.add_connection(mydict)
-=======
         mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + iecounter(IE_matrix)
->>>>>>> 290a3359a0460e78499b404f2659dc24e2bea138
 
         # UPDATE connection motif
         self.__motif += mymotif
