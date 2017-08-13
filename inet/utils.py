@@ -8,6 +8,7 @@ Created:  Sun Jul 30 08:34:28 CEST 2017
 
 A collection of utilities to use with the inet module
 """
+import numpy as np
 
 enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
         6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
@@ -41,31 +42,43 @@ def configuration():
         
     return( mydict )
 
-def connection():
+def rand_squarematrix(size, prob):
     """
-    Create a connections dictionary with the number of connections found
-    and tested for every type of connection: 
+    generates a square random matrix with a probability 'prob'
+    of having ones, zero otherwise. It does not take into account
+    the diagonal, which is always zero.
 
-    II_chem : chemical synapse between inhibitory neurons
-    II_elec : electrical synapse between inhibitory neurons
-    II_both : connection containing both chemical and electrical synapse
+    Arguments
+    ---------
+    size : int
+        the size of the square matrix
+    prob : float
+        the probability of having ones.
 
-    EI : synapse between excitatory and inhibitory neuron
-    IE : synapse between inhibitory and excitatory neuron
-
-    For example
-    >>> mydict = connections()
-    >>> mydict['II_chem']['found']
-    >>> # could return a list with the properties of the connections found
-
+    Returns
+    -------
+    a 2D Numpy matrix.
     """
 
-    myconnection = dict()
-    myconnection['II_chem']=  {'found':0, 'tested':0}
-    myconnection['II_elec']=  {'found':0, 'tested':0}
-    myconnection['II_both']=  {'found':0, 'tested':0}
+    n = size
+    nconn = n*(n-1)
+    A = np.zeros((n,n), dtype = int)
 
-    myconnection['EI'] =   {'found':0, 'tested':0}
-    myconnection['IE'] =   {'found':0, 'tested':0}
+    # take all non-diagonal elements
+    x,y = np.where(~np.eye(A.shape[0], dtype=bool))
 
-    return( myconnection )
+    myids = zip(x,y) # list with non-diagonal coord
+
+    mymask =  np.random.rand( nconn )<prob  # True when connection
+
+    my_ones = np.ma.array(range(nconn), mask = ~mymask).compressed()
+    
+    for i in my_ones:
+        coor = myids[i]
+        A[coor] = 1
+    
+    return( A )
+        
+        
+        
+
