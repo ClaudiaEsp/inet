@@ -257,9 +257,60 @@ class IEMotifCounter(MotifCounter):
 
         self.__setitem__('ie', {'tested':IE_tested, 'found':IE_found})
 
+class EEMotifCounter(MotifCounter):
+    """
+    Create a MotifCounter object with the the number of 
+    connections found and tested between exfor the following connection 
+    types:
+
+    ee : a chemical synapse between excitatory neurons
+    """
+    motiflist = ['ee']
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs between excitatory and inhibitory
+        neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
+        """
+        super(EEMotifCounter, self).__init__()
+        
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+        if matrix is not None:
+            self.read_matrix(matrix) # requires previous creation of keys
+
+    def __call__(self, matrix = None):
+        """
+        Returns a EIMotifCounter object with counts of motifs
+        """
+
+        return EEMotifCounter(matrix) # will count motifs
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        ncells = matrix.shape[0]
+
+        EE_found = np.count_nonzero(matrix)
+        EE_tested = ncells * (ncells-1) # possible EE connections
+
+        self.__setitem__('ee', {'tested':EE_tested, 'found':EE_found})
+
+
 
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
 eicounter    = EIMotifCounter()
 iecounter    = IEMotifCounter()
+eecounter    = EEMotifCounter()
