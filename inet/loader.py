@@ -150,7 +150,7 @@ class DataLoader(object):
         mydict['IE'] = iecounter(IE_matrix)
 
         # UPDATE connection
-        self.add_connection(mydict)
+        #self.add_connection(mydict)
 
         return( matrix, mydict )
 
