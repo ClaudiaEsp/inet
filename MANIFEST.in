@@ -1,3 +1,13 @@
-include *.syn
+#=========================================================================
+# MANIFEST.in
+#
+# see https://docs.python.org/2/distutils/sourcedist.html for details
+#
+#=========================================================================
 
-recursive-include data *.syn 
+# include all files in the /data matching *syn
+include data/*.syn
+
+# exclude example directory
+prune Examples
+
