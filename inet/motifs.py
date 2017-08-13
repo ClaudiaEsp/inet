@@ -167,8 +167,9 @@ class EIMotifCounter(MotifCounter):
     types:
 
     ei : a chemical synapse between excitatory and inhibitory neurons
+    ei2: a divergent double chemical synapse between excitatory to inh.
     """
-    motiflist = ['ei']
+    motiflist = ['ei', 'ei2']
 
     def __init__(self, matrix = None):
         """
