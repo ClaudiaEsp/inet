@@ -1,6 +1,6 @@
 ### TODO list 
 
-
+- [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] test P-values for electrical + 2/1 chemical syn
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)
 - [ ] include a plot module for bar and linregress plots 
