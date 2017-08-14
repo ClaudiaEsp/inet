@@ -136,17 +136,21 @@ class IIMotifCounter(MotifCounter):
 
         II_chem = matrix[ np.where(matrix==1) ].size
         II_elec = matrix[ np.where(matrix==2) ].size
-        II_ce1 = matrix [ np.where(matrix==3)].size
+        II_ce1 =  matrix[ np.where(matrix==3) ].size # ** see below
         II_chem += II_ce1
         II_elec += II_ce1
         
         # count unidirectional chemical synapses with gap junctions (ce1)
         # or bidirectional chemical synapses with gap junctions (ce2)
         II_ce2 = 0
-        pre,post = np.where(matrix==3)
-        if matrix[ (post,pre) ] == 1:
-            II_ce2 +=1 # add bidirectional chemical to electrical
-            II_ce1 +=1 # add another unidirectional to electrical
+
+        if II_ce1: # only if there are entries ==3 (see **)
+            pre, post = np.where(matrix==3)
+            mylist = zip(post,pre)
+            for x,y in mylist:
+                if matrix[ x,y ] == 1:
+                    II_ce2 +=1 # add bidirectional chemical to electrical
+                    II_ce1 +=1 # add another unidirectional to electrical
 
         # possible connections
         n_chem = n*(n-1)
@@ -167,8 +171,9 @@ class EIMotifCounter(MotifCounter):
     types:
 
     ei : a chemical synapse between excitatory and inhibitory neurons
+    ei2: a divergent double chemical synapse between excitatory to inh.
     """
-    motiflist = ['ei']
+    motiflist = ['ei', 'ei2']
 
     def __init__(self, matrix = None):
         """
@@ -257,9 +262,60 @@ class IEMotifCounter(MotifCounter):
 
         self.__setitem__('ie', {'tested':IE_tested, 'found':IE_found})
 
+class EEMotifCounter(MotifCounter):
+    """
+    Create a MotifCounter object with the the number of 
+    connections found and tested between exfor the following connection 
+    types:
+
+    ee : a chemical synapse between excitatory neurons
+    """
+    motiflist = ['ee']
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs between excitatory and inhibitory
+        neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
+        """
+        super(EEMotifCounter, self).__init__()
+        
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+        if matrix is not None:
+            self.read_matrix(matrix) # requires previous creation of keys
+
+    def __call__(self, matrix = None):
+        """
+        Returns a EIMotifCounter object with counts of motifs
+        """
+
+        return EEMotifCounter(matrix) # will count motifs
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        ncells = matrix.shape[0]
+
+        EE_found = np.count_nonzero(matrix)
+        EE_tested = ncells * (ncells-1) # possible EE connections
+
+        self.__setitem__('ee', {'tested':EE_tested, 'found':EE_found})
+
+
 
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
 eicounter    = EIMotifCounter()
 iecounter    = IEMotifCounter()
+eecounter    = EEMotifCounter()

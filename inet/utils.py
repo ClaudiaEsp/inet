@@ -8,6 +8,8 @@ Created:  Sun Jul 30 08:34:28 CEST 2017
 
 A collection of utilities to use with the inet module
 """
+import numpy as np
+from itertools import combinations
 
 enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
         6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
@@ -21,6 +23,7 @@ enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets',
 II_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV)]
 IE_slice = lambda matrix, nPV: matrix[:nPV][ :,range(nPV, matrix.shape[0])]
 EI_slice = lambda matrix, nPV: matrix[nPV: ][ :,range(nPV)]
+EE_slice = lambda matrix, nPV: matrix[nPV: ][ :,range(nPV,matrix.shape[0])]
 
 def configuration():
     """
@@ -40,74 +43,75 @@ def configuration():
         
     return( mydict )
 
-def connection():
+def chem_squarematrix(size, prob):
     """
-    Create a connections dictionary with the number of connections found
-    and tested for every type of connection: 
+    generates a square random matrix with a probability 'prob'
+    of having ones, zero otherwise. It does not take into account
+    the diagonal, which is always zero.
 
-    II_chem : chemical synapse between inhibitory neurons
-    II_elec : electrical synapse between inhibitory neurons
-    II_both : connection containing both chemical and electrical synapse
+    Arguments
+    ---------
+    size : int
+        the size of the square matrix
+    prob : float
+        the probability of having ones.
 
-    EI : synapse between excitatory and inhibitory neuron
-    IE : synapse between inhibitory and excitatory neuron
-
-    For example
-    >>> mydict = connections()
-    >>> mydict['II_chem']['found']
-    >>> # could return a list with the properties of the connections found
-
-    """
-
-    myconnection = dict()
-    myconnection['II_chem']=  {'found':0, 'tested':0}
-    myconnection['II_elec']=  {'found':0, 'tested':0}
-    myconnection['II_both']=  {'found':0, 'tested':0}
-
-    myconnection['EI'] =   {'found':0, 'tested':0}
-    myconnection['IE'] =   {'found':0, 'tested':0}
-
-    return( myconnection )
-
-class MotifCounter(dict):
-    """
-    Create an extended dictionary with the number of 
-    connections found and tested for every the following types 
-    of connection: 
-
-    ii_chem : total chemical synapse between inhibitory neurons
-    ii_elec : total electrical synapses between inhibitory neurons
-    ii_both : connection containing both chemical and electrical synapse
-
-    ei : total chemical synapses between excitatory and inhibitory neuron
-    ie : total chemcial synapses between inhibitory and excitatory neuron
-
-    For example
-    >>> myconnections = connections()
-    >>> myconnections['ii_chem']
-    >>> {'found': 0, 'tested':0}
+    Returns
+    -------
+    a 2D Numpy matrix.
     """
 
-    def __init__(self, matrix = None):
-        """
-        Counts connectivity motifs in the matrix given
-        """
+    n = size
+    ntested = n*(n-1)
+    A = np.zeros((n,n), dtype = int)
 
-        super(MotifCounter, self).__init__() # subclass python dict
-        keylist = ['ei', 'ie', 'ii_chem', 'ii_elec', 'ii_both']
+    # take all non-diagonal elements
+    x,y = np.where(~np.eye(A.shape[0], dtype = bool))
 
-        for key in keylist:
-            self.__setitem__(key, {'tested':0, 'found':0})
+    myids = zip(x,y) # list with non-diagonal coord
 
-    def __call__(self, matrix = None):
-        """
-        """
-        return MotifCounter(matrix) # return a new Connection object
+    mymask =  np.random.rand( ntested )<prob  # True when connection
 
-    def __add__(self, MotifCounterObj):
-        """
-
-        """
+    my_ones = np.ma.array(range(ntested), mask = ~mymask).compressed()
+    
+    for i in my_ones:
+        coor = myids[i]
+        A[coor] = 1
+    
+    return( A )
         
 
-connections = MotifCounter() # create an object ready to use
+def elec_squarematrix(size, prob):
+    """
+    generates a square random matrix with a probability 'prob'
+    of having values ==2, zero otherwise. It does not take into account
+    the diagonal, which is always zero.
+
+    Arguments
+    ---------
+    size : int
+        the size of the square matrix
+    prob : float
+        the probability of having ones.
+
+    Returns
+    -------
+    a 2D Numpy matrix.
+    """
+
+    n = size
+    A = np.zeros((n,n), dtype = int)
+
+    # take a list with  all possible 2-combinations
+    pairs = [i for i in combinations(range(n),2)]
+    # shuffle the list!
+    np.random.shuffle(pairs) 
+    
+    for i in pairs:
+        A[i] = (np.random.rand()<prob)*2
+    
+    return( A )
+        
+        
+        
+

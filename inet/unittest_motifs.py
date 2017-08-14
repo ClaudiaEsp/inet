@@ -19,6 +19,7 @@ class TestIIMotifCounter(unittest.TestCase):
     A major unittest class to test IIMotifCounter 
     """
         
+    Z = np.zeros((3,3))
     A = np.array(([0,3],[0,0]))
     B = np.array(([0,3],[1,0]))
     C = np.array(([0,3],[1,0]))
@@ -33,6 +34,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.b  = iicounter(self.B)
         self.c  = iicounter(self.C)
         self.d  = iicounter(self.C)
+        self.z  = iicounter(self.Z)
 
     def test_found_chemical_syn(self):
         """
@@ -42,6 +44,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(2, self.b['ii_chem']['found'])
         self.assertEquals(2, self.c['ii_chem']['found'])
         self.assertEquals(2, self.d['ii_chem']['found'])
+        self.assertEquals(0, self.z['ii_chem']['found'])
 
     def test_found_electrical_syn(self):
         """
@@ -51,6 +54,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(1, self.b['ii_elec']['found'])
         self.assertEquals(1, self.c['ii_elec']['found'])
         self.assertEquals(1, self.d['ii_elec']['found'])
+        self.assertEquals(0, self.z['ii_elec']['found'])
 
     def test_found_electrical_and_one_chemical(self):
         """
@@ -60,6 +64,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(2, self.b['ii_ce1']['found'])
         self.assertEquals(2, self.c['ii_ce1']['found'])
         self.assertEquals(2, self.d['ii_ce1']['found'])
+        self.assertEquals(0, self.z['ii_ce1']['found'])
 
     def test_found_electrical_and_two_chemical(self):
         """
@@ -69,6 +74,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(1, self.b['ii_ce2']['found'])
         self.assertEquals(1, self.c['ii_ce2']['found'])
         self.assertEquals(1, self.d['ii_ce2']['found'])
+        self.assertEquals(0, self.z['ii_ce2']['found'])
 
     def test_add_objects(self):
         """

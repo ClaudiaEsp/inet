@@ -27,7 +27,7 @@ import inet.utils as utils
 from inet.utils import enum
 
 from motifs import motifcounter
-from motifs import iicounter, eicounter, iecounter
+from motifs import iicounter, eicounter, iecounter, eecounter
 
 class DataLoader(object):
     """
@@ -48,8 +48,10 @@ class DataLoader(object):
 
         # --- Global loader attributes (from the recording) -- #
 
-        # all configurations
-        self.__configuration = utils.configuration()
+        # an empty dict with 2 keys, connections found and tested 
+		#per each recording configuration (ex: octuple, quintuple)
+		
+        self.__configuration = utils.configuration() 
 
         # Total number of recorded cells
         self.__nPV = 0 # total number of recorded PV-positive cells
@@ -145,9 +147,11 @@ class DataLoader(object):
         II_matrix = utils.II_slice(matrix, nPV)
         EI_matrix = utils.EI_slice(matrix, nPV)
         IE_matrix = utils.IE_slice(matrix, nPV)
+        EE_matrix = utils.EE_slice(matrix, nPV)
 
-        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + iecounter(IE_matrix)
-
+        # UPDATE connection
+        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + \
+            iecounter(IE_matrix) + eecounter(EE_matrix) 
         # UPDATE connection motif
         self.__motif += mymotif
 
