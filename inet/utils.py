@@ -9,6 +9,7 @@ Created:  Sun Jul 30 08:34:28 CEST 2017
 A collection of utilities to use with the inet module
 """
 import numpy as np
+from itertools import combinations
 
 enum = {2: 'pairs', 3: 'triplets', 4: 'quadruplets', 5: 'quintuplets', 
         6: 'sextuplets', 7: 'septuplets', 8: 'octuples'}
@@ -42,7 +43,7 @@ def configuration():
         
     return( mydict )
 
-def rand_squarematrix(size, prob):
+def chem_squarematrix(size, prob):
     """
     generates a square random matrix with a probability 'prob'
     of having ones, zero otherwise. It does not take into account
@@ -61,21 +62,53 @@ def rand_squarematrix(size, prob):
     """
 
     n = size
-    nconn = n*(n-1)
+    ntested = n*(n-1)
     A = np.zeros((n,n), dtype = int)
 
     # take all non-diagonal elements
-    x,y = np.where(~np.eye(A.shape[0], dtype=bool))
+    x,y = np.where(~np.eye(A.shape[0], dtype = bool))
 
     myids = zip(x,y) # list with non-diagonal coord
 
-    mymask =  np.random.rand( nconn )<prob  # True when connection
+    mymask =  np.random.rand( ntested )<prob  # True when connection
 
-    my_ones = np.ma.array(range(nconn), mask = ~mymask).compressed()
+    my_ones = np.ma.array(range(ntested), mask = ~mymask).compressed()
     
     for i in my_ones:
         coor = myids[i]
         A[coor] = 1
+    
+    return( A )
+        
+
+def elec_squarematrix(size, prob):
+    """
+    generates a square random matrix with a probability 'prob'
+    of having values ==2, zero otherwise. It does not take into account
+    the diagonal, which is always zero.
+
+    Arguments
+    ---------
+    size : int
+        the size of the square matrix
+    prob : float
+        the probability of having ones.
+
+    Returns
+    -------
+    a 2D Numpy matrix.
+    """
+
+    n = size
+    A = np.zeros((n,n), dtype = int)
+
+    # take a list with  all possible 2-combinations
+    pairs = [i for i in combinations(range(n),2)]
+    # shuffle the list!
+    np.random.shuffle(pairs) 
+    
+    for i in pairs:
+        A[i] = (np.random.rand()<prob)*2
     
     return( A )
         

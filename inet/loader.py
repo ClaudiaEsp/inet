@@ -150,7 +150,7 @@ class DataLoader(object):
         EE_matrix = utils.EE_slice(matrix, nPV)
 
         # UPDATE connection
-        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + 
+        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + \
             iecounter(IE_matrix) + eecounter(EE_matrix) 
         # UPDATE connection motif
         self.__motif += mymotif
