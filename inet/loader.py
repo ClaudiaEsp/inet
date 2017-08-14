@@ -32,7 +32,7 @@ from motifs import iicounter, eicounter, iecounter
 class DataLoader(object):
     """
     A class to load synaptic type and distances from connectivity
-    matrix in ./data folder. Check Readme.md for details
+    matrices. Check README.md for details
     """
 
     def __init__(self, path = None):
