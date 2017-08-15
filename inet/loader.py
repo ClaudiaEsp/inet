@@ -196,11 +196,15 @@ class DataLoader(object):
                 ['Connection type', 'Value'],
                 ['PV-PV chemical synapses', self.II_chem_found],
                 ['PV-PV electrical synapses', self.II_elec_found],
+                ['PV-PV bidirectional chemical', self.II_c2_found],
+                [' ',' '],
                 ['PV-PV one chemical with electrical', self.II_c1e_found],
                 ['PV-PV bidirectional chemical with electrical', self.II_c2e_found],
                 [' ',' '],
                 ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
                 ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
+                ['P(PV-PV) bidirectional chemical synapse', self.II_c2_found/self.II_c2_tested],
+                [' ',' '],
                 ['P(PV-PV) one chemical with electrical', self.II_c1e_found/self.II_c1e_tested],
                 ['P(PV-PV) bidirectional chemical with electrical', self.II_c2e_found/self.II_c2e_tested],
                 [' ',' '],
@@ -237,6 +241,9 @@ class DataLoader(object):
 
     II_elec_found = property(lambda self: self.motif['ii_elec']['found'])
     II_elec_tested = property(lambda self: self.motif['ii_elec']['tested'])
+
+    II_c2_found = property(lambda self: self.motif['ii_c2']['found'])
+    II_c2_tested = property(lambda self: self.motif['ii_c2']['tested'])
 
     II_c1e_found = property(lambda self: self.motif['ii_c1e']['found'])
     II_c1e_tested = property(lambda self: self.motif['ii_c1e']['tested'])
