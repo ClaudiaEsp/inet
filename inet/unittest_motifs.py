@@ -58,23 +58,23 @@ class TestIIMotifCounter(unittest.TestCase):
 
     def test_found_electrical_and_one_chemical(self):
         """
-        Test 'ii_ce1' : an alectrical synapse together with ONE chemical
+        Test 'ii_c1e' : an alectrical synapse together with ONE chemical
         """
-        self.assertEquals(1, self.a['ii_ce1']['found'])
-        self.assertEquals(2, self.b['ii_ce1']['found'])
-        self.assertEquals(2, self.c['ii_ce1']['found'])
-        self.assertEquals(2, self.d['ii_ce1']['found'])
-        self.assertEquals(0, self.z['ii_ce1']['found'])
+        self.assertEquals(1, self.a['ii_c1e']['found'])
+        self.assertEquals(2, self.b['ii_c1e']['found'])
+        self.assertEquals(2, self.c['ii_c1e']['found'])
+        self.assertEquals(2, self.d['ii_c1e']['found'])
+        self.assertEquals(0, self.z['ii_c1e']['found'])
 
     def test_found_electrical_and_two_chemical(self):
         """
-        Test 'ii_ce2' : an alectrical synapse together with TWO chemical
+        Test 'ii_c2e' : an alectrical synapse together with TWO chemical
         """
-        self.assertEquals(0, self.a['ii_ce2']['found'])
-        self.assertEquals(1, self.b['ii_ce2']['found'])
-        self.assertEquals(1, self.c['ii_ce2']['found'])
-        self.assertEquals(1, self.d['ii_ce2']['found'])
-        self.assertEquals(0, self.z['ii_ce2']['found'])
+        self.assertEquals(0, self.a['ii_c2e']['found'])
+        self.assertEquals(1, self.b['ii_c2e']['found'])
+        self.assertEquals(1, self.c['ii_c2e']['found'])
+        self.assertEquals(1, self.d['ii_c2e']['found'])
+        self.assertEquals(0, self.z['ii_c2e']['found'])
 
     def test_add_objects(self):
         """
@@ -84,13 +84,13 @@ class TestIIMotifCounter(unittest.TestCase):
 
         self.assertEquals(3, mysum['ii_chem']['found'])
         self.assertEquals(2, mysum['ii_elec']['found'])
-        self.assertEquals(3, mysum['ii_ce1']['found'])
-        self.assertEquals(1, mysum['ii_ce2']['found'])
+        self.assertEquals(3, mysum['ii_c1e']['found'])
+        self.assertEquals(1, mysum['ii_c2e']['found'])
 
         self.assertEquals(4, mysum['ii_chem']['tested'])
         self.assertEquals(2, mysum['ii_elec']['tested'])
-        self.assertEquals(4, mysum['ii_ce1']['tested'])
-        self.assertEquals(2, mysum['ii_ce2']['tested'])
+        self.assertEquals(4, mysum['ii_c1e']['tested'])
+        self.assertEquals(2, mysum['ii_c2e']['tested'])
 
 class TestEIMotifCounter(unittest.TestCase):
     """
@@ -184,8 +184,8 @@ class TestAddingObjects(unittest.TestCase):
         # test found
         self.assertEquals(4, self.ii_sum['ii_chem']['found'])
         self.assertEquals(2, self.ii_sum['ii_elec']['found'])
-        self.assertEquals(4, self.ii_sum['ii_ce1']['found'])
-        self.assertEquals(2, self.ii_sum['ii_ce2']['found'])
+        self.assertEquals(4, self.ii_sum['ii_c1e']['found'])
+        self.assertEquals(2, self.ii_sum['ii_c2e']['found'])
 
         self.assertEquals(8, self.ei_sum['ei']['found'])
         self.assertEquals(8, self.ie_sum['ie']['found'])
@@ -193,8 +193,8 @@ class TestAddingObjects(unittest.TestCase):
         # test tested
         self.assertEquals(4, self.ii_sum['ii_chem']['tested'])
         self.assertEquals(2, self.ii_sum['ii_elec']['tested'])
-        self.assertEquals(4, self.ii_sum['ii_ce1']['tested'])
-        self.assertEquals(2, self.ii_sum['ii_ce2']['tested'])
+        self.assertEquals(4, self.ii_sum['ii_c1e']['tested'])
+        self.assertEquals(2, self.ii_sum['ii_c2e']['tested'])
 
         self.assertEquals(8, self.ei_sum['ei']['tested'])
         self.assertEquals(8, self.ie_sum['ie']['tested'])
@@ -207,8 +207,8 @@ class TestAddingObjects(unittest.TestCase):
         # test found
         self.assertEquals(2, self.ie_ii['ii_chem']['found'])
         self.assertEquals(1, self.ie_ii['ii_elec']['found'])
-        self.assertEquals(2, self.ie_ii['ii_ce1']['found'])
-        self.assertEquals(1, self.ie_ii['ii_ce2']['found'])
+        self.assertEquals(2, self.ie_ii['ii_c1e']['found'])
+        self.assertEquals(1, self.ie_ii['ii_c2e']['found'])
 
         self.assertEquals(4, self.ei_ie['ei']['found'])
         self.assertEquals(4, self.ei_ie['ie']['found'])
@@ -219,8 +219,8 @@ class TestAddingObjects(unittest.TestCase):
         # test tested
         self.assertEquals(2, self.ie_ii['ii_chem']['tested'])
         self.assertEquals(1, self.ie_ii['ii_elec']['tested'])
-        self.assertEquals(2, self.ie_ii['ii_ce1']['tested'])
-        self.assertEquals(1, self.ie_ii['ii_ce2']['tested'])
+        self.assertEquals(2, self.ie_ii['ii_c1e']['tested'])
+        self.assertEquals(1, self.ie_ii['ii_c2e']['tested'])
 
         self.assertEquals(4, self.ei_ie['ei']['tested'])
         self.assertEquals(4, self.ei_ie['ie']['tested'])

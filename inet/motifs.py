@@ -90,11 +90,11 @@ class IIMotifCounter(MotifCounter):
 
     ii_chem : a chemical synapse between interneurons
     ii_elec : an electrical synapse between interneurons
-    ii_ce1 : an alectrical synapse together with ONE chemical
-    ii_ce2 : an alectrical synapse together with TWO chemical
+    ii_c1e : an alectrical synapse together with ONE chemical
+    ii_c2e : an alectrical synapse together with TWO chemical
     
     """
-    motiflist = ['ii_chem', 'ii_elec', 'ii_ce1', 'ii_ce2']
+    motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e']
 
     def __init__(self, matrix = None):
         """
@@ -136,32 +136,32 @@ class IIMotifCounter(MotifCounter):
 
         II_chem = matrix[ np.where(matrix==1) ].size
         II_elec = matrix[ np.where(matrix==2) ].size
-        II_ce1 =  matrix[ np.where(matrix==3) ].size # ** see below
-        II_chem += II_ce1
-        II_elec += II_ce1
+        II_c1e =  matrix[ np.where(matrix==3) ].size # ** see below
+        II_chem += II_c1e
+        II_elec += II_c1e
         
-        # count unidirectional chemical synapses with gap junctions (ce1)
-        # or bidirectional chemical synapses with gap junctions (ce2)
-        II_ce2 = 0
+        # count unidirectional chemical synapses with gap junctions (c1e)
+        # or bidirectional chemical synapses with gap junctions (c2e)
+        II_c2e = 0
 
-        if II_ce1: # only if there are entries ==3 (see **)
+        if II_c1e: # only if there are entries ==3 (see **)
             pre, post = np.where(matrix==3)
             mylist = zip(post,pre)
             for x,y in mylist:
                 if matrix[ x,y ] == 1:
-                    II_ce2 +=1 # add bidirectional chemical to electrical
-                    II_ce1 +=1 # add another unidirectional to electrical
+                    II_c2e +=1 # add bidirectional chemical to electrical
+                    II_c1e +=1 # add another unidirectional to electrical
 
         # possible connections
         n_chem = n*(n-1)
         n_elec = n*(n-1)/2
-        n_ce1 = n_elec*2
-        n_ce2 = n_elec
+        n_c1e = n_elec*2
+        n_c2e = n_elec
         
         self.__setitem__('ii_chem', {'tested':n_chem, 'found':II_chem})
         self.__setitem__('ii_elec', {'tested':n_elec, 'found':II_elec})
-        self.__setitem__('ii_ce1' , {'tested':n_ce1 , 'found':II_ce1 })
-        self.__setitem__('ii_ce2' , {'tested':n_ce2 , 'found':II_ce2 })
+        self.__setitem__('ii_c1e' , {'tested':n_c1e , 'found':II_c1e })
+        self.__setitem__('ii_c2e' , {'tested':n_c2e , 'found':II_c2e })
         
     
 class EIMotifCounter(MotifCounter):

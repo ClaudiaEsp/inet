@@ -196,13 +196,13 @@ class DataLoader(object):
                 ['Connection type', 'Value'],
                 ['PV-PV chemical synapses', self.II_chem_found],
                 ['PV-PV electrical synapses', self.II_elec_found],
-                ['PV-PV one chemical with electrical', self.II_ce1_found],
-                ['PV-PV bidirectional chemical with electrical', self.II_ce2_found],
+                ['PV-PV one chemical with electrical', self.II_c1e_found],
+                ['PV-PV bidirectional chemical with electrical', self.II_c2e_found],
                 [' ',' '],
                 ['P(PV-PV) chemical synapse', self.II_chem_found/self.II_chem_tested],
                 ['P(PV-PV) electrical synapse', self.II_elec_found/self.II_elec_tested],
-                ['P(PV-PV) one chemical with electrical', self.II_ce1_found/self.II_ce1_tested],
-                ['P(PV-PV) bidirectional chemical with electrical', self.II_ce2_found/self.II_ce2_tested],
+                ['P(PV-PV) one chemical with electrical', self.II_c1e_found/self.II_c1e_tested],
+                ['P(PV-PV) bidirectional chemical with electrical', self.II_c2e_found/self.II_c2e_tested],
                 [' ',' '],
                 ['PV-GC chemical synapses', self.IE_found],
                 ['GC-PC chemical synapses', self.EI_found],
@@ -238,11 +238,11 @@ class DataLoader(object):
     II_elec_found = property(lambda self: self.motif['ii_elec']['found'])
     II_elec_tested = property(lambda self: self.motif['ii_elec']['tested'])
 
-    II_ce1_found = property(lambda self: self.motif['ii_ce1']['found'])
-    II_ce1_tested = property(lambda self: self.motif['ii_ce1']['tested'])
+    II_c1e_found = property(lambda self: self.motif['ii_c1e']['found'])
+    II_c1e_tested = property(lambda self: self.motif['ii_c1e']['tested'])
 
-    II_ce2_found = property(lambda self: self.motif['ii_ce2']['found'])
-    II_ce2_tested = property(lambda self: self.motif['ii_ce2']['tested'])
+    II_c2e_found = property(lambda self: self.motif['ii_c2e']['found'])
+    II_c2e_tested = property(lambda self: self.motif['ii_c2e']['tested'])
 
     
     IE_found = property(lambda self: self.motif['ie']['found'])
