@@ -48,7 +48,8 @@ def barplot(simulation, n_found, ax=None):
     """
     
     sim = np.array(simulation)
-    p_val = len(sim[sim>n_found]) / sim.size
+    p_val = len(sim[sim>n_found]) / float(sim.size)
+    print('P = %2.4f'%p_val)
 
     if ax is None:
         ax = plt.gca() # gets current axis if necessary
@@ -61,15 +62,25 @@ def barplot(simulation, n_found, ax=None):
         color = ('brown', 'white'), width =0.30, align='center')
     ax.errorbar(x_pos, [sim.mean(), n_found], fmt=' ',\
         yerr=[sim.std(), 0], color='brown', capsize=12, capthick=3)
-    ax.text(0, n_found + n_found*0.1,  'P = %2.4f'%p_val,\
+    ax.text(0.4, n_found + n_found*0.2,  'P = %2.4f'%p_val,\
         verticalalignment='center', horizontalalignment='center')
 
+    # remove top and righ axis
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.xaxis.set_ticks_position('none') # remove ticks in bottom spine
 
     # labels
     ax.set_xticks(x_pos)
     ax.set_xticklabels(x_labels) 
     ax.set_ylabel('Number of motifs')
 
+    # remove grid just in case
+    ax.grid(False)
+
+    # axis limits
     mymax = max(sim.mean(), n_found)
     mymax += mymax*0.2 
     ax.set_ylim(ymax = mymax)
