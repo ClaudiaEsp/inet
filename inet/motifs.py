@@ -92,9 +92,10 @@ class IIMotifCounter(MotifCounter):
     ii_elec : an electrical synapse between interneurons
     ii_c1e : an alectrical synapse together with ONE chemical
     ii_c2e : an alectrical synapse together with TWO chemical
+    ii_c2  : two reciprocally connected chemical synapse
     
     """
-    motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e']
+    motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e', 'ii_c2']
 
     def __init__(self, matrix = None):
         """
@@ -152,16 +153,28 @@ class IIMotifCounter(MotifCounter):
                     II_c2e +=1 # add bidirectional chemical to electrical
                     II_c1e +=1 # add another unidirectional to electrical
 
+        # reciprocal motifs are counted from the trace <Tr> of a <A> matrix:
+        # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
+        rows,cols = np.where(matrix==3) 
+        A = matrix.copy()
+        A[rows,cols] = 1
+
+        # transform into matrix type to perform matrix operations (e.g Tr)
+        A = np.matrix(A) 
+        II_c2 = np.sum( (A*A).diagonal() )/2
+
         # possible connections
         n_chem = n*(n-1)
         n_elec = n*(n-1)/2
         n_c1e = n_elec*2
         n_c2e = n_elec
+        n_c2 = n_elec
         
         self.__setitem__('ii_chem', {'tested':n_chem, 'found':II_chem})
         self.__setitem__('ii_elec', {'tested':n_elec, 'found':II_elec})
         self.__setitem__('ii_c1e' , {'tested':n_c1e , 'found':II_c1e })
         self.__setitem__('ii_c2e' , {'tested':n_c2e , 'found':II_c2e })
+        self.__setitem__('ii_c2' ,  {'tested':n_c2 ,  'found':II_c2  })
         
     
 class EIMotifCounter(MotifCounter):
