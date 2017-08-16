@@ -55,7 +55,7 @@ def barplot(simulation, n_found, ax=None):
         ax = plt.gca() # gets current axis if necessary
 
     x_pos = (0, 0.4) 
-    x_labels = ('Simulation', 'Experiment')
+    x_labels = ('Simulation', 'Observation')
 
     # bar with SD
     ax.bar(x_pos, [sim.mean(), n_found],  \
