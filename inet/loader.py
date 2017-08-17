@@ -21,8 +21,6 @@ from __future__ import division
 import glob, os
 import numpy as np
 
-from terminaltables import AsciiTable
-
 import inet.utils as utils
 from inet.utils import enum
 

@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'inet', # application name
-    version = '0.0.8',# application version
+    version = '0.0.9',# application version
     author ='Jose Guzman and Claudia Espinoza',
     author_email = 'sjm.guzman@gmail.com',
     packages = ['inet'],
@@ -27,5 +27,5 @@ setup(
     license = 'LICENSE',
     description = 'network simulations based on connections of PV neurons',
     long_description = open('README.md').read(),
-    install_requires = ['numpy', 'scipy', 'terminaltables' ],
+    install_requires = ['numpy', 'scipy'],
 )
