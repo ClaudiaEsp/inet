@@ -1,4 +1,4 @@
-# inet [![Build Status](https://travis-ci.org/ClaudiaEsp/inet.png?branch=master)](https://travis-ci.org/ClaudiaEsp/inet)
+# inet [![Build Status](https://travis-ci.org/JoseGuzman/inet.png?branch=master)](https://travis-ci.org/JoseGuzman/inet)
 
 A python module to test connectivity models 
 between [interneurons](https://en.wikipedia.org/wiki/Interneuron) and principal neurons. It is based on multiple simultaneous patch-clamp recordings.
