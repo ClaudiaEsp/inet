@@ -104,7 +104,7 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(1, self.a2.ii_elec_found)
 
         self.assertEquals(1, self.b1.ii_elec_found)
-        self.assertEquals(1, self.b2.ii_elecfound)
+        self.assertEquals(1, self.b2.ii_elec_found)
 
         self.assertEquals(1, self.c1.ii_elec_found)
         self.assertEquals(1, self.c2.ii_elec_found)
