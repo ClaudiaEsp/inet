@@ -1,9 +1,12 @@
 # inet 
+[![Build Status](https://travis-ci.org/ClaudiaEsp/inet.png?branch=master)](https://travis-ci.org/ClaudiaEsp/inet)
 
-A python module to test connectivity models based on multiple
-simulatenous patch-clamp recordings between [Parvalbumin](https://en.wikipedia.org/wiki/Parvalbumin) (PV) positive [interneurons](https://en.wikipedia.org/wiki/Interneuron) and [granule cells](https://en.wikipedia.org/wiki/Granule_cell) in the [dentate gyrus](https://en.wikipedia.org/wiki/Dentate_gyrus) of mice.
+A python module to test connectivity models 
+between [interneurons](https://en.wikipedia.org/wiki/Interneuron) and principal neurons. It is based on multiple simultaneous patch-clamp recordings.
 
-It is for personal use only. 
+Reference:
+Guzman SJ, Schloegl A, Frotscher M and Jonas P. (2016) Synaptic mechanisms of pattern completion in the hippocampal CA3 network. *Science*353:1117-1123.
+[pubmed ref](https://www.ncbi.nlm.nih.gov/pubmed/27609885)
 
 Requirements
 ============
@@ -23,5 +26,6 @@ In python:
 
 ```python
 from inet import DataLoader
-mydataset = Dataloader('./data') # load connectivity matrices
+mydataset = Dataloader("./data") # load connectivity matrices
 ```
+A further explanation can be found [here](doc/Reading_matrices.rst)
