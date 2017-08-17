@@ -1,12 +1,12 @@
-# inet 
-[![Build Status](https://travis-ci.org/ClaudiaEsp/inet.png?branch=master)](https://travis-ci.org/ClaudiaEsp/inet)
+# inet [![Build Status](https://travis-ci.org/ClaudiaEsp/inet.png?branch=master)](https://travis-ci.org/ClaudiaEsp/inet)
 
 A python module to test connectivity models 
 between [interneurons](https://en.wikipedia.org/wiki/Interneuron) and principal neurons. It is based on multiple simultaneous patch-clamp recordings.
 
 Reference:
-Guzman SJ, Schloegl A, Frotscher M and Jonas P. (2016) Synaptic mechanisms of pattern completion in the hippocampal CA3 network. *Science*353:1117-1123.
-[pubmed ref](https://www.ncbi.nlm.nih.gov/pubmed/27609885)
+
+Guzman SJ, Schloegl A, Frotscher M and Jonas P (2016) **Synaptic mechanisms of pattern completion in the hippocampal CA3 network**. *Science* 353:1117-1123.
+[Pubmed reference](https://www.ncbi.nlm.nih.gov/pubmed/27609885)
 
 Requirements
 ============
