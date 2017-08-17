@@ -49,7 +49,6 @@ def barplot(simulation, n_found, ax=None):
     
     sim = np.array(simulation)
     p_val = len(sim[sim>n_found]) / float(sim.size)
-    #print('P = %2.4f'%p_val)
 
     if ax is None:
         ax = plt.gca() # gets current axis if necessary
@@ -60,10 +59,10 @@ def barplot(simulation, n_found, ax=None):
     # bar with SD
     ax.bar(x_pos, [sim.mean(), n_found],  \
         color = ('brown', 'white'), width =0.30, align='center', 
-        edgecolor='black', zorder = 2)
+        edgecolor='black', linewidth =2, zorder = 2)
     ax.errorbar(x_pos, [sim.mean(), n_found], fmt=' ',\
         yerr=[sim.std(), 0], color='brown', capsize=12, 
-        capthick=3, zorder = 1)
+        capthick = 3, elinewidth = 3, zorder = 1)
     ax.text(0.4, n_found + n_found*0.2,  'P = %2.4f'%p_val,\
         verticalalignment='center', horizontalalignment='center')
 

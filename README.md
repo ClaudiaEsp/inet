@@ -11,7 +11,6 @@ Requirements
 * Python (tested in 2.7, will not work in Python 3.6)
 * NumPy (tested in 1.13)
 * Scipy (tested in 0.19)
-* terminaltables (tested in 3.1.0)
 
 How to install it
 =================
