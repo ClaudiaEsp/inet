@@ -15,7 +15,7 @@ Usage
 >>> from matplotib.pyplot import figure, show
 >>> fig = figure()
 >>> ax = fig.add_subplot(111)
->>> bar_plot(simulation, n_found)
+>>> barplot(simulation, n_found)
 >>> ax.set_title('My figure')
 """
 
@@ -87,3 +87,60 @@ def barplot(simulation, n_found, ax=None):
     ax.set_ylim(ymax = mymax)
 
     return( ax )
+
+def boxplot(mylist, ax = None):
+    """
+    Plots a box plot from a list of values.
+
+    Arguments
+    ---------
+    
+    mylist  : list
+        A list containing the single data points to be plotted
+    
+    ax  : plt.axis
+        an axis object to plot it
+    
+    """
+    data = np.array(mylist)
+
+    if ax is None:
+        ax = plt.gca() # gets current axis if necessary
+        
+    xvalues = np.random.uniform(low =1.10, high = .90, size= data.size)
+
+    # plot single data points
+    ax.plot(xvalues, data, 'o', color = 'gray', ms = 8) # single datapoits
+    
+    # boxplot details
+    boxplot = ax.boxplot(data, widths = .4, positions = [1], patch_artist = 1)
+    
+    for box in boxplot['boxes']: 
+        box.set( color = 'white') # outline color
+        box.set( edgecolor = 'black', linewidth = 3)
+    for cap in boxplot['caps']:
+        cap.set(color = 'black', linewidth = 3)
+    for whisker in boxplot['whiskers']:
+        whisker.set(color = 'black', linewidth = 3) # color/width 
+        whisker.set(linestyle = '-') # continous line
+    for median in boxplot['medians']:
+        median.set(color = 'brown', linewidth = 4)
+
+    # remove spines
+    ax.get_xaxis().set_visible(0)
+    ax.get_yaxis().tick_left()
+    for sp in ['top', 'bottom', 'right']:
+        ax.spines[sp].set_visible(0)
+    
+    return( ax )
+
+if __name__ == '__main__':
+    # some tests
+    from matplotlib.pyplot import figure, show
+    fig = figure()
+    ax = fig.add_subplot(111)
+    ax = boxplot(range(10))
+    ax.set_ylim(-0.5,10)
+
+    show()
+    
