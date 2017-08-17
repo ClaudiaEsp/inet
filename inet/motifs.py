@@ -75,6 +75,11 @@ class MotifCounter(dict):
             for key in diff2keys:
                 mysum.__setitem__(key, MotifCounterObj[key])
 
+        # dynamically rewrite object attributes
+        for key in mysum:
+            setattr(mysum, key+'_tested',mysum[key]['tested']) 
+            setattr(mysum, key+'_found' ,mysum[key]['found' ]) 
+
         return(mysum)
         
     def __radd__(self, MotifCounterObj):
@@ -116,6 +121,7 @@ class IIMotifCounter(MotifCounter):
 
         if matrix is not None:
             self.read_matrix(matrix) # requires previous creation of keys
+
 
     def __call__(self, matrix = None):
         """
@@ -176,6 +182,10 @@ class IIMotifCounter(MotifCounter):
         self.__setitem__('ii_c2e' , {'tested':n_c2e , 'found':II_c2e })
         self.__setitem__('ii_c2' ,  {'tested':n_c2 ,  'found':II_c2  })
         
+        # dynamically rewrite object attributes
+        for key in self:
+            setattr(self, key+'_tested',self[key]['tested']) 
+            setattr(self, key+'_found' ,self[key]['found' ]) 
     
 class EIMotifCounter(MotifCounter):
     """
@@ -213,7 +223,7 @@ class EIMotifCounter(MotifCounter):
         """
         Returns a EIMotifCounter object with counts of motifs
         """
-        return EIMotifCounter(matrix) # will count motifs
+        return EIMotifCounter(matrix) # will count motifs and update attr.
 
     def read_matrix(self, matrix):
         """
@@ -225,6 +235,11 @@ class EIMotifCounter(MotifCounter):
         EI_tested = ecell * icell # possible EI connections
 
         self.__setitem__('ei', {'tested':EI_tested, 'found':EI_found})
+
+        # dynamically create attributes only if matrix is entered
+        for key in self:
+            setattr(self, key+'_tested', self[key]['tested'])
+            setattr(self, key+'_found',  self[key]['found' ])
 
 class IEMotifCounter(MotifCounter):
     """
@@ -257,6 +272,10 @@ class IEMotifCounter(MotifCounter):
         if matrix is not None:
             self.read_matrix(matrix) # requires previous creation of keys
 
+        for key in self:
+            setattr(self, key+'_tested', self[key]['tested'])
+            setattr(self, key+'_found',  self[key]['found' ])
+
     def __call__(self, matrix = None):
         """
         Returns a EIMotifCounter object with counts of motifs
@@ -274,6 +293,11 @@ class IEMotifCounter(MotifCounter):
         IE_tested = ecell * icell # possible EI connections
 
         self.__setitem__('ie', {'tested':IE_tested, 'found':IE_found})
+
+        # dynamically create attributes only if matrix is entered
+        for key in self:
+            setattr(self, key+'_tested', self[key]['tested'])
+            setattr(self, key+'_found',  self[key]['found' ])
 
 class EEMotifCounter(MotifCounter):
     """
@@ -324,6 +348,10 @@ class EEMotifCounter(MotifCounter):
 
         self.__setitem__('ee', {'tested':EE_tested, 'found':EE_found})
 
+        # dynamically create attributes only if matrix is entered
+        for key in self:
+            setattr(self, key+'_tested', self[key]['tested'])
+            setattr(self, key+'_found',  self[key]['found' ])
 
 
 # ready-to-use objects

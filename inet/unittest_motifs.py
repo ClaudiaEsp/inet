@@ -60,101 +60,101 @@ class TestIIMotifCounter(unittest.TestCase):
         """
         Test 'ii_c1e' : an alectrical synapse together with ONE chemical
         """
-        self.assertEquals(1, self.a1['ii_c1e']['found'])
-        self.assertEquals(1, self.a2['ii_c1e']['found'])
+        self.assertEquals(1, self.a1.ii_c1e_found)
+        self.assertEquals(1, self.a2.ii_c1e_found)
 
-        self.assertEquals(2, self.b1['ii_c1e']['found'])
-        self.assertEquals(2, self.b2['ii_c1e']['found'])
+        self.assertEquals(2, self.b1.ii_c1e_found)
+        self.assertEquals(2, self.b2.ii_c1e_found)
 
-        self.assertEquals(0, self.c1['ii_c1e']['found'])
-        self.assertEquals(0, self.c2['ii_c1e']['found'])
+        self.assertEquals(0, self.c1.ii_c1e_found)
+        self.assertEquals(0, self.c2.ii_c1e_found)
 
-        self.assertEquals(0, self.d1['ii_c1e']['found'])
-        self.assertEquals(0, self.d2['ii_c1e']['found'])
+        self.assertEquals(0, self.d1.ii_c1e_found)
+        self.assertEquals(0, self.d2.ii_c1e_found)
 
-        self.assertEquals(0, self.e['ii_c1e']['found'])
+        self.assertEquals(0, self.e.ii_c1e_found)
         
-        self.assertEquals(0, self.z['ii_c1e']['found'])
+        self.assertEquals(0, self.z.ii_c1e_found)
 
     def test_found_electrical_and_two_chemical(self):
         """
         Test 'ii_c2e' : an alectrical synapse together with TWO chemical
         """
-        self.assertEquals(0, self.a1['ii_c2e']['found'])
-        self.assertEquals(0, self.a2['ii_c2e']['found'])
+        self.assertEquals(0, self.a1.ii_c2e_found)
+        self.assertEquals(0, self.a2.ii_c2e_found)
 
-        self.assertEquals(1, self.b1['ii_c2e']['found'])
-        self.assertEquals(1, self.b2['ii_c2e']['found'])
+        self.assertEquals(1, self.b1.ii_c2e_found)
+        self.assertEquals(1, self.b2.ii_c2e_found)
 
-        self.assertEquals(0, self.c1['ii_c2e']['found'])
-        self.assertEquals(0, self.c2['ii_c2e']['found'])
+        self.assertEquals(0, self.c1.ii_c2e_found)
+        self.assertEquals(0, self.c2.ii_c2e_found)
 
-        self.assertEquals(0, self.d1['ii_c2e']['found'])
-        self.assertEquals(0, self.d2['ii_c2e']['found'])
+        self.assertEquals(0, self.d1.ii_c2e_found)
+        self.assertEquals(0, self.d2.ii_c2e_found)
 
-        self.assertEquals(0, self.e['ii_c2e']['found'])
+        self.assertEquals(0, self.e.ii_c2e_found)
 
-        self.assertEquals(0, self.z['ii_c2e']['found'])
+        self.assertEquals(0, self.z.ii_c2e_found)
 
     def test_found_electrical_syn(self):
         """
         Test 'ii_elec' : electrical synapses between interneurons
         """
-        self.assertEquals(1, self.a1['ii_elec']['found'])
-        self.assertEquals(1, self.a2['ii_elec']['found'])
+        self.assertEquals(1, self.a1.ii_elec_found)
+        self.assertEquals(1, self.a2.ii_elec_found)
 
-        self.assertEquals(1, self.b1['ii_elec']['found'])
-        self.assertEquals(1, self.b2['ii_elec']['found'])
+        self.assertEquals(1, self.b1.ii_elec_found)
+        self.assertEquals(1, self.b2.ii_elecfound)
 
-        self.assertEquals(1, self.c1['ii_elec']['found'])
-        self.assertEquals(1, self.c2['ii_elec']['found'])
+        self.assertEquals(1, self.c1.ii_elec_found)
+        self.assertEquals(1, self.c2.ii_elec_found)
 
-        self.assertEquals(0, self.d1['ii_elec']['found'])
-        self.assertEquals(0, self.d2['ii_elec']['found'])
+        self.assertEquals(0, self.d1.ii_elec_found)
+        self.assertEquals(0, self.d2.ii_elec_found)
 
-        self.assertEquals(0, self.e['ii_elec']['found'])
+        self.assertEquals(0, self.e.ii_elec_found)
 
-        self.assertEquals(0, self.z['ii_elec']['found'])
+        self.assertEquals(0, self.z.ii_elec_found)
 
     def test_found_chemical_syn(self):
         """
         Test 'ii_chem' : a chemical synapses between interneurons
         """
-        self.assertEquals(1, self.a1['ii_chem']['found'])
-        self.assertEquals(1, self.a2['ii_chem']['found'])
+        self.assertEquals(1, self.a1.ii_chem_found)
+        self.assertEquals(1, self.a2.ii_chem_found)
 
-        self.assertEquals(2, self.b1['ii_chem']['found'])
-        self.assertEquals(2, self.b2['ii_chem']['found'])
+        self.assertEquals(2, self.b1.ii_chem_found)
+        self.assertEquals(2, self.b2.ii_chem_found)
 
-        self.assertEquals(0, self.c1['ii_chem']['found'])
-        self.assertEquals(0, self.c2['ii_chem']['found'])
+        self.assertEquals(0, self.c1.ii_chem_found)
+        self.assertEquals(0, self.c2.ii_chem_found)
 
-        self.assertEquals(1, self.d1['ii_chem']['found'])
-        self.assertEquals(1, self.d2['ii_chem']['found'])
+        self.assertEquals(1, self.d1.ii_chem_found)
+        self.assertEquals(1, self.d2.ii_chem_found)
 
-        self.assertEquals(2, self.e['ii_chem']['found'])
+        self.assertEquals(2, self.e.ii_chem_found)
 
-        self.assertEquals(0, self.z['ii_chem']['found'])
+        self.assertEquals(0, self.z.ii_chem_found)
 
     def test_found_bidirectional_chemical(self):
         """
         Test 'ii_c2' : a bidirectional chemical synapse
         """
-        self.assertEquals(0, self.a1['ii_c2']['found'])
-        self.assertEquals(0, self.a2['ii_c2']['found'])
+        self.assertEquals(0, self.a1.ii_c2_found)
+        self.assertEquals(0, self.a2.ii_c2_found)
 
-        self.assertEquals(1, self.b1['ii_c2']['found'])
-        self.assertEquals(1, self.b2['ii_c2']['found'])
+        self.assertEquals(1, self.b1.ii_c2_found)
+        self.assertEquals(1, self.b2.ii_c2_found)
 
-        self.assertEquals(0, self.c1['ii_c2']['found'])
-        self.assertEquals(0, self.c2['ii_c2']['found'])
+        self.assertEquals(0, self.c1.ii_c2_found)
+        self.assertEquals(0, self.c2.ii_c2_found)
 
-        self.assertEquals(0, self.d1['ii_c2']['found'])
-        self.assertEquals(0, self.d2['ii_c2']['found'])
+        self.assertEquals(0, self.d1.ii_c2_found)
+        self.assertEquals(0, self.d2.ii_c2_found)
 
-        self.assertEquals(1, self.e['ii_c2']['found'])
+        self.assertEquals(1, self.e.ii_c2_found)
 
-        self.assertEquals(0, self.z['ii_c2']['found'])
+        self.assertEquals(0, self.z.ii_c2_found)
 
     def test_add_objects(self):
         """
@@ -162,15 +162,15 @@ class TestIIMotifCounter(unittest.TestCase):
         """
         mysuma = self.a1 +  self.a2 
 
-        self.assertEquals(2, mysuma['ii_chem']['found'])
-        self.assertEquals(2, mysuma['ii_elec']['found'])
-        self.assertEquals(2, mysuma['ii_c1e']['found'])
-        self.assertEquals(0, mysuma['ii_c2e']['found'])
+        self.assertEquals(2, mysuma.ii_chem_found)
+        self.assertEquals(2, mysuma.ii_elec_found)
+        self.assertEquals(2, mysuma.ii_c1e_found)
+        self.assertEquals(0, mysuma.ii_c2e_found)
 
-        self.assertEquals(4, mysuma['ii_chem']['tested'])
-        self.assertEquals(2, mysuma['ii_elec']['tested'])
-        self.assertEquals(4, mysuma['ii_c1e']['tested'])
-        self.assertEquals(2, mysuma['ii_c2e']['tested'])
+        self.assertEquals(4, mysuma.ii_chem_tested)
+        self.assertEquals(2, mysuma.ii_elec_tested)
+        self.assertEquals(4, mysuma.ii_c1e_tested)
+        self.assertEquals(2, mysuma.ii_c2e_tested)
 
 class TestEIMotifCounter(unittest.TestCase):
     """
@@ -193,8 +193,8 @@ class TestEIMotifCounter(unittest.TestCase):
         Test 'ei' : a chemical synapses between excitatory to inhibitory 
                     neuron.
         """
-        self.assertEquals(4, self.a['ei']['found'])
-        self.assertEquals(2, self.b['ei']['found'])
+        self.assertEquals(4, self.a.ei_found)
+        self.assertEquals(2, self.b.ei_found)
         
     def test_add_objects(self):
         """
@@ -202,8 +202,8 @@ class TestEIMotifCounter(unittest.TestCase):
         """
         mysum = self.a + self.b 
 
-        self.assertEquals(6, mysum['ei']['found'])
-        self.assertEquals(8, mysum['ei']['tested'])
+        self.assertEquals(6, mysum.ei_found)
+        self.assertEquals(8, mysum.ei_tested)
 
 
 class TestIEMotifCounter(unittest.TestCase):
@@ -226,8 +226,8 @@ class TestIEMotifCounter(unittest.TestCase):
         Test 'ie' : a chemical synapses between excitatory to inhibitory 
                     neuron.
         """
-        self.assertEquals(4, self.a['ie']['found'])
-        self.assertEquals(2, self.b['ie']['found'])
+        self.assertEquals(4, self.a.ie_found)
+        self.assertEquals(2, self.b.ie_found)
         
     def test_add_objects(self):
         """
@@ -235,8 +235,8 @@ class TestIEMotifCounter(unittest.TestCase):
         """
         mysum = self.a + self.b 
 
-        self.assertEquals(6, mysum['ie']['found'])
-        self.assertEquals(8, mysum['ie']['tested'])
+        self.assertEquals(6, mysum.ie_found)
+        self.assertEquals(8, mysum.ie_tested)
         
 class TestAddingObjects(unittest.TestCase):
     """
@@ -262,22 +262,22 @@ class TestAddingObjects(unittest.TestCase):
         Test the result of summing same  MotifCounter inherited objects
         """
         # test found
-        self.assertEquals(4, self.ii_sum['ii_chem']['found'])
-        self.assertEquals(2, self.ii_sum['ii_elec']['found'])
-        self.assertEquals(4, self.ii_sum['ii_c1e']['found'])
-        self.assertEquals(2, self.ii_sum['ii_c2e']['found'])
+        self.assertEquals(4, self.ii_sum.ii_chem_found)
+        self.assertEquals(2, self.ii_sum.ii_elec_found)
+        self.assertEquals(4, self.ii_sum.ii_c1e_found)
+        self.assertEquals(2, self.ii_sum.ii_c2e_found)
 
-        self.assertEquals(8, self.ei_sum['ei']['found'])
-        self.assertEquals(8, self.ie_sum['ie']['found'])
+        self.assertEquals(8, self.ei_sum.ei_found)
+        self.assertEquals(8, self.ie_sum.ie_found)
 
         # test tested
-        self.assertEquals(4, self.ii_sum['ii_chem']['tested'])
-        self.assertEquals(2, self.ii_sum['ii_elec']['tested'])
-        self.assertEquals(4, self.ii_sum['ii_c1e']['tested'])
-        self.assertEquals(2, self.ii_sum['ii_c2e']['tested'])
+        self.assertEquals(4, self.ii_sum.ii_chem_tested)
+        self.assertEquals(2, self.ii_sum.ii_elec_tested)
+        self.assertEquals(4, self.ii_sum.ii_c1e_tested)
+        self.assertEquals(2, self.ii_sum.ii_c2e_tested)
 
-        self.assertEquals(8, self.ei_sum['ei']['tested'])
-        self.assertEquals(8, self.ie_sum['ie']['tested'])
+        self.assertEquals(8, self.ei_sum.ei_tested)
+        self.assertEquals(8, self.ie_sum.ie_tested)
 
     def test_add_diff_objects(self):
         """
@@ -285,28 +285,28 @@ class TestAddingObjects(unittest.TestCase):
         will returna a MotifCounter object type
         """
         # test found
-        self.assertEquals(2, self.ie_ii['ii_chem']['found'])
-        self.assertEquals(1, self.ie_ii['ii_elec']['found'])
-        self.assertEquals(2, self.ie_ii['ii_c1e']['found'])
-        self.assertEquals(1, self.ie_ii['ii_c2e']['found'])
+        self.assertEquals(2, self.ie_ii.ii_chem_found)
+        self.assertEquals(1, self.ie_ii.ii_elec_found)
+        self.assertEquals(2, self.ie_ii.ii_c1e_found)
+        self.assertEquals(1, self.ie_ii.ii_c2e_found)
 
-        self.assertEquals(4, self.ei_ie['ei']['found'])
-        self.assertEquals(4, self.ei_ie['ie']['found'])
+        self.assertEquals(4, self.ei_ie.ei_found)
+        self.assertEquals(4, self.ei_ie.ie_found)
         
-        self.assertEquals(4, self.ie_ei['ei']['found'])
-        self.assertEquals(4, self.ie_ei['ie']['found'])
+        self.assertEquals(4, self.ie_ei.ei_found)
+        self.assertEquals(4, self.ie_ei.ie_found)
 
         # test tested
-        self.assertEquals(2, self.ie_ii['ii_chem']['tested'])
-        self.assertEquals(1, self.ie_ii['ii_elec']['tested'])
-        self.assertEquals(2, self.ie_ii['ii_c1e']['tested'])
-        self.assertEquals(1, self.ie_ii['ii_c2e']['tested'])
+        self.assertEquals(2, self.ie_ii.ii_chem_tested)
+        self.assertEquals(1, self.ie_ii.ii_elec_tested)
+        self.assertEquals(2, self.ie_ii.ii_c1e_tested)
+        self.assertEquals(1, self.ie_ii.ii_c2e_tested)
 
-        self.assertEquals(4, self.ei_ie['ei']['tested'])
-        self.assertEquals(4, self.ei_ie['ie']['tested'])
+        self.assertEquals(4, self.ei_ie.ei_tested)
+        self.assertEquals(4, self.ei_ie.ie_tested)
         
-        self.assertEquals(4, self.ie_ei['ei']['tested'])
-        self.assertEquals(4, self.ie_ei['ie']['tested'])
+        self.assertEquals(4, self.ie_ei.ei_tested)
+        self.assertEquals(4, self.ie_ei.ie_tested)
 
 if __name__ == '__main__':
     unittest.main()

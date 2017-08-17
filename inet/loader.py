@@ -54,7 +54,7 @@ class DataLoader(object):
         self.__configuration = utils.configuration() 
 
         # Total number of recorded cells
-        self.__nPV = 0 # total number of recorded PV-positive cells
+        self.__nIN = 0 # total number of recorded interneurons 
         self.__nGC = 0 # total number of recorded granule cells
 
         # all conection motifs are zero at construction
@@ -67,18 +67,18 @@ class DataLoader(object):
         self.__experiment = list()
 
         # a list of dictionaries whose indices are the
-        # number of PV cells recorded simulatenously
-        # (e.g. DataLoader.PV[2] returns a configuration dictionary
-        # with the recording configurations containing 2 PV cells
-        self.__PV = [utils.configuration() for _ in range(9)]
+        # number of interneurons recorded simulatenously
+        # (e.g. DataLoader.IN[2] returns a configuration dictionary
+        # with the recording configurations containing 2 interneurons
+        self.__IN = [utils.configuration() for _ in range(9)]
 
         cwd = os.getcwd()
         if path is not None:
             os.chdir(path)
             
-        PVsyn = glob.glob("*.syn")
+        filelist = glob.glob("*.syn")
 
-        for fname in PVsyn:
+        for fname in filelist:
             mydict = dict()
             mydict['fname'] = fname
             matrix, motif = self.__loadsyn(fname, int(fname[0]))
@@ -90,9 +90,9 @@ class DataLoader(object):
         os.chdir(cwd)
 
         # prompt number of files loaded
-        print("%4d syn  files loaded" %len(PVsyn))
+        print("%4d syn  files loaded" %len(filelist))
 
-    def __loadsyn(self, filename, nPV):
+    def __loadsyn(self, filename, nIN):
         """
         Reads the matrix of connectivities from a *syn file and 
         extract basic information about connectivity and cell types.
@@ -102,8 +102,8 @@ class DataLoader(object):
         filename : string
             filename or path to open  
 
-        nPV : integer
-            the number of PV+ cells contained in the matrix
+        nIN : integer
+            the number of interneurons contained in the matrix
 
         Returns
         -------
@@ -111,8 +111,10 @@ class DataLoader(object):
             connectivity matrix containing <0> if no connection, <1> if
             chemical synapse, <2> if electrical synapse and <3> if both
         
-        connections : A connecion dictionary containing the number and
-            tested and found connections for every type.
+        motifcounter : motifcounter
+            A motif counter object containing the number of 
+            tested and found connections for every type (see inet.motifs
+            for details)
         
         """
 
@@ -130,24 +132,24 @@ class DataLoader(object):
         configurationtype = enum[ncells]
         self.configuration[ configurationtype ] +=1 
 
-        # UPDATE PV dictionary list :
-        PVdict = self.PV[nPV]
-        PVdict[configurationtype ] +=1
+        # UPDATE IN dictionary list :
+        INdict = self.IN[nIN]
+        INdict[configurationtype ] +=1
 
-        # UPDATE number of total PV cells
-        self.__nPV += nPV
+        # UPDATE number of total IN cells
+        self.__nIN += nIN
 
         # UPDATE number of granule cells
-        nGC = ncells - nPV
+        nGC = ncells - nIN
         self.__nGC += nGC 
 
         # UPDATE connections 
         # count synapses:slice the matrix to get general connection types
 
-        II_matrix = utils.II_slice(matrix, nPV)
-        EI_matrix = utils.EI_slice(matrix, nPV)
-        IE_matrix = utils.IE_slice(matrix, nPV)
-        EE_matrix = utils.EE_slice(matrix, nPV)
+        II_matrix = utils.II_slice(matrix, nIN)
+        EI_matrix = utils.EI_slice(matrix, nIN)
+        IE_matrix = utils.IE_slice(matrix, nIN)
+        EE_matrix = utils.EE_slice(matrix, nIN)
 
         # UPDATE connection
         mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + \
@@ -170,14 +172,24 @@ class DataLoader(object):
 
         Returns
         -------
-            An ASCII table with basic statistics
+
+        info : list
+            An 2x2 list table with basic counting of cells and
+            recording configurations. It can be plotted nicely
+            with the terminal tables module.
+        
+        Example
+        -------
+        
+        >>> from terminaltables import AsciiTable 
+        >>> print Asciitable(info).table
         """
 
         if show == 'conf':
             info = [
                 ['Concept', 'Quantity'],
-                ['PV-positive cells', self.nPV],
-                ['Granule cells', self.nGC],
+                ['Principal cells', self.nGC],
+                ['Interneurons', self.nIN],
                 [' ',' '],
                 ['Pairs       ', self.configuration[enum[2]]],
                 ['Triplets    ', self.configuration[enum[3]]],
@@ -187,36 +199,8 @@ class DataLoader(object):
                 ['Septuplets  ', self.configuration[enum[7]]],
                 ['Octuplets   ', self.configuration[enum[8]]],
             ]
-            table = AsciiTable(info)
-            print (table.table)
 
-        if show == 'prob':
-            
-            info = [
-                ['Connection type', 'Value'],
-                ['PV-PV chemical synapses', self.ii_chem_found],
-                ['PV-PV electrical synapses', self.ii_elec_found],
-		[' ',' '],
-                ['PV-PV bidirectional chemical', self.ii_c2_found],
-                ['PV-PV one chemical with electrical', self.ii_c1e_found],
-                ['PV-PV bidirectional chemical with electrical', self.ii_c2e_found],
-                [' ',' '],
-                ['P(PV-PV) chemical synapse', self.ii_chem_found/self.ii_chem_tested],
-                ['P(PV-PV) electrical synapse', self.ii_elec_found/self.ii_elec_tested],
-                ['P(PV-PV) bidirectional chemical synapse', self.ii_c2_found/self.ii_c2_tested],
-                [' ',' '],
-                ['P(PV-PV) one chemical with electrical', self.ii_c1e_found/self.ii_c1e_tested],
-                ['P(PV-PV) bidirectional chemical with electrical', self.ii_c2e_found/self.ii_c2e_tested],
-                [' ',' '],
-                ['PV-GC chemical synapses', self.IE_found],
-                ['GC-PC chemical synapses', self.EI_found],
-                [' ',' '],
-                ['P(PV-GC) chemical synapse',self.IE_found/self.IE_tested],
-                ['P(GC-PC) chemical synapse', self.EI_found/self.EI_tested],
-                [' ',' '],
-            ]
-            table = AsciiTable(info)
-            print (table.table)
+        return(info)
 
     def __len__(self):
         """
@@ -224,40 +208,13 @@ class DataLoader(object):
         """
         return len(self.experiment)
 
-
-
     # only getters for private attributes 
-    configuration = property(lambda self: self.__configuration)
-    PV = property(lambda self: self.__PV)
+    IN = property(lambda self: self.__IN)
     nGC = property(lambda self: self.__nGC)
-    nPV = property(lambda self: self.__nPV)
+    nIN = property(lambda self: self.__nIN)
     motif = property(lambda self: self.__motif)
     experiment = property(lambda self: self.__experiment)
-
-
-    # usefull attributes
-    ii_chem_found = property(lambda self: self.motif['ii_chem']['found'])
-    ii_chem_tested = property(lambda self: self.motif['ii_chem']['tested'])
-
-    ii_elec_found = property(lambda self: self.motif['ii_elec']['found'])
-    ii_elec_tested = property(lambda self: self.motif['ii_elec']['tested'])
-
-    ii_c2_found = property(lambda self: self.motif['ii_c2']['found'])
-    ii_c2_tested = property(lambda self: self.motif['ii_c2']['tested'])
-
-    ii_c1e_found = property(lambda self: self.motif['ii_c1e']['found'])
-    ii_c1e_tested = property(lambda self: self.motif['ii_c1e']['tested'])
-
-    ii_c2e_found = property(lambda self: self.motif['ii_c2e']['found'])
-    ii_c2e_tested = property(lambda self: self.motif['ii_c2e']['tested'])
-
-    
-    IE_found = property(lambda self: self.motif['ie']['found'])
-    EI_found = property(lambda self: self.motif['ei']['found'])
-
-    EI_tested = property(lambda self: self.motif['ei']['tested'])
-    IE_tested = property(lambda self: self.motif['ei']['tested'])
-
+    configuration = property(lambda self: self.__configuration)
 
 if __name__ == "__main__":
     # %run in IPython
