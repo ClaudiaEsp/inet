@@ -5,8 +5,7 @@ between [interneurons](https://en.wikipedia.org/wiki/Interneuron) and principal 
 
 Reference:
 
-Guzman SJ, Schloegl A, Frotscher M and Jonas P (2016) **Synaptic mechanisms of pattern completion in the hippocampal CA3 network**. *Science* 353:1117-1123.
-[Pubmed reference](https://www.ncbi.nlm.nih.gov/pubmed/27609885)
+Guzman SJ, Schloegl A, Frotscher M and Jonas P (2016) [Synaptic mechanisms of pattern completion in the hippocampal CA3 network](https://www.ncbi.nlm.nih.gov/pubmed/27609885). *Science* 353:1117-1123.
 
 Requirements
 ============

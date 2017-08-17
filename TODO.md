@@ -2,6 +2,7 @@
 
 - [ ] add CA3-CA3 connectivity matrices
 - [ ] add new motifs to eecounter
+- [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)
 - [ ] add description and topics to repository @ClaudiaEsp
