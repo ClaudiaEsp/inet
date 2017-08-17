@@ -107,13 +107,13 @@ def boxplot(mylist, ax = None):
     if ax is None:
         ax = plt.gca() # gets current axis if necessary
         
-    xvalues = np.random.uniform(low =1.10, high = .90, size= data.size)
+    xvalues = np.random.uniform(low =0.4, high = 0.60, size= data.size)
 
     # plot single data points
     ax.plot(xvalues, data, 'o', color = 'gray', ms = 8) # single datapoits
     
     # boxplot details
-    boxplot = ax.boxplot(data, widths = .4, positions = [1], patch_artist = 1)
+    boxplot = ax.boxplot(data, widths = .4, positions = [0.5], patch_artist = 1)
     
     for box in boxplot['boxes']: 
         box.set( color = 'white') # outline color
