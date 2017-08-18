@@ -324,14 +324,14 @@ class EEMotifCounter(IIMotifCounter):
     Create a MotifCounter type object with connectivity motifs
     between same type of neurons. The motifs measured are the following:
 
-    ii_chem : a chemical synapse between neurons
-    ii_elec : an electrical synapse between neurons
-    ii_c1e : an alectrical synapse together with ONE chemical
-    ii_c2e : an alectrical synapse together with TWO chemical
-    ii_c2  : two reciprocally connected chemical synapses
-    ii_con : two neurons converging on to a third
-    ii_div : one neuron diverging into two neurons 
-    ii_lin : one neuron connected to a second one and this last to another
+    ee_chem : a chemical synapse between neurons
+    ee_elec : an electrical synapse between neurons
+    ee_c1e : an alectrical synapse together with ONE chemical
+    ee_c2e : an alectrical synapse together with TWO chemical
+    ee_c2  : two reciprocally connected chemical synapses
+    ee_con : two neurons converging on to a third
+    ee_div : one neuron diverging into two neurons 
+    ee_lin : one neuron connected to a second one and this last to another
     
     """
     motiflist = ['ee_chem', 'ee_elec', 'ee_c1e', 'ee_c2e', 'ee_c2', \
@@ -355,8 +355,7 @@ class EEMotifCounter(IIMotifCounter):
             self.__setitem__(key, {'tested':0, 'found':0})
 
         if matrix is not None:
-            self.read_matrix(matrix) # requires previous creation of keys
-
+            super(EEMotifCounter, self).read_matrix(matrix)
 
     def __call__(self, matrix = None):
         """
@@ -367,6 +366,6 @@ class EEMotifCounter(IIMotifCounter):
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
-eecounter    = IIMotifCounter()
+eecounter    = EEMotifCounter()
 eicounter    = EIMotifCounter()
 iecounter    = IEMotifCounter()

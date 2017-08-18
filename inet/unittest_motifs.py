@@ -335,45 +335,45 @@ class TestCA3MotifCounter(unittest.TestCase):
         """
         Test for correct number found in bidirectional connections 
         """
-        self.assertEquals(1, self.d.ii_c2_found)
-        self.assertEquals(1, self.h.ii_c2_found)
-        self.assertEquals(2, self.i.ii_c2_found)
-        self.assertEquals(2, self.l.ii_c2_found)
+        self.assertEquals(1, self.d.ee_c2_found)
+        self.assertEquals(1, self.h.ee_c2_found)
+        self.assertEquals(2, self.i.ee_c2_found)
+        self.assertEquals(2, self.l.ee_c2_found)
 
     def test_CA3convergent_connections(self):
         """
         Test for correct number found in divergent connectons 
         """
-        self.assertEquals(1, self.e.ii_con_found)
-        self.assertEquals(1, self.f.ii_con_found)
-        self.assertEquals(1, self.h.ii_con_found)
-        self.assertEquals(2, self.i.ii_con_found)
-        self.assertEquals(5, self.l.ii_con_found)
+        self.assertEquals(1, self.e.ee_con_found)
+        self.assertEquals(1, self.f.ee_con_found)
+        self.assertEquals(1, self.h.ee_con_found)
+        self.assertEquals(2, self.i.ee_con_found)
+        self.assertEquals(5, self.l.ee_con_found)
 
     def test_CA3divergent_connections(self):
         """
         Test for correct number found in convergent connectons 
         """
-        self.assertEquals(1, self.c.ii_div_found)
-        self.assertEquals(1, self.d.ii_div_found)
-        self.assertEquals(1, self.g.ii_div_found)
-        self.assertEquals(6, self.i.ii_div_found)
-        self.assertEquals(1, self.k.ii_div_found)
-        self.assertEquals(10, self.l.ii_div_found)
-        self.assertEquals(3, self.m.ii_div_found)
+        self.assertEquals(1, self.c.ee_div_found)
+        self.assertEquals(1, self.d.ee_div_found)
+        self.assertEquals(1, self.g.ee_div_found)
+        self.assertEquals(6, self.i.ee_div_found)
+        self.assertEquals(1, self.k.ee_div_found)
+        self.assertEquals(10, self.l.ee_div_found)
+        self.assertEquals(3, self.m.ee_div_found)
 
     def test_CA3linear_connections(self):
         """
         Test for correct number found in convergent connectons 
         """
-        self.assertEquals(1, self.a.ii_chain_found)
-        self.assertEquals(1, self.b.ii_chain_found)
-        self.assertEquals(1, self.d.ii_chain_found)
-        self.assertEquals(1, self.h.ii_chain_found)
-        self.assertEquals(7, self.i.ii_chain_found)
-        self.assertEquals(1, self.j.ii_chain_found)
-        self.assertEquals(12, self.l.ii_chain_found)
-        self.assertEquals(1, self.m.ii_chain_found)
+        self.assertEquals(1, self.a.ee_chain_found)
+        self.assertEquals(1, self.b.ee_chain_found)
+        self.assertEquals(1, self.d.ee_chain_found)
+        self.assertEquals(1, self.h.ee_chain_found)
+        self.assertEquals(7, self.i.ee_chain_found)
+        self.assertEquals(1, self.j.ee_chain_found)
+        self.assertEquals(12, self.l.ee_chain_found)
+        self.assertEquals(1, self.m.ee_chain_found)
 
 
 if __name__ == '__main__':
