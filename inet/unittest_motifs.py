@@ -1,5 +1,5 @@
 """
-motifs_unittest.py
+unittest_motifs.py
 
 Jose Guzman, sjm.guzman@gmail.com
 Claudia Espinoza, claudia.espinoza@ist.ac.at
@@ -307,6 +307,74 @@ class TestAddingObjects(unittest.TestCase):
         
         self.assertEquals(4, self.ie_ei.ei_tested)
         self.assertEquals(4, self.ie_ei.ie_tested)
+
+class TestCA3MotifCounter(unittest.TestCase):
+    """
+    Test the number of motifs found in CA3 neurons
+    according to the data in Guzman et al., 2016
+    """
+    def setUp(self): 
+        """
+        Load all CA3 connectivity motifs
+        """
+        self.a = iicounter(np.loadtxt('../data/CA3/0_100218_1.syn'))
+        self.b = iicounter(np.loadtxt('../data/CA3/0_110113_0.syn'))
+        self.c = iicounter(np.loadtxt('../data/CA3/0_110127_1.syn'))
+        self.d = iicounter(np.loadtxt('../data/CA3/0_120305_1.syn'))
+        self.e = iicounter(np.loadtxt('../data/CA3/0_130424_0.syn'))
+        self.f = iicounter(np.loadtxt('../data/CA3/0_130621_0.syn'))
+        self.g = iicounter(np.loadtxt('../data/CA3/0_130705_0.syn'))
+        self.h = iicounter(np.loadtxt('../data/CA3/0_130722_3.syn'))
+        self.i = iicounter(np.loadtxt('../data/CA3/0_140205_3.syn'))
+        self.j = iicounter(np.loadtxt('../data/CA3/0_140218_0.syn'))
+        self.k = iicounter(np.loadtxt('../data/CA3/0_140519_2.syn'))
+        self.l = iicounter(np.loadtxt('../data/CA3/0_141006_0.syn'))
+        self.m = iicounter(np.loadtxt('../data/CA3/0_141202_0.syn'))
+    
+    def test_CA3bidirectional_connections(self):
+        """
+        Test for correct number found in bidirectional connections 
+        """
+        self.assertEquals(1, self.d.ii_c2_found)
+        self.assertEquals(1, self.h.ii_c2_found)
+        self.assertEquals(2, self.i.ii_c2_found)
+        self.assertEquals(2, self.l.ii_c2_found)
+
+    def test_CA3convergent_connections(self):
+        """
+        Test for correct number found in divergent connectons 
+        """
+        self.assertEquals(1, self.e.ii_con_found)
+        self.assertEquals(1, self.f.ii_con_found)
+        self.assertEquals(1, self.h.ii_con_found)
+        self.assertEquals(2, self.i.ii_con_found)
+        self.assertEquals(5, self.l.ii_con_found)
+
+    def test_CA3divergent_connections(self):
+        """
+        Test for correct number found in convergent connectons 
+        """
+        self.assertEquals(1, self.c.ii_div_found)
+        self.assertEquals(1, self.d.ii_div_found)
+        self.assertEquals(1, self.g.ii_div_found)
+        self.assertEquals(6, self.i.ii_div_found)
+        self.assertEquals(1, self.k.ii_div_found)
+        self.assertEquals(10, self.l.ii_div_found)
+        self.assertEquals(3, self.m.ii_div_found)
+
+    def test_CA3linear_connections(self):
+        """
+        Test for correct number found in convergent connectons 
+        """
+        self.assertEquals(1, self.a.ii_chain_found)
+        self.assertEquals(1, self.b.ii_chain_found)
+        self.assertEquals(1, self.d.ii_chain_found)
+        self.assertEquals(1, self.h.ii_chain_found)
+        self.assertEquals(7, self.i.ii_chain_found)
+        self.assertEquals(1, self.j.ii_chain_found)
+        self.assertEquals(12, self.l.ii_chain_found)
+        self.assertEquals(1, self.m.ii_chain_found)
+
 
 if __name__ == '__main__':
     unittest.main()
