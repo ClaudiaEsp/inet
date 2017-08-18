@@ -12,7 +12,7 @@ Unittest environment to test the counting of motifs
 import unittest
 
 import numpy as np
-from motifs import iicounter, eicounter, iecounter
+from motifs import iicounter, eicounter, iecounter, eecounter
 
 class TestIIMotifCounter(unittest.TestCase):
     """
@@ -317,19 +317,19 @@ class TestCA3MotifCounter(unittest.TestCase):
         """
         Load all CA3 connectivity motifs
         """
-        self.a = iicounter(np.loadtxt('../data/CA3/0_100218_1.syn'))
-        self.b = iicounter(np.loadtxt('../data/CA3/0_110113_0.syn'))
-        self.c = iicounter(np.loadtxt('../data/CA3/0_110127_1.syn'))
-        self.d = iicounter(np.loadtxt('../data/CA3/0_120305_1.syn'))
-        self.e = iicounter(np.loadtxt('../data/CA3/0_130424_0.syn'))
-        self.f = iicounter(np.loadtxt('../data/CA3/0_130621_0.syn'))
-        self.g = iicounter(np.loadtxt('../data/CA3/0_130705_0.syn'))
-        self.h = iicounter(np.loadtxt('../data/CA3/0_130722_3.syn'))
-        self.i = iicounter(np.loadtxt('../data/CA3/0_140205_3.syn'))
-        self.j = iicounter(np.loadtxt('../data/CA3/0_140218_0.syn'))
-        self.k = iicounter(np.loadtxt('../data/CA3/0_140519_2.syn'))
-        self.l = iicounter(np.loadtxt('../data/CA3/0_141006_0.syn'))
-        self.m = iicounter(np.loadtxt('../data/CA3/0_141202_0.syn'))
+        self.a = eecounter(np.loadtxt('../data/CA3/0_100218_1.syn'))
+        self.b = eecounter(np.loadtxt('../data/CA3/0_110113_0.syn'))
+        self.c = eecounter(np.loadtxt('../data/CA3/0_110127_1.syn'))
+        self.d = eecounter(np.loadtxt('../data/CA3/0_120305_1.syn'))
+        self.e = eecounter(np.loadtxt('../data/CA3/0_130424_0.syn'))
+        self.f = eecounter(np.loadtxt('../data/CA3/0_130621_0.syn'))
+        self.g = eecounter(np.loadtxt('../data/CA3/0_130705_0.syn'))
+        self.h = eecounter(np.loadtxt('../data/CA3/0_130722_3.syn'))
+        self.i = eecounter(np.loadtxt('../data/CA3/0_140205_3.syn'))
+        self.j = eecounter(np.loadtxt('../data/CA3/0_140218_0.syn'))
+        self.k = eecounter(np.loadtxt('../data/CA3/0_140519_2.syn'))
+        self.l = eecounter(np.loadtxt('../data/CA3/0_141006_0.syn'))
+        self.m = eecounter(np.loadtxt('../data/CA3/0_141202_0.syn'))
     
     def test_CA3bidirectional_connections(self):
         """

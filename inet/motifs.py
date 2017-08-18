@@ -319,6 +319,51 @@ class IIMotifCounter(MotifCounter):
             setattr(self, key+'_tested',self[key]['tested']) 
             setattr(self, key+'_found' ,self[key]['found' ]) 
     
+class EEMotifCounter(IIMotifCounter):
+    """
+    Create a MotifCounter type object with connectivity motifs
+    between same type of neurons. The motifs measured are the following:
+
+    ii_chem : a chemical synapse between neurons
+    ii_elec : an electrical synapse between neurons
+    ii_c1e : an alectrical synapse together with ONE chemical
+    ii_c2e : an alectrical synapse together with TWO chemical
+    ii_c2  : two reciprocally connected chemical synapses
+    ii_con : two neurons converging on to a third
+    ii_div : one neuron diverging into two neurons 
+    ii_lin : one neuron connected to a second one and this last to another
+    
+    """
+    motiflist = ['ee_chem', 'ee_elec', 'ee_c1e', 'ee_c2e', 'ee_c2', \
+        'ee_con', 'ee_div', 'ee_chain']
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs between inhibitory neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
+        """
+        super(EEMotifCounter, self).__init__()
+
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+        if matrix is not None:
+            self.read_matrix(matrix) # requires previous creation of keys
+
+
+    def __call__(self, matrix = None):
+        """
+        Returns a EEMotifCounter object with counts of motifs
+        """
+        return EEMotifCounter(matrix) # will count motifs
+
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
