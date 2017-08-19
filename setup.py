@@ -27,5 +27,5 @@ setup(
     license = 'LICENSE',
     description = 'network simulations based on connections of PV neurons',
     long_description = open('README.md').read(),
-    install_requires = ['numpy', 'scipy'],
+    install_requires = ['numpy', 'scipy','terminaltables'],
 )

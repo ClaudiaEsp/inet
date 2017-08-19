@@ -1,5 +1,4 @@
 ### TODO list 
-- [ ] add the GAP junction in CA3
 - [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)
@@ -8,6 +7,7 @@
 
 Done
 ====
+- [x] add the GAP junction in CA3
 - [x] add CA3-CA3 connectivity matrices
 - [x] add new motifs to eecounter
 - [x] include a plot module for bar and linregress plots 

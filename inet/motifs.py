@@ -10,7 +10,9 @@ Contains classes to quantifiy and generate connectivity models based
 on recording synapses between principal cells and interneurons recorded 
 with a simultaneous whole-cell patch clamp recording configuration
 """
+
 import numpy as np
+from terminaltables import AsciiTable
 
 class MotifCounter(dict):
     """
@@ -87,6 +89,20 @@ class MotifCounter(dict):
         Sum more than two instances of MotifCounterObj
         """
         return self.__add__(MotifCounterObj)
+
+    def __str__(self):
+        """
+        Show the dictionary with all the values found in a nice
+        Ascii table when printing the object
+        """
+        info = [['Motif', 'found', 'tested'],]
+        for key in self.keys():
+            info.append([key, self[key]['found'], self[key]['tested']])
+
+        table = AsciiTable(info)
+        print(table.table) # return a string value
+        return('') # has to return a string value
+        
 
 class EIMotifCounter(MotifCounter):
     """
