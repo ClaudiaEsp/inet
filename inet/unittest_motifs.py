@@ -330,6 +330,7 @@ class TestCA3MotifCounter(unittest.TestCase):
         self.k = eecounter(np.loadtxt('../data/CA3/0_140519_2.syn'))
         self.l = eecounter(np.loadtxt('../data/CA3/0_141006_0.syn'))
         self.m = eecounter(np.loadtxt('../data/CA3/0_141202_0.syn'))
+        self.gap = eecounter(np.loadtxt('../data/CA3/0_140129_0.syn'))
     
     def test_CA3bidirectional_connections(self):
         """
@@ -375,6 +376,11 @@ class TestCA3MotifCounter(unittest.TestCase):
         self.assertEquals(12, self.l.ee_chain_found)
         self.assertEquals(1, self.m.ee_chain_found)
 
+    def test_CA3GAP_junction(self):
+        """
+        Test for correct number found in convergent connectons 
+        """
+        self.assertEquals(1, self.gap.ee_elec_found)
 
 if __name__ == '__main__':
     unittest.main()
