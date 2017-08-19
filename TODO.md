@@ -1,4 +1,5 @@
 ### TODO list 
+- [ ] test ii_con, ii_div and ii_chain in iicouter. BUG
 - [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)

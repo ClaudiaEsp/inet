@@ -99,6 +99,8 @@ class MotifCounter(dict):
         for key in self.keys():
             info.append([key, self[key]['found'], self[key]['tested']])
 
+        info[1:] = (sorted(info[1:])) # sort keys
+        
         table = AsciiTable(info)
         print(table.table) # return a string value
         return('') # has to return a string value
