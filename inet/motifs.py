@@ -293,13 +293,16 @@ class IIMotifCounter(MotifCounter):
                     syn_c2e +=1 # add bidirectional chemical to electrical
                     syn_c1e +=1 # add another unidirectional to electrical
 
-        # reciprocal motifs are counted from the trace <Tr> of a <A> matrix:
-        # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
+
+        # COUNT ONLY CHEMICAL SYNAPSES
         rows,cols = np.where(matrix==3) 
         A = matrix.copy()
         A[rows,cols] = 1
+        A[np.where(matrix==2)] = 0 # remove electrical only
 
         # transform into matrix type to perform matrix operations (e.g Tr)
+        # bidirec motifs are counted from the trace <Tr> of a <A> matrix:
+        # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
         A = np.matrix(A) 
         syn_c2 = np.sum( (A*A).diagonal() )/2 # bidirectional motifs
 
