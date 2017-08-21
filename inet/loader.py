@@ -53,7 +53,7 @@ class DataLoader(object):
 
         # Total number of recorded cells
         self.__nIN = 0 # total number of recorded interneurons 
-        self.__nGC = 0 # total number of recorded granule cells
+        self.__nPC = 0 # total number of recorded granule cells
 
         # all conection motifs are zero at construction
         self.__motif = motifcounter() 
@@ -138,20 +138,25 @@ class DataLoader(object):
         self.__nIN += nIN
 
         # UPDATE number of granule cells
-        nGC = ncells - nIN
-        self.__nGC += nGC 
+        nPC = ncells - nIN
+        self.__nPC += nPC
 
         # UPDATE connections 
         # count synapses:slice the matrix to get general connection types
 
-        II_matrix = utils.II_slice(matrix, nIN)
-        EI_matrix = utils.EI_slice(matrix, nIN)
-        IE_matrix = utils.IE_slice(matrix, nIN)
-        EE_matrix = utils.EE_slice(matrix, nIN)
+        if nIN==0:
+            mymotif = eecounter(matrix)
 
-        # UPDATE connection
-        mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + \
-            iecounter(IE_matrix) + eecounter(EE_matrix) 
+        else:
+            II_matrix = utils.II_slice(matrix, nIN)
+            EI_matrix = utils.EI_slice(matrix, nIN)
+            IE_matrix = utils.IE_slice(matrix, nIN)
+            EE_matrix = utils.EE_slice(matrix, nIN)
+
+            # UPDATE motif counters
+            mymotif = iicounter(II_matrix) + eicounter(EI_matrix) + \
+                iecounter(IE_matrix) + eecounter(EE_matrix) 
+
         # UPDATE connection motif
         self.__motif += mymotif
 
@@ -186,7 +191,7 @@ class DataLoader(object):
         if show == 'conf':
             info = [
                 ['Concept', 'Quantity'],
-                ['Principal cells', self.nGC],
+                ['Principal cells', self.nPC],
                 ['Interneurons', self.nIN],
                 [' ',' '],
                 ['Pairs       ', self.configuration[enum[2]]],
@@ -208,7 +213,7 @@ class DataLoader(object):
 
     # only getters for private attributes 
     IN = property(lambda self: self.__IN)
-    nGC = property(lambda self: self.__nGC)
+    nPC = property(lambda self: self.__nPC)
     nIN = property(lambda self: self.__nIN)
     motif = property(lambda self: self.__motif)
     experiment = property(lambda self: self.__experiment)

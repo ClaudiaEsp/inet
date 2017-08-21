@@ -10,7 +10,9 @@ Contains classes to quantifiy and generate connectivity models based
 on recording synapses between principal cells and interneurons recorded 
 with a simultaneous whole-cell patch clamp recording configuration
 """
+
 import numpy as np
+from terminaltables import AsciiTable
 
 class MotifCounter(dict):
     """
@@ -88,105 +90,22 @@ class MotifCounter(dict):
         """
         return self.__add__(MotifCounterObj)
 
-class IIMotifCounter(MotifCounter):
-    """
-    Create a MotifCounter type object with connectivity motifs
-    between interneurons. The motifs measured are the following:
-
-    ii_chem : a chemical synapse between interneurons
-    ii_elec : an electrical synapse between interneurons
-    ii_c1e : an alectrical synapse together with ONE chemical
-    ii_c2e : an alectrical synapse together with TWO chemical
-    ii_c2  : two reciprocally connected chemical synapse
-    
-    """
-    motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e', 'ii_c2']
-
-    def __init__(self, matrix = None):
+    def __str__(self):
         """
-        Counts connectivity motifs between inhibitory neurons 
+        Show the dictionary with all the values found in a nice
+        Ascii table when printing the object
+        """
+        info = [['Motif', 'found', 'tested'],]
+        for key in self.keys():
+            info.append([key, self[key]['found'], self[key]['tested']])
+
+        info[1:] = (sorted(info[1:])) # sort keys
         
-        Argument
-        --------
-        matrix: 2D NumpyArray
-            a connectivity matrix of pre-post dimension between 
-            excitatory neurons (pre) and inhibitory neurons (post).
+        table = AsciiTable(info)
+        print(table.table) # return a string value
+        return('') # has to return a string value
         
-        """
-        super(IIMotifCounter, self).__init__()
 
-        # keys zero at construction
-        for key in self.motiflist:
-            self.__setitem__(key, {'tested':0, 'found':0})
-
-        if matrix is not None:
-            self.read_matrix(matrix) # requires previous creation of keys
-
-
-    def __call__(self, matrix = None):
-        """
-        Returns a IIMotifCounter object with counts of motifs
-        """
-        return IIMotifCounter(matrix) # will count motifs
-
-    def read_matrix(self, matrix):
-        """
-        Counts the motifs in the matrix
-        """
-        try:
-            if matrix.shape[0] != matrix.shape[1]:
-                raise IOError("matrix must be a square matrix!")
-        except IOError:
-            raise
-
-        n = matrix.shape[0] # number of presynaptic neurons
-
-        II_chem = matrix[ np.where(matrix==1) ].size
-        II_elec = matrix[ np.where(matrix==2) ].size
-        II_c1e =  matrix[ np.where(matrix==3) ].size # ** see below
-        II_chem += II_c1e
-        II_elec += II_c1e
-        
-        # count unidirectional chemical synapses with gap junctions (c1e)
-        # or bidirectional chemical synapses with gap junctions (c2e)
-        II_c2e = 0
-
-        if II_c1e: # only if there are entries ==3 (see **)
-            pre, post = np.where(matrix==3)
-            mylist = zip(post,pre)
-            for x,y in mylist:
-                if matrix[ x,y ] == 1:
-                    II_c2e +=1 # add bidirectional chemical to electrical
-                    II_c1e +=1 # add another unidirectional to electrical
-
-        # reciprocal motifs are counted from the trace <Tr> of a <A> matrix:
-        # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
-        rows,cols = np.where(matrix==3) 
-        A = matrix.copy()
-        A[rows,cols] = 1
-
-        # transform into matrix type to perform matrix operations (e.g Tr)
-        A = np.matrix(A) 
-        II_c2 = np.sum( (A*A).diagonal() )/2
-
-        # possible connections
-        n_chem = n*(n-1)
-        n_elec = n*(n-1)/2
-        n_c1e = n_elec*2
-        n_c2e = n_elec
-        n_c2 = n_elec
-        
-        self.__setitem__('ii_chem', {'tested':n_chem, 'found':II_chem})
-        self.__setitem__('ii_elec', {'tested':n_elec, 'found':II_elec})
-        self.__setitem__('ii_c1e' , {'tested':n_c1e , 'found':II_c1e })
-        self.__setitem__('ii_c2e' , {'tested':n_c2e , 'found':II_c2e })
-        self.__setitem__('ii_c2' ,  {'tested':n_c2 ,  'found':II_c2  })
-        
-        # dynamically rewrite object attributes
-        for key in self:
-            setattr(self, key+'_tested',self[key]['tested']) 
-            setattr(self, key+'_found' ,self[key]['found' ]) 
-    
 class EIMotifCounter(MotifCounter):
     """
     Create a MotifCounter object with the the number of 
@@ -299,20 +218,149 @@ class IEMotifCounter(MotifCounter):
             setattr(self, key+'_tested', self[key]['tested'])
             setattr(self, key+'_found',  self[key]['found' ])
 
-class EEMotifCounter(MotifCounter):
+class IIMotifCounter(MotifCounter):
     """
-    Create a MotifCounter object with the the number of 
-    connections found and tested between exfor the following connection 
-    types:
+    Create a MotifCounter type object with connectivity motifs
+    between same type of neurons. The motifs measured are the following:
 
-    ee : a chemical synapse between excitatory neurons
+    ii_chem : a chemical synapse between neurons
+    ii_elec : an electrical synapse between neurons
+    ii_c1e : an alectrical synapse together with ONE chemical
+    ii_c2e : an alectrical synapse together with TWO chemical
+    ii_c2  : two reciprocally connected chemical synapses
+    ii_con : two neurons converging on to a third
+    ii_div : one neuron diverging into two neurons 
+    ii_lin : one neuron connected to a second one and this last to another
+    
     """
-    motiflist = ['ee']
+    motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e', 'ii_c2', \
+        'ii_con', 'ii_div', 'ii_chain']
 
     def __init__(self, matrix = None):
         """
-        Counts connectivity motifs between excitatory and inhibitory
-        neurons 
+        Counts connectivity motifs between inhibitory neurons 
+        
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            excitatory neurons (pre) and inhibitory neurons (post).
+        
+        """
+        super(IIMotifCounter, self).__init__()
+
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+        if matrix is not None:
+            self.read_matrix(matrix) # requires previous creation of keys
+
+
+    def __call__(self, matrix = None):
+        """
+        Returns a IIMotifCounter object with counts of motifs
+        """
+        return IIMotifCounter(matrix) # will count motifs
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        try:
+            if matrix.shape[0] != matrix.shape[1]:
+                raise IOError("matrix must be a square matrix!")
+        except IOError:
+            raise
+
+        n = matrix.shape[0] # number of presynaptic neurons
+
+        syn_chem = matrix[ np.where(matrix==1) ].size
+        syn_elec = matrix[ np.where(matrix==2) ].size
+        syn_c1e =  matrix[ np.where(matrix==3) ].size # ** see below
+        syn_chem += syn_c1e
+        syn_elec += syn_c1e
+        
+        # count unidirectional chemical synapses with gap junctions (c1e)
+        # or bidirectional chemical synapses with gap junctions (c2e)
+        syn_c2e = 0
+
+        if syn_c1e: # only if there are entries ==3 (see **)
+            pre, post = np.where(matrix==3)
+            mylist = zip(post,pre)
+            for x,y in mylist:
+                if matrix[ x,y ] == 1:
+                    syn_c2e +=1 # add bidirectional chemical to electrical
+                    syn_c1e +=1 # add another unidirectional to electrical
+
+
+        # COUNT ONLY CHEMICAL SYNAPSES
+        rows,cols = np.where(matrix==3) 
+        A = matrix.copy()
+        A[rows,cols] = 1
+        A[np.where(matrix==2)] = 0 # remove electrical only
+
+        # transform into matrix type to perform matrix operations (e.g Tr)
+        # bidirec motifs are counted from the trace <Tr> of a <A> matrix:
+        # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
+        A = np.matrix(A) 
+        syn_c2 = np.sum( (A*A).diagonal() )/2 # bidirectional motifs
+
+        J = A*A.T
+        syn_con = int( ( J.sum()-A.sum() )/2) # convergent motifs
+
+        J = A.T*A
+        syn_div = int(( J.sum()-A.sum() )/2) # divergent motifs
+
+        J = A*A
+        syn_lin = int( J.sum() - np.sum(J.diagonal()) )# linear chain motifs
+
+        # possible connections
+        n_chem = n*(n-1)
+        n_elec = n*(n-1)/2
+        n_c1e = n_elec*2
+        n_c2e = n_elec
+        n_c2 = n_elec
+        n_con = ( n*(n-1)*(n-2) ) / 2 # Zhao et al., eq 3
+        n_div = n_con
+        n_lin = n_con
+        
+        motif = self.motiflist
+        self.__setitem__(motif[0], {'tested':n_chem, 'found':syn_chem})
+        self.__setitem__(motif[1], {'tested':n_elec, 'found':syn_elec})
+        self.__setitem__(motif[2], {'tested':n_c1e , 'found':syn_c1e })
+        self.__setitem__(motif[3], {'tested':n_c2e , 'found':syn_c2e })
+        self.__setitem__(motif[4], {'tested':n_c2 ,  'found':syn_c2  })
+        self.__setitem__(motif[5], {'tested':n_con , 'found':syn_con  })
+        self.__setitem__(motif[6], {'tested':n_div , 'found':syn_div  })
+        self.__setitem__(motif[7], {'tested':n_lin , 'found':syn_lin  })
+        
+        # dynamically rewrite object attributes
+        for key in self:
+            setattr(self, key+'_tested',self[key]['tested']) 
+            setattr(self, key+'_found' ,self[key]['found' ]) 
+    
+class EEMotifCounter(IIMotifCounter):
+    """
+    Create a MotifCounter type object with connectivity motifs
+    between same type of neurons. The motifs measured are the following:
+
+    ee_chem : a chemical synapse between neurons
+    ee_elec : an electrical synapse between neurons
+    ee_c1e : an alectrical synapse together with ONE chemical
+    ee_c2e : an alectrical synapse together with TWO chemical
+    ee_c2  : two reciprocally connected chemical synapses
+    ee_con : two neurons converging on to a third
+    ee_div : one neuron diverging into two neurons 
+    ee_lin : one neuron connected to a second one and this last to another
+    
+    """
+    motiflist = ['ee_chem', 'ee_elec', 'ee_c1e', 'ee_c2e', 'ee_c2', \
+        'ee_con', 'ee_div', 'ee_chain']
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs between inhibitory neurons 
         
         Argument
         --------
@@ -322,41 +370,23 @@ class EEMotifCounter(MotifCounter):
         
         """
         super(EEMotifCounter, self).__init__()
-        
+
         # keys zero at construction
         for key in self.motiflist:
             self.__setitem__(key, {'tested':0, 'found':0})
 
         if matrix is not None:
-            self.read_matrix(matrix) # requires previous creation of keys
+            super(EEMotifCounter, self).read_matrix(matrix)
 
     def __call__(self, matrix = None):
         """
-        Returns a EIMotifCounter object with counts of motifs
+        Returns a EEMotifCounter object with counts of motifs
         """
-
         return EEMotifCounter(matrix) # will count motifs
-
-    def read_matrix(self, matrix):
-        """
-        Counts the motifs in the matrix
-        """
-        ncells = matrix.shape[0]
-
-        EE_found = np.count_nonzero(matrix)
-        EE_tested = ncells * (ncells-1) # possible EE connections
-
-        self.__setitem__('ee', {'tested':EE_tested, 'found':EE_found})
-
-        # dynamically create attributes only if matrix is entered
-        for key in self:
-            setattr(self, key+'_tested', self[key]['tested'])
-            setattr(self, key+'_found',  self[key]['found' ])
-
 
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
+eecounter    = EEMotifCounter()
 eicounter    = EIMotifCounter()
 iecounter    = IEMotifCounter()
-eecounter    = EEMotifCounter()
