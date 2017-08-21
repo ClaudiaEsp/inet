@@ -178,6 +178,8 @@ class TestEIMotifCounter(unittest.TestCase):
     """
     A = np.ones((2,2))
     B = np.array(([1,1],[0,0]))
+    C = np.array(([1,1],[1,0],[0,0]))
+    D = np.array(([1,1],[1,0],[1,0]))
 
     def setUp(self):
         """
@@ -186,6 +188,8 @@ class TestEIMotifCounter(unittest.TestCase):
         """
         self.a = eicounter(self.A)
         self.b = eicounter(self.B)
+        self.c = eicounter(self.C)
+        self.d = eicounter(self.D)
  
 
     def test_found_chemical_syn(self):
@@ -200,9 +204,16 @@ class TestEIMotifCounter(unittest.TestCase):
         """
 		Test convergent motifs from 2 excitatory cells
 		"""
-        self.assertEquals(2, self.a.e2i_tested)
-        self.assertEquals(1, self.b.e2i_tested)
+        self.assertEquals(2, self.a.e2i_found)
+        self.assertEquals(0, self.b.e2i_found)
+        self.assertEquals(1, self.c.e2i_found)
 		
+    def test_convergent3(self):
+        """
+		Test convergent motifs from 3 excitatory cells
+		"""
+        self.assertEquals(1, self.d.e3i_found)
+
     def test_add_objects(self):
         """
         Test that sum objects is correct

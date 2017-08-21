@@ -153,19 +153,25 @@ class EIMotifCounter(MotifCounter):
 
 		
         ei_found = np.count_nonzero(matrix)
-        ei_tested = ecell * icell # possible EI connections
+        ei_tested = ecell * icell # all possible unitary ei connections
  
-        e2i_tested, e2i_found = 0,0
+        e2i_tested, e2i_found = 0, 0
+        e3i_tested, e3i_found = 0, 0
 		
         if ecell == 1:
-            pass
+            pass # e*i_tested and e*i_found will remain zero
         else:
             for col in range(icell):
-			    e2i_tested += int(comb(ecell, 2))
-			    e2i_found  += comb(np.count_nonzero(matrix[:,col],2))
+                syn = np.count_nonzero(matrix[:,col]) 
+                e2i_tested += int( comb(ecell,2) )
+                e2i_found  += int( comb(syn,2)    )
+
+                e3i_tested += int( comb(ecell,3) )
+                e3i_found  += int( comb(syn,3)   )
 			
         self.__setitem__('ei',  {'tested':ei_tested, 'found':ei_found}  )
-        self.__setitem__('e2i', {'tested':e2i_tested, 'found':e2i_found})
+        self.__setitem__('e2i', {'tested':e2i_tested,'found':e2i_found})
+        self.__setitem__('e3i', {'tested':e3i_tested,'found':e3i_found})
 		
 		
         # dynamically create attributes only if matrix is entered
