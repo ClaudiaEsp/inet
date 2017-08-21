@@ -12,6 +12,7 @@ with a simultaneous whole-cell patch clamp recording configuration
 """
 
 import numpy as np
+from scipy.misc import comb
 from terminaltables import AsciiTable
 
 class MotifCounter(dict):
@@ -113,9 +114,9 @@ class EIMotifCounter(MotifCounter):
     types:
 
     ei : a chemical synapse between excitatory and inhibitory neurons
-    ei2: a divergent double chemical synapse between excitatory to inh.
+    e2i: two excitatory cells converging to one inhibitory neuron.
     """
-    motiflist = ['ei', 'ei2']
+    motiflist = ['ei', 'e2i']
 
     def __init__(self, matrix = None):
         """
@@ -150,11 +151,23 @@ class EIMotifCounter(MotifCounter):
         """
         ecell, icell = matrix.shape
 
-        EI_found = np.count_nonzero(matrix)
-        EI_tested = ecell * icell # possible EI connections
-
-        self.__setitem__('ei', {'tested':EI_tested, 'found':EI_found})
-
+		
+        ei_found = np.count_nonzero(matrix)
+        ei_tested = ecell * icell # possible EI connections
+ 
+        e2i_tested, e2i_found = 0,0
+		
+        if ecell == 1:
+            pass
+        else:
+            for col in range(icell):
+			    e2i_tested += int(comb(ecell, 2))
+			    e2i_found  += comb(np.count_nonzero(matrix[:,col],2))
+			
+        self.__setitem__('ei',  {'tested':ei_tested, 'found':ei_found}  )
+        self.__setitem__('e2i', {'tested':e2i_tested, 'found':e2i_found})
+		
+		
         # dynamically create attributes only if matrix is entered
         for key in self:
             setattr(self, key+'_tested', self[key]['tested'])
@@ -213,6 +226,7 @@ class IEMotifCounter(MotifCounter):
 
         self.__setitem__('ie', {'tested':IE_tested, 'found':IE_found})
 
+		
         # dynamically create attributes only if matrix is entered
         for key in self:
             setattr(self, key+'_tested', self[key]['tested'])

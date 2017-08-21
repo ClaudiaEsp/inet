@@ -186,16 +186,23 @@ class TestEIMotifCounter(unittest.TestCase):
         """
         self.a = eicounter(self.A)
         self.b = eicounter(self.B)
-         
+ 
 
     def test_found_chemical_syn(self):
         """
         Test 'ei' : a chemical synapses between excitatory to inhibitory 
-                    neuron.
+        neuron.
         """
         self.assertEquals(4, self.a.ei_found)
         self.assertEquals(2, self.b.ei_found)
-        
+
+    def test_convergent2(self):
+        """
+		Test convergent motifs from 2 excitatory cells
+		"""
+        self.assertEquals(2, self.a.e2i_tested)
+        self.assertEquals(1, self.b.e2i_tested)
+		
     def test_add_objects(self):
         """
         Test that sum objects is correct
