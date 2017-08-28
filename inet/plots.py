@@ -21,6 +21,8 @@ Usage
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
+from scipy.stats import t as T
 
 def barplot(simulation, n_found, ax=None):
     """
@@ -133,6 +135,70 @@ def boxplot(mylist, ax = None):
         ax.spines[sp].set_visible(0)
     
     return( ax )
+
+def plot_linear_fit(xdata, ydata, color = None, title = None, ax = None):
+    """
+    Plots the linear fit togheter with the two-side 95% confident intervals 
+    
+    Parameters
+    ----------
+    xdata: 1D Numpy array
+    ydata: 1D Numpy array 
+    color: color object for the linear fit [1], eg = 'red'
+    title: (string) containing the title of the output table
+    
+    Returns
+    -------
+    A table with the parameters for linear fit of xdata to ydata.
+
+    For 95% confident intervals see:
+    https://tomholderness.wordpress.com/2013/01/10/confidence_intervals/
+
+    [1] see https://matplotlib.org/examples/color/named_colors.html
+    
+    """
+    if ax is None:
+        ax = plt.gca() # if not given, get current axis
+        
+    m, a, rval, pval, stderr = linregress(xdata, ydata)
+
+    # the linear function
+    f = lambda(x): a + m*x # linear function
+    xfit = np.linspace(0, 1,100)
+    yfit = f(xfit)
+
+    y_err = ydata - f(xdata) # residuals
+    SSE = np.power(y_err, 2).sum() # sum of squared errors
+
+    # Calculate confident intervals
+    mean_x = np.mean(xdata)	   # mean of data
+    n = xdata.size             # number of samples
+    # for a 2 tailed 95% confidence interval enter 0.975
+    tstat = T.ppf(0.975, n-1)  # appropriate t value
+
+    confs = tstat * np.sqrt( (SSE/(n-2)) * (1.0/n + 
+        (np.power((xfit-mean_x),2)/ ((np.sum(np.power(xdata,2)))-n*(np.power(mean_x,2))))))
+    
+    lower_conf = yfit - abs(confs)
+    upper_conf = yfit + abs(confs)
+
+    ax.plot(xfit, yfit, lw =2 , color = color)
+    ax.plot(xfit, lower_conf, '--', lw = 1, color = color)
+    ax.plot(xfit, upper_conf, '--', lw = 1, color = color)
+    ax.fill_between(xfit,upper_conf,lower_conf,  color = color, alpha=.1)
+
+    #ax.text(28, 40,'P = %2.4f'%pval, color = color)
+
+    # stdout statistic
+    infostats = dict() 
+    infostats['slope'] = m
+    infostats['intercept'] = a
+    infostats['correlation coef'] = rval
+    infostats['P-value'] = pval
+    infostats['Standard error'] = stderr
+
+    print(infostats)
+    return ax
 
 if __name__ == '__main__':
     # some tests
