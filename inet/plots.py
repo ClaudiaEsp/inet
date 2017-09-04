@@ -56,7 +56,7 @@ def barplot(simulation, n_found, ax=None):
         ax = plt.gca() # gets current axis if necessary
 
     x_pos = (0, 0.4) 
-    x_labels = ('Simulation', 'Observation')
+    x_labels = ('Simulation', 'Observation', fontsize = 20)
 
     # bar with SD
     ax.bar(x_pos, [sim.mean(), n_found],  \
@@ -78,7 +78,7 @@ def barplot(simulation, n_found, ax=None):
     # labels
     ax.set_xticks(x_pos)
     ax.set_xticklabels(x_labels) 
-    ax.set_ylabel('Number of motifs')
+    ax.set_ylabel('Number of motifs', fontsize = 20)
 
     # remove grid just in case
     ax.grid(False)
