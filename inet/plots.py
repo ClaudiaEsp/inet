@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 from scipy.stats import t as T
 
-def barplot(simulation, n_found, ax=None):
+def barplot(simulation, n_found, larger = True, ax=None):
     """
     Plots a bar of simulated values versus the counts of
     the connections found experimentally and provide a P-Value
@@ -39,6 +39,10 @@ def barplot(simulation, n_found, ax=None):
     n_found: int
         the number of successes found empirically
 
+    larger: bool (default True)
+        if 'True' calculates the p-value that the data are above 
+    the null-hypothese. Otherwise, the data is bellow the null-hypothes
+
     ax : plt.axis
         an axis object to plot it
 
@@ -50,13 +54,20 @@ def barplot(simulation, n_found, ax=None):
     """
     
     sim = np.array(simulation)
-    p_val = len(sim[sim>n_found]) / float(sim.size)
 
+    if larger:
+        counts = len(sim[sim > n_found]) # simulation larger than found
+        p_val  = counts/ float(sim.size)
+    else:
+        counts = len(sim[sim < n_found]) # simulation smaller than found
+        p_val  = counts / float(sim.size)
+
+    
     if ax is None:
         ax = plt.gca() # gets current axis if necessary
 
     x_pos = (0, 0.4) 
-    x_labels = ('Simulation', 'Observation', fontsize = 20)
+    x_labels = ('Simulation', 'Observation')
 
     # bar with SD
     ax.bar(x_pos, [sim.mean(), n_found],  \
@@ -65,7 +76,13 @@ def barplot(simulation, n_found, ax=None):
     ax.errorbar(x_pos, [sim.mean(), n_found], fmt=' ',\
         yerr=[sim.std(), 0], color='brown', capsize=12, 
         capthick = 3, elinewidth = 3, zorder = 1)
-    ax.text(0.4, n_found + n_found*0.2,  'P = %2.4f'%p_val,\
+
+    if counts !=0:
+        mylabel = 'P = {:2.4f}'.format(p_val)
+    else:
+        mylabel = 'P < {:2.4f}'.format(1/float(sim.size))
+    
+    ax.text(0.4, n_found + n_found*0.2,  mylabel,\
         verticalalignment='center', horizontalalignment='center')
 
     # remove top and righ axis
@@ -77,7 +94,7 @@ def barplot(simulation, n_found, ax=None):
 
     # labels
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(x_labels) 
+    ax.set_xticklabels(x_labels, fontsize = 20) 
     ax.set_ylabel('Number of motifs', fontsize = 20)
 
     # remove grid just in case

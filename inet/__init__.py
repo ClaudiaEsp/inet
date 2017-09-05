@@ -5,7 +5,7 @@
 # to do from inet import DataLoader
 from inet.loader import DataLoader
 
-__version__ = '0.0.10'
+__version__ = '0.0.11'
 __author__ = 'Jose Guzman and Claudia Espinoza'
 __license__ = 'GPL-2.0'
 
