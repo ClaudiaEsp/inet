@@ -153,7 +153,35 @@ def boxplot(mylist, ax = None):
     
     return( ax )
 
-def plot_linear_fit(xdata, ydata, color = None, title = None, ax = None):
+def separation_plot(insimilarity, outsimilarity,  ax = None):
+    """
+    Plots a pattern separation figure containing a similiarty between
+    input patterns versus the similarity between output patterns
+
+    Parameters:
+    -----------
+    insimilarity: list with similiarities between pairs of input patterns
+    outsimilarity: list with similiarities between pairs of output patterns
+        
+    """
+    if ax is None:
+        ax = plt.gca()
+
+    # plot
+    idline = np.linspace(0,1,100) # identity line
+    ax.scatter(outsimilarity, insimilarity, color = 'gray')
+    ax.plot(idline, idline, '--', color = 'brown', alpha=.6)
+    ax.fill_between(idline, 1, idline, color='yellow', alpha=.1)
+
+
+    ax.set_xlim(0,1), ax.set_ylim(0,1)
+            
+    ax.set_ylabel('Input similarity  ($\cos(x_i,y_i)$)', fontsize=20)
+    ax.set_xlabel('Output similarity ($\cos(x_o,y_o)$)', fontsize=20)
+
+    return(ax)
+
+def linear_fit_plot(xdata, ydata, color = None, title = None, ax = None):
     """
     Plots the linear fit togheter with the two-side 95% confident intervals 
     
