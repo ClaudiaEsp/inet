@@ -11,7 +11,6 @@ Auxiliary functions to calculate operations on pairs of patterns
 
 from __future__ import division
 import numpy as np
-import matplotlib.pyplot as plt
  
 # maximal pattern separation is the distance from a point located in (1,0)
 # to the identity line
@@ -159,29 +158,5 @@ class Separation(object):
             dist.append( np.abs(x-y)/np.sqrt(2) ) # simplified equation 
 
         return np.mean(dist)
-        
-        
-    def plot(self, ax = None):
-        """
-        Plots a pattern separation figure containing a similiarty between
-        input patterns versus the similarity between output patterns
-        
-        """
-        if ax is None:
-            ax = plt.gca()
-
-        # plot
-        idline = np.linspace(0,1,100) # identity line
-        ax.scatter(self.outsimilarity, self.insimilarity, color = 'gray')
-        ax.plot(idline, idline, '--', color = 'brown', alpha=.6)
-        ax.fill_between(idline, 1, idline, color='yellow', alpha=.1)
-
-
-        ax.set_xlim(0,1), ax.set_ylim(0,1)
-            
-        ax.set_ylabel('Input similarity  ($\cos(x_i,y_i)$)', fontsize=20)
-        ax.set_xlabel('Output similarity ($\cos(x_o,y_o)$)', fontsize=20)
-
-        return(ax)
         
 separation = Separation()
