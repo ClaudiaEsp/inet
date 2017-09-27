@@ -1,4 +1,7 @@
 ### TODO list 
+- [ ] Hypothesis testing on pattern separation (reject, accept null hypothese)
+- [ ] Inhibitory microcircuit generate GC network sparness (reject, accept null hypothese)
+- [ ] Proper activation of IN network upon sparse GC activity (reject, accept null hypotese)
 - [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
