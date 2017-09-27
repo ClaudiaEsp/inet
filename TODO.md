@@ -1,5 +1,5 @@
 ### TODO list 
-- [ ] test ii_con, ii_div and ii_chain in iicouter. BUG
+- [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)
@@ -8,6 +8,7 @@
 
 Done
 ====
+- [x] test ii_con, ii_div and ii_chain in iicouter. BUG
 - [x] add the GAP junction in CA3
 - [x] add CA3-CA3 connectivity matrices
 - [x] add new motifs to eecounter
