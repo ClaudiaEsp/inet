@@ -324,7 +324,7 @@ class IIMotifCounter(MotifCounter):
         # bidirec motifs are counted from the trace <Tr> of a <A> matrix:
         # n_reciprocal = Tr(A*A)/2, see Zhao et al., 2011
         A = np.matrix(A) 
-        syn_c2 = np.sum( (A*A).diagonal() )/2 # bidirectional motifs
+        syn_c2 = int(np.sum( (A*A).diagonal() )/2) # bidirectional motifs
 
         J = A*A.T
         syn_con = int( ( J.sum()-A.sum() )/2) # convergent motifs
