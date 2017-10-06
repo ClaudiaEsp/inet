@@ -6,9 +6,9 @@ Claudia Espinoza, claudia.espinoza@ist.ac.at
 
 Created: Thu Aug  3 16:26:12 CEST 2017
 
-Contains classes to quantifiy and generate connectivity models based 
+Contains classes to count connectivity motifs based 
 on recording synapses between principal cells and interneurons recorded 
-with a simultaneous whole-cell patch clamp recording configuration
+with a simultaneous whole-cell patch clamp recording configuration.
 """
 
 import numpy as np
@@ -198,7 +198,7 @@ class IEMotifCounter(MotifCounter):
         --------
         matrix: 2D NumpyArray
             a connectivity matrix of pre-post dimension between 
-            excitatory neurons (pre) and inhibitory neurons (post).
+            inhibitory neurons (pre) and excitatory neurons (post).
         
         """
         super(IEMotifCounter, self).__init__()
@@ -264,7 +264,8 @@ class IIMotifCounter(MotifCounter):
         --------
         matrix: 2D NumpyArray
             a connectivity matrix of pre-post dimension between 
-            excitatory neurons (pre) and inhibitory neurons (post).
+            recurrently connected inhibitory neurons
+            
         
         """
         super(IIMotifCounter, self).__init__()
@@ -360,6 +361,53 @@ class IIMotifCounter(MotifCounter):
             setattr(self, key+'_tested',self[key]['tested']) 
             setattr(self, key+'_found' ,self[key]['found' ]) 
     
+    
+class IIConMotifCounter(MotifCounter):
+    """
+    Create a MotifCounter type object with convergent connectivity motifs
+    The motifs measured are the following:
+
+    ii_con_e   : an electrical synapse between converging inhibitory neurons
+    ii_con_c   : a chemical synapse between converging inhibitory 
+    ii_con_c2  : a bidirectional chemical synapse between converging inhibitory neurons 
+    ii_con_c1e : an alectrical synapse and chemical synapse between converging inhibitory neurons
+    ii_con_c2e : an alectrical synapse and bidirectional chemical synapse between converging inhibitory neurons
+    
+    """
+    motiflist = ['ii_con_e', 'ii_con_c', 'ii_con_c2', 'ii_con_c1e', 'ii_con_c2e']
+
+    def __init__(self, matrix = None):
+        """
+        Counts connectivity motifs between convergent inhibitory neurons
+        Argument
+        --------
+        matrix: 2D NumpyArray
+            a connectivity matrix of pre-post dimension between 
+            recurrently connected inhibitory neurons
+        
+        """
+        super(IIMotifConCounter, self).__init__()
+        # keys zero at construction
+        for key in self.motiflist:
+            self.__setitem__(key, {'tested':0, 'found':0})
+
+        if matrix is not None:
+            self.read_matrix(matrix) # requires previous creation of keys
+
+    def read_matrix(self, matrix):
+        """
+        Counts the motifs in the matrix
+        """
+        try:
+            if matrix.shape[0] != matrix.shape[1]:
+                raise IOError("matrix must be a square matrix!")
+        except IOError:
+            raise
+
+        n = matrix.shape[0] # number of presynaptic neurons
+        # TODO: continue counting....
+        
+
 class EEMotifCounter(IIMotifCounter):
     """
     Create a MotifCounter type object with connectivity motifs
@@ -386,7 +434,6 @@ class EEMotifCounter(IIMotifCounter):
         --------
         matrix: 2D NumpyArray
             a connectivity matrix of pre-post dimension between 
-            excitatory neurons (pre) and inhibitory neurons (post).
         
         """
         super(EEMotifCounter, self).__init__()
