@@ -1,8 +1,9 @@
 ### TODO list 
+- [ ] test blocks of inhibition (200 um)
+- [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] Hypothesis testing on pattern separation (reject, accept null hypothese)
 - [ ] Inhibitory microcircuit generate GC network sparness (reject, accept null hypothese)
 - [ ] Proper activation of IN network upon sparse GC activity (reject, accept null hypotese)
-- [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] configure Travis CI for unittesting
 - [ ] Add conting GC-GC connections @ClaudiaEsp
 - [ ] add rsa key to repository (see https://stackoverflow.com/questions/8588768/git-push-username-password-how-to-avoid)
