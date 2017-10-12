@@ -116,7 +116,7 @@ class EIMotifCounter(MotifCounter):
     ei : a chemical synapse between excitatory and inhibitory neurons
     e2i: two excitatory cells converging to one inhibitory neuron.
     """
-    motiflist = ['ei', 'e2i']
+    motiflist = ['ei', 'e2i', 'e3i']
 
     def __init__(self, matrix = None):
         """
@@ -169,7 +169,7 @@ class EIMotifCounter(MotifCounter):
                 e3i_tested += int( comb(ecell,3) )
                 e3i_found  += int( comb(syn,3)   )
 			
-        self.__setitem__('ei',  {'tested':ei_tested, 'found':ei_found}  )
+        self.__setitem__('ei',  {'tested':ei_tested, 'found':ei_found} )
         self.__setitem__('e2i', {'tested':e2i_tested,'found':e2i_found})
         self.__setitem__('e3i', {'tested':e3i_tested,'found':e3i_found})
 		
@@ -422,13 +422,14 @@ class EEMotifCounter(IIMotifCounter):
     ee_div : one neuron diverging into two neurons 
     ee_lin : one neuron connected to a second one and this last to another
     
+    It's algorithmically identical to IIMotifcounter
     """
     motiflist = ['ee_chem', 'ee_elec', 'ee_c1e', 'ee_c2e', 'ee_c2', \
         'ee_con', 'ee_div', 'ee_chain']
 
     def __init__(self, matrix = None):
         """
-        Counts connectivity motifs between inhibitory neurons 
+        Counts connectivity motifs between excitatory neurons 
         
         Argument
         --------

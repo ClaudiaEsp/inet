@@ -35,6 +35,8 @@ class TestIIMotifCounter(unittest.TestCase):
 
     Z = np.zeros((3,3))
 
+    set56 = np.array([[0, 0, 0],[1, 0, 3],[3, 1, 0]])
+
     def setUp(self):
         """
         Create IIMotifCounter objects from global matrices with
@@ -56,6 +58,8 @@ class TestIIMotifCounter(unittest.TestCase):
 
         self.z   = iicounter(self.Z)
 
+        self.set56 = iicounter(self.set56)
+
     def test_found_electrical_and_one_chemical(self):
         """
         Test 'ii_c1e' : an alectrical synapse together with ONE chemical
@@ -75,6 +79,8 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(0, self.e.ii_c1e_found)
         
         self.assertEquals(0, self.z.ii_c1e_found)
+
+        self.assertEquals(3, self.set56.ii_c1e_found)
 
     def test_found_electrical_and_two_chemical(self):
         """
@@ -96,6 +102,8 @@ class TestIIMotifCounter(unittest.TestCase):
 
         self.assertEquals(0, self.z.ii_c2e_found)
 
+        self.assertEquals(1, self.set56.ii_c2e_found)
+
     def test_found_electrical_syn(self):
         """
         Test 'ii_elec' : electrical synapses between interneurons
@@ -115,6 +123,8 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(0, self.e.ii_elec_found)
 
         self.assertEquals(0, self.z.ii_elec_found)
+
+        self.assertEquals(2, self.set56.ii_elec_found)
 
     def test_found_chemical_syn(self):
         """
@@ -136,6 +146,8 @@ class TestIIMotifCounter(unittest.TestCase):
 
         self.assertEquals(0, self.z.ii_chem_found)
 
+        self.assertEquals(4, self.set56.ii_chem_found)
+
     def test_found_bidirectional_chemical(self):
         """
         Test 'ii_c2' : a bidirectional chemical synapse
@@ -155,6 +167,29 @@ class TestIIMotifCounter(unittest.TestCase):
         self.assertEquals(1, self.e.ii_c2_found)
 
         self.assertEquals(0, self.z.ii_c2_found)
+
+        self.assertEquals(1, self.set56.ii_c2_found)
+
+    def test_found_convergent_motifs(self):
+        """
+        Test 'ii_con' : convergent inhibitory chemical synapse
+        """
+
+        self.assertEquals(1, self.set56.ii_con_found)
+
+    def test_found_divergent_motifs(self):
+        """
+        Test 'ii_div' : divergent inhibitory chemical synapse
+        """
+
+        self.assertEquals(2, self.set56.ii_div_found)
+
+    def test_found_linear_motifs(self):
+        """
+        Test 'ii_lin' : linear inhibitory chemical synapse
+        """
+
+        self.assertEquals(2, self.set56.ii_lin_found)
 
     def test_add_objects(self):
         """
