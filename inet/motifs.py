@@ -254,7 +254,7 @@ class IIMotifCounter(MotifCounter):
     
     """
     motiflist = ['ii_chem', 'ii_elec', 'ii_c1e', 'ii_c2e', 'ii_c2', \
-        'ii_con', 'ii_div', 'ii_chain']
+        'ii_con', 'ii_div', 'ii_lin']
 
     def __init__(self, matrix = None):
         """
@@ -425,7 +425,7 @@ class EEMotifCounter(IIMotifCounter):
     It's algorithmically identical to IIMotifcounter
     """
     motiflist = ['ee_chem', 'ee_elec', 'ee_c1e', 'ee_c2e', 'ee_c2', \
-        'ee_con', 'ee_div', 'ee_chain']
+        'ee_con', 'ee_div', 'ee_lin']
 
     def __init__(self, matrix = None):
         """

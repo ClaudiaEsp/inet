@@ -420,14 +420,14 @@ class TestCA3MotifCounter(unittest.TestCase):
         """
         Test for correct number found in convergent connectons 
         """
-        self.assertEquals(1, self.a.ee_chain_found)
-        self.assertEquals(1, self.b.ee_chain_found)
-        self.assertEquals(1, self.d.ee_chain_found)
-        self.assertEquals(1, self.h.ee_chain_found)
-        self.assertEquals(7, self.i.ee_chain_found)
-        self.assertEquals(1, self.j.ee_chain_found)
-        self.assertEquals(12, self.l.ee_chain_found)
-        self.assertEquals(1, self.m.ee_chain_found)
+        self.assertEquals(1, self.a.ee_lin_found)
+        self.assertEquals(1, self.b.ee_lin_found)
+        self.assertEquals(1, self.d.ee_lin_found)
+        self.assertEquals(1, self.h.ee_lin_found)
+        self.assertEquals(7, self.i.ee_lin_found)
+        self.assertEquals(1, self.j.ee_lin_found)
+        self.assertEquals(12, self.l.ee_lin_found)
+        self.assertEquals(1, self.m.ee_lin_found)
 
     def test_CA3GAP_junction(self):
         """
