@@ -1,4 +1,5 @@
 ### TODO list 
+- [ ] check P value in divergent inhibitory motifs
 - [ ] test blocks of inhibition (200 um)
 - [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] Hypothesis testing on pattern separation (reject, accept null hypothese)
