@@ -13,6 +13,7 @@ with a simultaneous whole-cell patch clamp recording configuration.
 
 import numpy as np
 from scipy.misc import comb
+from itertools import permutations
 from terminaltables import AsciiTable
 
 class MotifCounter(dict):
@@ -374,7 +375,7 @@ class IIConMotifCounter(MotifCounter):
     ii_con_c2e : an alectrical synapse and bidirectional chemical synapse between converging inhibitory neurons
     
     """
-    motiflist = ['ii_con_e', 'ii_con_c', 'ii_con_c2', 'ii_con_c1e', 'ii_con_c2e']
+    motiflist = ['ii_con_elec', 'ii_con_chem', 'ii_con_c2', 'ii_con_c1e', 'ii_con_c2e']
 
     def __init__(self, matrix = None):
         """
@@ -404,8 +405,39 @@ class IIConMotifCounter(MotifCounter):
         except IOError:
             raise
 
-        n = matrix.shape[0] # number of presynaptic neurons
-        # TODO: continue counting....
+        npost = matrix.shape[1] # number of postsynaptic neurons
+    
+        
+        # counts chemical synapses between convergent motifs
+        ii_con_chem_found  = 0
+        ii_con_chem_tested = 0
+        ii_con_elec_found = 0
+
+        for col in range(npost): # in cols are convergent neurons
+            mycol = matrix[:,col].copy()  
+            mycol[mycol==2]=0 # remove gaps
+            selec = np.nonzero( matrix[:,mycol]) )
+            for i,j in permutations(selec, 2):
+                ii_con_chem_tested +=1
+                if matrix[i,j] == 1:
+                    ii_con_chem_found += 1
+
+                if matrix[i,j] == 2:
+                    ii_con_elec_found += 1
+
+                if matrix[i,j] == 3:
+                    ii_con_chem_found += 1
+                    ii_con_elec_found += 1
+
+        ii_con_elec_tested = ii_con_chem_tested/2
+
+        self.__setitem__('ii_con_chem', {'tested':ii_con_chem_tested, 'found': ii_con_chem_found})
+
+        # dynamically rewrite object attributes
+        for key in self:
+            setattr(self, key+'_tested',self[key]['tested']) 
+            setattr(self, key+'_found' ,self[key]['found' ]) 
+             
         
 
 class EEMotifCounter(IIMotifCounter):
