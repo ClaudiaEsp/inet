@@ -1,5 +1,4 @@
 ### TODO list 
-- [ ] check P value in divergent inhibitory motifs
 - [ ] test blocks of inhibition (200 um)
 - [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] Hypothesis testing on pattern separation (reject, accept null hypothese)
@@ -13,6 +12,7 @@
 
 Done
 ====
+- [x] check P value in divergent inhibitory motifs
 - [x] test ii_con, ii_div and ii_chain in iicouter. BUG
 - [x] add the GAP junction in CA3
 - [x] add CA3-CA3 connectivity matrices
