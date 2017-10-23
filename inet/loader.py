@@ -162,16 +162,9 @@ class DataLoader(object):
 
         return( matrix, mymotif )
 
-    def stats(self, show):
+    def stats(self):
         """
         Print basis statistics from the recorded dataset
-
-        Argument
-        --------
-
-        show : string 
-            A string with 'conf' to show the configurations or
-            'prob' to show the different probabilities.
 
         Returns
         -------
@@ -188,20 +181,19 @@ class DataLoader(object):
         >>> print Asciitable(info).table
         """
 
-        if show == 'conf':
-            info = [
-                ['Concept', 'Quantity'],
-                ['Principal cells', self.nPC],
-                ['Interneurons', self.nIN],
-                [' ',' '],
-                ['Pairs       ', self.configuration[enum[2]]],
-                ['Triplets    ', self.configuration[enum[3]]],
-                ['Quadruplets ', self.configuration[enum[4]]],
-                ['Quintuplets ', self.configuration[enum[5]]],
-                ['Sextuplets  ', self.configuration[enum[6]]],
-                ['Septuplets  ', self.configuration[enum[7]]],
-                ['Octuplets   ', self.configuration[enum[8]]],
-            ]
+        info = [
+            ['Concept', 'Quantity'],
+            ['Principal cells', self.nPC],
+            ['Interneurons', self.nIN],
+            [' ',' '],
+            ['Pairs       ', self.configuration[enum[2]]],
+            ['Triplets    ', self.configuration[enum[3]]],
+            ['Quadruplets ', self.configuration[enum[4]]],
+            ['Quintuplets ', self.configuration[enum[5]]],
+            ['Sextuplets  ', self.configuration[enum[6]]],
+            ['Septuplets  ', self.configuration[enum[7]]],
+            ['Octuplets   ', self.configuration[enum[8]]],
+        ]
 
         return(info)
 
@@ -211,7 +203,7 @@ class DataLoader(object):
         """
         return len(self.experiment)
 
-    # access to key properties of experiment
+    # access to key properties of an experiment
     def filename(self, index):
         """
         returns the filename of the experiment with index given
