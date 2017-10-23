@@ -211,6 +211,25 @@ class DataLoader(object):
         """
         return len(self.experiment)
 
+    # access to key properties of experiment
+    def filename(self, index):
+        """
+        returns the filename of the experiment with index given
+        """
+        return self.experiment[index]['fname']
+
+    def matrix(self, index):
+        """
+        returns the matrix of the experiment with index given
+        """
+        return self.experiment[index]['matrix']
+
+    def motifs(self, index):
+        """
+        returns the filename of the experiment with index given
+        """
+        return self.experiment[index]['motif']
+
     # only getters for private attributes 
     IN = property(lambda self: self.__IN)
     nPC = property(lambda self: self.__nPC)
@@ -218,6 +237,8 @@ class DataLoader(object):
     motif = property(lambda self: self.__motif)
     experiment = property(lambda self: self.__experiment)
     configuration = property(lambda self: self.__configuration)
+
+
 
 if __name__ == "__main__":
     # %run in IPython
