@@ -15,8 +15,8 @@ Requires inet
 from __future__ import division
 
 import numpy as np
+import pickle
 from itertools import combinations
-from collections import OrderedDict
 
 from inet.motifs import iicounter
 
@@ -32,6 +32,13 @@ def sigmoid(x, A, C, r):
     """
     return  A  / ( 1 + np.exp((x-C)/r) )
 
+# distance-depedent functions
+# check 
+chem_param = pickle.load(open('chem_syn.p', 'rb')
+elec_param = pickle.load(open('elec_syn.p', 'rb')
+
+fchem = lambda x: sigmoid(dist=x, *chem_param)
+felec = lambda x: sigmoid(dist=x, *elec_param)
 
 def chem_squarematrix(size, prob):
     """
