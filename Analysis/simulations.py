@@ -33,12 +33,12 @@ def sigmoid(x, A, C, r):
     return  A  / ( 1 + np.exp((x-C)/r) )
 
 # distance-depedent functions
-# check 
-chem_param = pickle.load(open('chem_syn.p', 'rb')
-elec_param = pickle.load(open('elec_syn.p', 'rb')
+# param for https://github.com/ClaudiaEsp/inet/Analysis/Sigmoids.ipynb
+chem_param = pickle.load( open('chem_syn.p', 'rb') )
+elec_param = pickle.load( open('elec_syn.p', 'rb') )
 
-fchem = lambda x: sigmoid(dist=x, *chem_param)
-felec = lambda x: sigmoid(dist=x, *elec_param)
+fchem = lambda x: sigmoid(x, *chem_param)
+felec = lambda x: sigmoid(x, *elec_param)
 
 def chem_squarematrix(size, prob):
     """
@@ -81,7 +81,7 @@ def chem_squarematrix(size, prob):
 def elec_squarematrix(size, prob):
     """
     generates a square random matrix with a probability 'prob'
-    of having values ==2, zero otherwise. It does not take into account
+    of having values == 2, zero otherwise. It does not take into account
     the diagonal, which is always zero.
 
     Arguments
