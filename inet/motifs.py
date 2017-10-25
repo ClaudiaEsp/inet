@@ -340,18 +340,23 @@ class IIMotifCounter(MotifCounter):
         # possible connections
         n_chem = n*(n-1)
         n_elec = n*(n-1)/2
+
         n_c1e = n_elec*2
         n_c2e = n_elec
-        n_c2 = n_elec
-        n_con = ( n*(n-1)*(n-2) ) / 2 # Zhao et al., eq 3
-        n_div = n_con
-        n_lin = n_con
+
+        # see Zhao et al., eq 3
+        n_c2 =    n*(n-1)/2
+        n_con = ( n*(n-1)*(n-2) ) / 2
+        n_div = ( n*(n-1)*(n-2) ) / 2 
+        n_lin = ( n*(n-1)*(n-2) ) 
         
         motif = self.motiflist
         self.__setitem__(motif[0], {'tested':n_chem, 'found':syn_chem})
         self.__setitem__(motif[1], {'tested':n_elec, 'found':syn_elec})
+
         self.__setitem__(motif[2], {'tested':n_c1e , 'found':syn_c1e })
         self.__setitem__(motif[3], {'tested':n_c2e , 'found':syn_c2e })
+
         self.__setitem__(motif[4], {'tested':n_c2 ,  'found':syn_c2  })
         self.__setitem__(motif[5], {'tested':n_con , 'found':syn_con  })
         self.__setitem__(motif[6], {'tested':n_div , 'found':syn_div  })
@@ -387,13 +392,21 @@ class IIConMotifCounter(MotifCounter):
             recurrently connected inhibitory neurons
         
         """
-        super(IIMotifConCounter, self).__init__()
+        super(IIConMotifCounter, self).__init__()
+
         # keys zero at construction
         for key in self.motiflist:
             self.__setitem__(key, {'tested':0, 'found':0})
 
         if matrix is not None:
             self.read_matrix(matrix) # requires previous creation of keys
+
+    def __call__(self, matrix = None):
+        """
+        Returns a IIConMotifCounter object with counts of motifs
+        """
+
+        return IIConMotifCounter(matrix)
 
     def read_matrix(self, matrix):
         """
@@ -412,26 +425,18 @@ class IIConMotifCounter(MotifCounter):
         ii_con_chem_found  = 0
         ii_con_chem_tested = 0
         ii_con_elec_found = 0
+        ii_con_elec_tested = 0
 
-        for col in range(npost): # in cols are convergent neurons
-            mycol = matrix[:,col].copy()  
-            mycol[mycol==2]=0 # remove gaps
-            selec = np.nonzero( matrix[:,mycol]) )
-            for i,j in permutations(selec, 2):
-                ii_con_chem_tested +=1
-                if matrix[i,j] == 1:
-                    ii_con_chem_found += 1
+        mymatrix = matrix.copy()  
+        mymatrix[mymatrix==2]=0 # remove gaps
 
-                if matrix[i,j] == 2:
-                    ii_con_elec_found += 1
+        pre, post = np.nonzero(mymatrix)
+        ii_con_elec_tested = 10#ii_con_chem_tested/2
 
-                if matrix[i,j] == 3:
-                    ii_con_chem_found += 1
-                    ii_con_elec_found += 1
-
-        ii_con_elec_tested = ii_con_chem_tested/2
-
-        self.__setitem__('ii_con_chem', {'tested':ii_con_chem_tested, 'found': ii_con_chem_found})
+        self.__setitem__('ii_con_chem', {'tested':ii_con_chem_tested, \
+            'found': ii_con_chem_found})
+        self.__setitem__('ii_con_elec', {'tested':ii_con_elec_tested, \
+            'found': ii_con_elec_found})
 
         # dynamically rewrite object attributes
         for key in self:
@@ -487,6 +492,7 @@ class EEMotifCounter(IIMotifCounter):
 # ready-to-use objects
 motifcounter = MotifCounter()
 iicounter    = IIMotifCounter()
+iiconcounter = IIConMotifCounter()
 eecounter    = EEMotifCounter()
 eicounter    = EIMotifCounter()
 iecounter    = IEMotifCounter()
