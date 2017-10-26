@@ -21,6 +21,8 @@ from __future__ import division
 import glob, os
 import numpy as np
 
+import warnings
+
 import inet.utils as utils
 from inet.utils import enum
 
@@ -78,10 +80,11 @@ class DataLoader(object):
 
         for fname in filelist:
             mydict = dict()
-            mydict['fname'] = fname
+            mydict['fname'] = fname[:-4]
             matrix, motif = self.__loadsyn(fname, int(fname[0]))
             mydict['matrix'] = matrix
             mydict['motif'] = motif 
+            mydict['dist'] = self.__loaddist(fname[:-3] + 'dist', matrix)
 
             self.__experiment.append( mydict )
         
@@ -161,6 +164,36 @@ class DataLoader(object):
         self.__motif += mymotif
 
         return( matrix, mymotif )
+
+    def __loaddist(self, filename, matrix):
+        """
+        Read the matrix of intersomatic distances from a *dist file
+        and returns it as a NumPy array.
+
+        Argument
+        --------
+        filename : string
+            filename or path to open
+
+        matrix : a NumPy array
+            this is the connectivity matrix, must be give to to 
+
+        Returns
+        -------
+        matrix : 2D Numpy matrix
+            connectivity matrix containing distances between pre-
+            and post- synaptic neurons
+        """
+        try:
+            dist_matrix = np.loadtxt(filename, dtype='float')
+            if matrix.shape == dist_matrix.shape:
+                return( dist_matrix )
+
+        except IOError:
+            warnings.warn(filename + ' not found')
+            dist_empty = np.empty(matrix.shape)
+            dist_empty[:] = np.nan
+            return( dist_empty )
 
     def stats(self):
         """
