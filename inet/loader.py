@@ -176,7 +176,8 @@ class DataLoader(object):
             filename or path to open
 
         matrix : a NumPy array
-            this is the connectivity matrix, must be give to to 
+            this is the connectivity matrix, must be given to return
+            an empty matrix in case that the ditances are not found 
 
         Returns
         -------
@@ -254,6 +255,12 @@ class DataLoader(object):
         returns the filename of the experiment with index given
         """
         return self.experiment[index]['motif']
+
+    def dist(self, index):
+        """
+        returns the distances of the experiment with index given
+        """
+        return self.experiment[index]['dist']
 
     # only getters for private attributes 
     IN = property(lambda self: self.__IN)

@@ -19,6 +19,7 @@ import pickle
 from itertools import combinations
 
 from inet.motifs import iicounter
+from inet.utils import II_slice 
 
 def sigmoid(x, A, C, r):
     """
@@ -32,7 +33,9 @@ def sigmoid(x, A, C, r):
     """
     return  A  / ( 1 + np.exp((x-C)/r) )
 
-# distance-depedent functions
+# the probability of connection is given by the distance between
+# interneuron in a sigmoid-like function. We obtain the parameters by
+# fitting the data
 # param for https://github.com/ClaudiaEsp/inet/Analysis/Sigmoids.ipynb
 chem_param = pickle.load( open('chem_syn.p', 'rb') )
 elec_param = pickle.load( open('elec_syn.p', 'rb') )
@@ -109,6 +112,30 @@ def elec_squarematrix(size, prob):
     
     return( A )
         
+def chem_distmatrix(matrix):
+    """
+    generates a square random matrix with a probability 'prob'
+    of having ones, zero otherwise. It does not take into account
+    the diagonal, which is always zero.
+
+    Arguments
+    ---------
+    matrix : 2D NumPy 
+        a matrix with intersomatic distances
+
+    Returns
+    -------
+    a 2D Numpy matrix with one if there is a connection, zero otherwise.
+    """
+
+    distp = fchem(np.abs(matrix))/100. # matrix of probabilities
+    rand = np.random.rand(matrix.shape[0], matrix.shape[1]) #random number
+    prop = (rand < distp)*1 # if random < probability of found
+
+    # set to zero diagonal elements
+    prop[np.where(np.eye(prop.shape[0]))] = 0
+
+    return( prop )
         
 class IIUniformModel(object):
     """
@@ -124,7 +151,9 @@ class IIUniformModel(object):
         dataset: DataLoaderObject (see DataLoader in inet module) 
         """
 
-        # get a list with (nPV, nRecord) for nPV>2
+        # get a list with elements (nPV, nRecord)
+        # nPV -> this the number of simultaneously recorded PV cells
+        # nRecord -> this is the number of set where recorded with nPV
         self.__PVconf = list()
         for nPV in range(2,9): # between 2 and 8 simultaneous cells
             nRecord = np.sum( dataset.IN[nPV].values() )
@@ -178,8 +207,10 @@ class IIUniformModel(object):
         
     def run(self, n_iter, seed=None):
         """
+        Run the simulation
+
         Arguments:
-        niter:  n_iter      
+        niter:  int      
             Number of iterations
 
         Update the number of motifs found in the lists
@@ -222,7 +253,116 @@ class IIUniformModel(object):
 class IISigmoidModel(object):
     """
     This is a connectivity model that assumes a sigmoid-like  
-    connection probability between interneurons.
+    relation between the connection probability and the distance between 
+    interneurons. The parameters are slightly different for chemical
+    and electrical connections.
+    
     """        
+    def __init__(self, dataset):
+        """
+        
+        Arguments
+        ---------
+        dataset: DataLoaderObject (see DataLoader in inet module) 
+        """
+        # get a list with inhibitory connectivity matrices
+        self.__PVdist = list() # the list of matrices of distances
+        self.__chem_dist = list() # intersomatic distances of chemical syn
+        self.__elec_dist = list() # intersomatic distances of electrical syn
+        for i in range(len(dataset)):
+            nPV= int(dataset.filename(i)[0])
+
+            if nPV>1: # read distances from 2 or more PV-cells
+                imatrix = II_slice(dataset.dist(i), nPV)
+
+                if not np.isnan( imatrix[0][0] ): # TODO:remove NaN
+                    self.PVdist.append( imatrix )
+                    dist = imatrix.ravel()[np.flatnonzero(imatrix)] 
+                    self.__chem_dist +=list( np.abs(dist) )
+                    self.__elec_dist +=list( np.unique(np.abs(dist)) )
+
+        print('{:2d} distances matrices loaded'.format( len(self.PVdist) ))
+        print('{:2d} distances of chemical synapses'.format( len(self.chem_dist) ))
+        print('{:2d} distances of electrical synapses'.format( len(self.elec_dist) ))
+
+        self.__PC = dataset.motif.ii_chem_found/dataset.motif.ii_chem_tested
+        self.__PE = dataset.motif.ii_elec_found/dataset.motif.ii_elec_tested
+
+        self.nchem = np.empty(0) # chemical synapse (ii_chem)
+        self.nelec = np.empty(0) # electrical synapse (ii_elec) 
+
+        self.nbid = np.empty(0) # bidirectional chemical synapse (ii_c2)
+        self.ncon = np.empty(0) # convergent inhibitory motifs (ii_con)
+        self.ndiv = np.empty(0) # divergent inhibitory motifs (ii_div)
+        self.nlin = np.empty(0) # linear inhibitory motifs (ii_lin)
+
+        self.nc1e = np.empty(0) # electrical and unidirectional chemical (ii_c1e)
+        self.nc2e = np.empty(0) # electrical and bidirectional chemical (ii_c2e)
+
+    def __simulate_dataset(self):
+        """
+        Simulates chemical and electrical synapses with a distance-
+        dependent connection probability which is obtained from a sigmoid
+        funciton fitted to the empirical data.
+
+        Returns:
+        An IICounter Object
+        """
+        myiicounter = iicounter()
+
+        # read all distances
+        for dist in self.PVdist:
+            C = chem_distmatrix(matrix = dist) 
+
+            myiicounter +=iicounter(C)
+
+        return( myiicounter )
+
+    def run(self, n_iter, seed=None):
+        """
+        Run the simulation
+
+        Arguments:
+        n_iter:     int
+            Number of iterations
+        
+        Update the number of motifs found in the lists
+        """
+        np.random.seed(seed)
+
+        # resize NumPy arrays and set pointers
+        self.nchem = np.resize(self.nchem, n_iter)
+        self.nelec = np.resize(self.nelec, n_iter) 
+
+        self.nbid = np.resize(self.nbid, n_iter)
+        self.ncon = np.resize(self.ncon, n_iter)
+        self.ndiv = np.resize(self.ndiv, n_iter)
+        self.nlin = np.resize(self.nlin, n_iter)
+
+        self.nc1e = np.resize(self.nc1e, n_iter)
+        self.nc2e = np.resize(self.nc2e, n_iter)
+
+        for i in range(n_iter):
+            mysim = self.__simulate_dataset()
+            self.nchem[i] = mysim['ii_chem']['found']
+            self.nelec[i] = mysim['ii_elec']['found']
+
+            self.nbid[i] = mysim['ii_c2']['found'] 
+            self.ncon[i] = mysim['ii_con']['found'] 
+            self.ndiv[i] = mysim['ii_div']['found'] 
+            self.nlin[i] = mysim['ii_lin']['found'] 
+
+            self.nc1e[i] = mysim['ii_c1e']['found'] 
+            self.nc2e[i] = mysim['ii_c2e']['found'] 
+
+
+    # only getters for private attributes 
+    PVdist = property(lambda self: self.__PVdist)
+    chem_dist = property(lambda self: self.__chem_dist)
+    elec_dist = property(lambda self: self.__elec_dist)
+    PC = property(lambda self: self.__PC)
+    PE = property(lambda self: self.__PE)
+
+        
 
 
