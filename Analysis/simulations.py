@@ -92,7 +92,7 @@ def elec_squarematrix(size, prob):
     size : int
         the size of the square matrix
     prob : float
-        the probability of having ones.
+        the probability of having twos.
 
     Returns
     -------
@@ -105,7 +105,7 @@ def elec_squarematrix(size, prob):
     # take a list with  all possible 2-combinations
     pairs = [i for i in combinations(range(n),2)]
     # shuffle the list!
-    np.random.shuffle(pairs) 
+    np.random.shuffle( pairs ) 
     
     for i in pairs:
         A[i] = (np.random.rand()<prob)*2
@@ -114,9 +114,8 @@ def elec_squarematrix(size, prob):
         
 def chem_distmatrix(matrix):
     """
-    generates a square random matrix with a probability 'prob'
-    of having ones, zero otherwise. It does not take into account
-    the diagonal, which is always zero.
+    generates a square random matrix with a probability based on a 
+    sigmoid function.
 
     Arguments
     ---------
@@ -137,6 +136,37 @@ def chem_distmatrix(matrix):
 
     return( prop )
         
+def elec_distmatrix(matrix):
+    """
+    generates a square random matrix with a probability based on a 
+    sigmoid function.
+
+    Arguments
+    ---------
+    matrix : 2D NumPy 
+        a matrix with intersomatic distances
+
+    Returns
+    -------
+    a 2D Numpy matrix with two if there is a connection, zero otherwise.
+    """
+    n = matrix.shape[0] # matrix is square, size nxn
+    A = np.zeros((n,n), dtype=int) 
+
+    R = np.random.rand(n,n) 
+    P = felec(np.abs(matrix))/100. # matrix of distance-prob
+    
+    # all possible unique 2-cells combinations
+    pairs = [i for i in combinations(range(n), 2)]
+    # shuffle pairs to randomize the list
+    np.random.shuffle( pairs )
+    
+    for pair in pairs:
+        A[pair] = (R[pair]<P[pair])*2
+
+    return( A )
+    
+
 class IIUniformModel(object):
     """
     This is a connectivity model that assumes a constant and uniform
@@ -313,8 +343,17 @@ class IISigmoidModel(object):
         # read all distances
         for dist in self.PVdist:
             C = chem_distmatrix(matrix = dist) 
+            E = elec_distmatrix(matrix = dist)
 
-            myiicounter +=iicounter(C)
+            S = C + E
+            x,y = np.where(S==2) # eliminate '1' from the opposite pos
+            mycoor = zip(y, x)
+            for i,j in mycoor:
+                if S[i,j]==1:
+                    S[i,j]=3
+                    S[j,i]=1
+
+            myiicounter +=iicounter(S)
 
         return( myiicounter )
 
