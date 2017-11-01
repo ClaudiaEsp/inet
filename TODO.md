@@ -1,5 +1,5 @@
 ### TODO list 
-- [ ] test blocks of inhibition (200 um)
+- [ ] implement transitivity motifs in counter
 - [ ] test electrical connections between inhibitory cells to inhibtion motif
 - [ ] Hypothesis testing on pattern separation (reject, accept null hypothese)
 - [ ] Inhibitory microcircuit generate GC network sparness (reject, accept null hypothese)
@@ -12,6 +12,7 @@
 
 Done
 ====
+- [x] test blocks of inhibition (200 um)
 - [x] check P value in divergent inhibitory motifs
 - [x] test ii_con, ii_div and ii_chain in iicouter. BUG
 - [x] add the GAP junction in CA3
