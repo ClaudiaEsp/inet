@@ -175,7 +175,7 @@ class Circumference(object):
  
         y = m_2 * x + a_2
 
-        we get the (x,y) coordinates of the intersection can be calculated as:
+        the (x,y) coordinates of the intersection can be calculated as:
         x = (a_1 - a_2) / (m_2 - m_1)
         y = ( a_1 * m_2 - a_2 * m_1) / ( m_2 - m_1 )
 
@@ -328,15 +328,14 @@ def set_circlepoints(RoiManager):
     index = RoiManager.getCount() # number of items in the ROI
 
     # create points
-    #A = PointRoi(imp.getWidth()/3, imp.getHeight()/2)
-    A = PointRoi(722-100,512+100)
+    A = PointRoi(imp.getWidth()/3, imp.getHeight()/2)
+    #A = PointRoi(722-100,512+100)
     A.setName('A')
-    #B = PointRoi(imp.getWidth()/2, imp.getHeight()*1/5)
-    B = PointRoi(722,512) # center
+    B = PointRoi(imp.getWidth()/2, imp.getHeight()*1/5)
+    #B = PointRoi(722,512) # center
     B.setName('B')
-    #C = PointRoi(imp.getWidth()*2/3, imp.getHeight()/2)
-    C = PointRoi(722+100,512+100)
-    #C = PointRoi(722+100,512)
+    C = PointRoi(imp.getWidth()*2/3, imp.getHeight()/2)
+    #C = PointRoi(722+100,512+100)
     C.setName('C')
 
     for p in [A, B, C]: # common features
@@ -385,10 +384,12 @@ def draw_Line(segment, RoiManager = None,  color = None, label = None ):
 
     myLine = Line(start.XBase, start.YBase, end.XBase, end.YBase)
     myLine.setStrokeColor( Color.GREEN )
+
     if label:
         myLine.setName( label )
     else:
         myLine.setName( ' ' )
+
     if color:
         myLine.setStrokeColor( color )
 
@@ -438,7 +439,6 @@ def draw_Circle(center, diam, RoiManager, label = None):
 
 if __name__ in ['__builtin__', '__main__']:
 
-    #IJ.log('running curved_distances')
     # remove previous ROI if existing
     if RoiManager().getInstance().getCount(): # if >0
         WindowManager.getWindow("ROI Manager").close() # close ROI Manager
@@ -479,7 +479,7 @@ if __name__ in ['__builtin__', '__main__']:
         mycell.append(PointRoi(int(x), int(y)))
 
     #======================================================================
-    # compute euclidean distances in physical units
+    # Result table 1: compute euclidean distances in physical units
     #======================================================================
     rt1 = ResultsTable()
     for row, pre in enumerate(mycell):
@@ -492,7 +492,7 @@ if __name__ in ['__builtin__', '__main__']:
     rt1.show('Euclidean distances ' + imp.getTitle())
             
     #======================================================================
-    # compute curvature for first segment
+    # Result table 2: compute curvature for first segment
     #======================================================================
     rt2 = ResultsTable()
     for row, pre in enumerate(mycell):
