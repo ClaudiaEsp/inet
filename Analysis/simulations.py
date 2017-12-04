@@ -35,7 +35,8 @@ def sigmoid(x, A, C, r):
 
 # the probability of connection is given by the distance between
 # interneuron in a sigmoid-like function. We obtain the parameters by
-# fitting the data
+# fitting the data in the notebook called
+# Sigmoid functions to model connections probabilities
 # param for https://github.com/ClaudiaEsp/inet/Analysis/Sigmoids.ipynb
 chem_param = pickle.load( open('chem_syn.p', 'rb') )
 elec_param = pickle.load( open('elec_syn.p', 'rb') )
