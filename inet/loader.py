@@ -91,7 +91,7 @@ class DataLoader(object):
         os.chdir(cwd)
 
         # prompt number of files loaded
-        print("%4d syn  files loaded" %len(filelist))
+        print("%4d syn  files loaded\n" %len(filelist))
 
     def __loadsyn(self, filename, nIN):
         """
