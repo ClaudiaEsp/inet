@@ -6,11 +6,14 @@ Claudia Espinoza, claudia.espinoza@ist.ac.at
  
 Created: Mon Nov 20 18:13:47 CET 2017
  
-This is an ImageJ-pluging writen in Python. 
+This is an ImageJ-pluging writen in Jython. Jython is the Python 
+implementation to run the Java platform in ImageJ. Check
+https://imagej.net/Jython_Scripting
 
 It calculates the intersomatic distance between cells in the dentate gyrus.
 The curvature of the dentate is accounted by plotting a circumference
-around the area of the dentate gyrus where the recordings were made.
+around the area of the dentate gyrus where the recordings were made
+similarly as in claw curvatures were measured in Feduccia 1993 [1].
 
 The circumference is computed based on three points given by the user.
 Its center will be used to estimate the arc-length between two somata.
@@ -21,7 +24,14 @@ circumference computed first.
 To install the plugin use Plugins->Install Pluging... in Fiji and 
 select this file.
 
+Tested on ImageJ 1.51n, Java 1.8.0_66 (64-bit)
+
+Reference:
+----------
+[1] Feduccia A (1993) Evidence from Claw Geometry Indicating Arboreal
+Habits of Archaeopteryx. Science, Feb 5;259:790-793.
 """
+
 from ij import WindowManager, IJ
 from ij.plugin.frame import RoiManager
 
@@ -34,7 +44,7 @@ from java.awt import Color
  
 import math
 
-__version__ = 0.1
+__version__ = 0.2
 
 class Circumference(object):
     """
@@ -74,6 +84,7 @@ class Circumference(object):
         distance in pixels
         """
         A, B = segment # must be PointRoi
+
         x1, y1 = A.XBase, A.YBase
         x2, y2 = B.XBase, B.YBase
         
@@ -97,6 +108,7 @@ class Circumference(object):
 
         x1, y1 = A.XBase, A.YBase
         x2, y2 = B.XBase, B.YBase
+
         xmidpoint = ( x1 + x2 )/2
         ymidpoint = ( y1 + y2 )/2
         
@@ -118,6 +130,7 @@ class Circumference(object):
         """
 
         A, B = segment # must be PointRoi
+
         x1, y1 = A.XBase, A.YBase
         x2, y2 = B.XBase, B.YBase
 
@@ -125,7 +138,7 @@ class Circumference(object):
         try:
             m = (y2 - y1) / (x2 - x1)
         except ZeroDivisionError: # undefined slope, e.g., x = 2
-            m = (y2 - y1) / (x2 - x1+1) # move one pixel
+            m = (y2 - y1) / (x2 - (x1+1)) # move one pixel
 
         a = y1 - m * x1
 
@@ -150,19 +163,20 @@ class Circumference(object):
 
         x1, y1 = A.XBase, A.YBase
         x2, y2 = B.XBase, B.YBase
+
         xmidpoint = ( x1 + x2 )/2
         ymidpoint = ( y1 + y2 )/2
 
+        # avoid zero-division (undefined slope)
+        if y1 == y2: 
+            y2 +=1 # move one pixel
+
         # slope perpendicular -1/m
-        try:
-            m = -(x2 - x1) / (y2 - y1)
-        except ZeroDivisionError: # undefined slope, e.g., x = 2
-            m = -(x2 - x1) / (y2 - y1+1) # move one pixel
+        m = -(x2 - x1) / (y2 - y1)
             
         a = ymidpoint - m * xmidpoint
 
         return(m, a)
-        
 
     def get_intersect_from_param(self, param1, param2):
         """
@@ -195,16 +209,10 @@ class Circumference(object):
         m1, a1 = param1
         m2, a2 = param2
 
-        # first compute x
-        if m1 == 0: # horizontal line
-            x = a1 
-        elif m2 ==0: # horizontal line
-            x = a2
-        else: 
-            try:
-                x = (a1 - a2) / (m2 - m1)
-            except ZeroDivisionError: #(m1 == m2)
-                raise ZeroDivisionError("Lines are parallel")
+        try:
+            x = (a1 - a2) / (m2 - m1)
+        except ZeroDivisionError: #(m1 == m2)
+            raise ZeroDivisionError("Lines are parallel")
             
         # now that lines are not parallel, we compute y
         y = ( a1 * m2 - a2 * m1) / ( m2 - m1 )
@@ -276,7 +284,7 @@ class Circumference(object):
         # radius can be calculated form AX, or BX
         ct = IJ.getImage().getCalibration()
         r =  self.get_distance( (A, X))
-        angle = self.get_angle(segment, center)
+        angle = self.get_angle(segment, X)
 
         arc_length = 2*PI*r*(angle/360.)
         return arc_length 
@@ -328,18 +336,18 @@ def set_circlepoints(RoiManager):
     index = RoiManager.getCount() # number of items in the ROI
 
     # create points
-    A = PointRoi(imp.getWidth()/3, imp.getHeight()/2)
-    #A = PointRoi(722-100,512+100)
+    #A = PointRoi(imp.getWidth()/3, imp.getHeight()/2)
+    A = PointRoi(722-100,512+100)
     A.setName('A')
-    B = PointRoi(imp.getWidth()/2, imp.getHeight()*1/5)
-    #B = PointRoi(722,512) # center
+    #B = PointRoi(imp.getWidth()/2, imp.getHeight()*1/5)
+    B = PointRoi(722,512) # center
     B.setName('B')
-    C = PointRoi(imp.getWidth()*2/3, imp.getHeight()/2)
-    #C = PointRoi(722+100,512+100)
+    #C = PointRoi(imp.getWidth()*2/3, imp.getHeight()/2)
+    C = PointRoi(722+100,512+100)
     C.setName('C')
 
     for p in [A, B, C]: # common features
-        p.setSize(4)
+        p.setSize(4) # extra-large
         p.setStrokeColor(Color.GREEN)
         RoiManager.addRoi(p)
 
@@ -463,6 +471,7 @@ if __name__ in ['__builtin__', '__main__']:
     # Draw a circle through three point
     draw_Circle(center = X, diam =diam, RoiManager = myRoiManager, label = 'X')
 
+
     IJ.setTool('polygon') # switch to polygon-tool
     WaitForUserDialog("Cell selection","Select on the cell somata and press OK to compute the curvatures").show()
     mypoly = imp.getRoi()
@@ -483,37 +492,124 @@ if __name__ in ['__builtin__', '__main__']:
     #======================================================================
     rt1 = ResultsTable()
     for row, pre in enumerate(mycell):
-        rt1.incrementCounter()
-        A = pre 
+        rt1.incrementCounter() # jump to next row
+        P1 = pre 
         for col,post  in enumerate(mycell):
-            B = post
-            mysegment = (A,B)
-            rt1.addValue(col, ct.getX(mycircle.get_distance(mysegment)))
+            P2 = post
+            mysegment = (P1,P2)
+            mydist = mycircle.get_distance( segment = mysegment )
+            rt1.addValue(col, ct.getX( mydist ) )
+
     rt1.show('Euclidean distances ' + imp.getTitle())
             
     #======================================================================
-    # Result table 2: compute curvature for first segment
+    # Result table 2: compute curvature for every segment
     #======================================================================
     rt2 = ResultsTable()
     for row, pre in enumerate(mycell):
         rt2.incrementCounter()
-        A = pre
+        P1 = pre
         for col, post in enumerate(mycell):
-            B = post
-            seg = (A,B)
+            P2 = post
+            myseg = (P1,P2)
             if row==col:
                 rt2.addValue(col, 0)
-
             else:
-                l1 = mycircle.get_bisector_equation( seg)
-                l2 = mycircle.get_parallel_equation( seg, X )
+                l1 = mycircle.get_bisector_equation( myseg )
+                l2 = mycircle.get_parallel_equation( myseg, X )
                 I = mycircle.get_intersect_from_param( l1, l2 )
-                arc_length = ct.getX(mycircle.get_arclength(seg, I))
+                arc_length = ct.getX( mycircle.get_arclength(myseg, I) )
                 rt2.addValue(col, arc_length)
                 # plot from I to midline
-                F = mycircle.get_midpoint(seg)
-                label = 'curv ' + str(col+row)
-                draw_Line(seg, myRoiManager, Color.YELLOW, label)
+                F = mycircle.get_midpoint(myseg)
+                label = 'bisect ' + str(col+row)
+                draw_Line(myseg, myRoiManager, Color.YELLOW, label)
                 draw_Line((I,F), myRoiManager, color=Color.BLUE)
 
     rt2.show('Curvature distances ' + imp.getTitle())
+
+    #======================================================================
+    # Tests
+    #======================================================================
+    print('\n======DEBUG==========================\n')
+    AB = 14.1
+    BC = 14.1
+    AC = 20.
+
+    P1 = PointRoi(622,212)
+    P1.setName('P1')
+    P2 = PointRoi(822,212)
+    P2.setName('P2')
+    P3 = PointRoi(822,412)
+    P3.setName('P3')
+    P4 = PointRoi(622,412)
+    P4.setName('P4')
+
+    X1 = PointRoi(622,512)
+    X1.setName('X1')
+
+    X2 = PointRoi(822,512)
+    X2.setName('X2')
+
+    mypoints = [P1, P2, P3, P4]
+    for p in [P1, P2, P3, P4, X1, X2]:
+        p.setSize(4)
+        p.setStrokeColor(Color.MAGENTA)
+        myRoiManager.addRoi(p)
+    
+    # TABLE 3 #
+    rt3 = ResultsTable()
+    for row, pre in enumerate(mypoints):
+        rt3.incrementCounter()
+        for col, post in enumerate(mypoints):
+            myval = row + col
+            myseg = (pre, post)
+            myval = mycircle.get_distance(segment = myseg)
+            rt3.addValue(col, myval)
+
+    rt3.show('TEST_DIST')
+    
+    rt4 = ResultsTable()
+    for row, pre in enumerate(mypoints):
+        rt4.incrementCounter()
+        for col, post in enumerate(mypoints):
+            myval = row + col
+            myseg = (pre, post)
+            if row == col:
+                myval = 0
+            else:
+                l1 = mycircle.get_bisector_equation(segment = myseg) 
+                l2 = mycircle.get_parallel_equation(segment = myseg, point =X)
+                I = mycircle.get_intersect_from_param(l1, l2)
+                myval = mycircle.get_arclength(segment = myseg, center= I) 
+
+            rt4.addValue(col, myval)
+
+    rt4.show('TEST_ARC')
+    
+    #print mycircle.get_distance(segment = (A,B)) # AB = 141.42 pix
+    #print mycircle.get_distance(segment = (B,C)) # BC = 141.42 pix
+    #print mycircle.get_distance(segment = (A,C)) # AC = 200.00 pix
+    
+    
+    #print mycircle.get_angle(segment = (A,B)) # 90
+    #print mycircle.get_arclength(segment = (A,B)) # 156.2 
+    #print mycircle.get_arclength(segment = (B, C)) # 156.2 
+    #print mycircle.get_arclength(segment = (A,C)) # 156.2 *2  (pi)
+    #print mycircle.get_distance(segment = (P1,P2))
+    #print mycircle.get_angle(segment = (P1,P2))
+    #print 'AX1 ang' + str(mycircle.get_angle(segment = (A,X1), center = X))
+    #print 'X1X2 ang' + str(mycircle.get_angle(segment = (X1,X2), center = X))
+    l1 = mycircle.get_bisector_equation(segment = (P1, P2))
+    l2 = mycircle.get_parallel_equation(segment = (P1, P2), point = X)
+    print(l2)
+    I = mycircle.get_intersect_from_param(l1, l2)
+    M = mycircle.get_midpoint((P1,P2))
+    draw_Line((M,I), myRoiManager, Color.MAGENTA, 'test')
+    myRoiManager.addRoi(I)
+    I.setColor(Color.ORANGE)
+    I.setSize(4)
+    I.setName('I')
+    print(I)
+    print('\n==END-DEBUG==========================\n')
+
